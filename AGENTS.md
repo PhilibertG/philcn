@@ -110,6 +110,18 @@ uniquement ceux-là. Toute autre différence est un bug.
   tout futur composant cliquable (éléments de menu, onglets, déclencheurs).
   Sans effet sur un bouton désactivé, qui ne reçoit plus les événements de
   souris.
+- **Retour au clic** (audit animations du 18/09/2026) : un bouton enfoncé se
+  réduit à `scale(0.97)` en 160 ms. shadcn ne donne aucun retour tactile.
+  La variante `link` en est exclue : un lien texte ne doit pas rétrécir.
+- **Bordure de focus en fondu** : `border-color` est dans la liste des
+  propriétés animées des champs, badges et boutons. Chez shadcn la bordure
+  saute pendant que l'anneau apparaît en fondu.
+- **Image d'avatar en fondu** : elle remplace les initiales en 200 ms au lieu
+  d'apparaître d'un coup.
+- **Animations maison plutôt que `tw-animate-css`** : les courbes et les
+  images-clés sont définies dans `philcn.css`. Ça évite une dépendance et
+  garde les durées modifiables. Deux jetons de courbe : `--ease-out-strong`
+  pour les dialogues, `--ease-drawer` pour les volets.
 
 ## Conventions et décisions prises
 - **Distribution : modèle CLI + registre**, comme shadcn. `npx philcn add
