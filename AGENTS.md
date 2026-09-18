@@ -153,6 +153,8 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
   de production. Phase 1 (les 18 composants simples) en attente du feu vert.
 - **Dépôt** : `git@github.com:PhilibertG/philcn.git`, **privé**. Les 4
   commits de la Phase 0 sont poussés sur `main`.
-- Points encore ouverts : faut-il garder `CLAUDE.md` dans le dépôt ; nom du
-  détenteur du copyright pour le fichier LICENSE ; garder `cn()` et
-  `variants()` maison ou passer aux bibliothèques existantes.
+- Décisions du 18/09/2026 : on **garde** `cn()` et `variants()` maison —
+  ça évite toute installation de paquet dans les projets qui utilisent
+  philcn. `CLAUDE.md` **reste** dans le dépôt. Licence **MIT**, au nom de
+  **Philibert Gentien**.
+- Prochaine étape : Phase 1, en attente du feu vert.

@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "description": "A React component library written from scratch, API-compatible with shadcn/ui.",
+  "license": "MIT",
+  "author": "Philibert Gentien",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PhilibertG/philcn.git"
+  },
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",

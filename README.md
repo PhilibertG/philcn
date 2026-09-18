@@ -26,3 +26,7 @@ No components yet.
 npm install
 npm run check      # typecheck + tests
 ```
+
+## License
+
+MIT © Philibert Gentien
