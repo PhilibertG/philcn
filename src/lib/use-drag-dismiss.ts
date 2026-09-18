@@ -81,6 +81,15 @@ export interface UseDragDismissResult extends DragDismissState {
 /** Matches the transition declared on the drawer content. */
 export const EXIT_MS = 250;
 
+/**
+ * How far the pointer must travel before this counts as a drag.
+ *
+ * Nothing is captured below it. Capturing on contact would redirect the
+ * click to the panel, and a tap on Close or Cancel would never reach the
+ * button.
+ */
+export const DRAG_THRESHOLD_PX = 4;
+
 const REST: DragDismissState = {
   offset: 0,
   isDragging: false,
@@ -97,7 +106,9 @@ export function useDragDismiss({
   const [state, setState] = React.useState<DragDismissState>(REST);
 
   const handleDismiss = useCallbackRef(onDismiss);
-  const origin = React.useRef<{ position: number; dimension: number } | null>(null);
+  const origin = React.useRef<{ position: number; dimension: number; armed: boolean } | null>(
+    null,
+  );
   const samples = React.useRef<VelocitySample[]>([]);
 
   const readPosition = React.useCallback(
@@ -120,18 +131,9 @@ export function useDragDismiss({
       const dimension = axisOf(direction) === "y" ? rect.height : rect.width;
       const position = readPosition(event);
 
-      origin.current = { position, dimension };
-      samples.current = [{ position: 0, time: event.timeStamp }];
-
-      // Capture keeps the gesture alive if the finger leaves the panel. It is
-      // refused for pointers the browser does not know, such as a synthetic
-      // event in a test; the drag still works without it.
-      try {
-        root.setPointerCapture(event.pointerId);
-      } catch {
-        /* no capture available */
-      }
-      setState({ ...REST, dimension });
+      // Watch, but claim nothing yet: this may still turn out to be a tap.
+      origin.current = { position, dimension, armed: false };
+      samples.current = [];
     },
     [enabled, direction, readPosition],
   );
@@ -141,7 +143,28 @@ export function useDragDismiss({
       const started = origin.current;
       if (started === null) return;
 
-      const travel = (readPosition(event) - started.position) * leavingSign(direction);
+      const position = readPosition(event);
+
+      if (!started.armed) {
+        if (Math.abs(position - started.position) < DRAG_THRESHOLD_PX) return;
+
+        // The threshold is crossed: this is a drag. Re-base the origin here so
+        // the panel starts moving from where it is, without a jump.
+        started.armed = true;
+        started.position = position;
+        samples.current = [{ position: 0, time: event.timeStamp }];
+
+        // Capture keeps the gesture alive if the finger leaves the panel. It is
+        // refused for pointers the browser does not know, such as a synthetic
+        // event in a test; the drag still works without it.
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch {
+          /* no capture available */
+        }
+      }
+
+      const travel = (position - started.position) * leavingSign(direction);
       const offset = offsetFor(travel, started.dimension);
 
       samples.current.push({ position: travel, time: event.timeStamp });
@@ -164,6 +187,11 @@ export function useDragDismiss({
       if (started === null) return;
 
       origin.current = null;
+
+      // Never crossed the threshold: that was a tap, and the click below must
+      // reach whatever was tapped.
+      if (!started.armed) return;
+
       try {
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
           event.currentTarget.releasePointerCapture(event.pointerId);
