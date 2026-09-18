@@ -184,7 +184,10 @@ uniquement ceux-là. Toute autre différence est un bug.
   glisser-pour-fermer est écrit à la main (`src/lib/drag-dismiss.ts` pour les
   règles, testé unitairement ; `use-drag-dismiss.ts` pour le branchement au
   doigt). Le panneau suit le doigt, résiste quand on le tire trop ouvert, et
-  se ferme sur un geste rapide ou passé le quart de sa taille.
+  se ferme sur un geste rapide ou passé le quart de sa taille. Le côté se
+  choisit avec `swipeDirection` (`up` / `right` / `down` / `left`), comme
+  chez shadcn ; l'ancien `direction` (`top` / `bottom` / `left` / `right`)
+  reste accepté pour le code écrit contre les versions précédentes.
 - **Phase 4 — Positionnement flottant** : Popover, DropdownMenu, Tooltip,
   Select, Combobox, ContextMenu, HoverCard. Un moteur de positionnement
   externe est autorisé (voir la règle sur les dépendances), ce qui allège

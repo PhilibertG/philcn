@@ -27,12 +27,27 @@ function useDrawerContext(component: string): DrawerContextValue {
   return context;
 }
 
+/** The way the panel is swiped away, which is also the edge it sits on. */
+export type SwipeDirection = "up" | "right" | "down" | "left";
+
+const EDGE_OF: Record<SwipeDirection, DragDirection> = {
+  up: "top",
+  down: "bottom",
+  left: "left",
+  right: "right",
+};
+
 export interface DrawerProps {
   open?: boolean | undefined;
   defaultOpen?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
   modal?: boolean | undefined;
-  /** Which edge the drawer is anchored to. */
+  /** Which edge the drawer sits on, named by the swipe that dismisses it. */
+  swipeDirection?: SwipeDirection | undefined;
+  /**
+   * Older name for the same thing, using the edge instead of the swipe.
+   * Accepted so code written against earlier shadcn releases still works.
+   */
   direction?: DragDirection | undefined;
   children?: React.ReactNode;
 }
@@ -49,9 +64,13 @@ function Drawer({
   defaultOpen,
   onOpenChange,
   modal = true,
-  direction = "bottom",
+  swipeDirection,
+  direction,
   children,
 }: DrawerProps) {
+  const edge: DragDirection =
+    swipeDirection !== undefined ? EDGE_OF[swipeDirection] : (direction ?? "bottom");
+
   const [isOpen, setIsOpen] = useControllableState<boolean>({
     prop: open,
     defaultProp: defaultOpen ?? false,
@@ -64,12 +83,12 @@ function Drawer({
       open: isOpen === true,
       setOpen: (next: boolean) => setIsOpen(next),
       modal,
-      direction,
+      direction: edge,
       contentId: `${baseId}-content`,
       titleId: `${baseId}-title`,
       descriptionId: `${baseId}-description`,
     }),
-    [isOpen, setIsOpen, modal, direction, baseId],
+    [isOpen, setIsOpen, modal, edge, baseId],
   );
 
   return <DrawerContext.Provider value={value}>{children}</DrawerContext.Provider>;
@@ -137,6 +156,18 @@ const DIRECTION_CLASSES: Record<DragDirection, readonly string[]> = {
   ],
 };
 
+/**
+ * Where the grab bar sits: always on the edge facing into the screen, so it
+ * reads as the thing to pull. Vertical drawers keep it in the flow; side
+ * drawers place it against their inner edge.
+ */
+const HANDLE_CLASSES: Record<DragDirection, string> = {
+  bottom: "mx-auto mt-4 h-2 w-[100px]",
+  top: "order-last mx-auto mb-4 h-2 w-[100px]",
+  right: "absolute left-2 top-1/2 h-[100px] w-2 -translate-y-1/2",
+  left: "absolute right-2 top-1/2 h-[100px] w-2 -translate-y-1/2",
+};
+
 /** Turns an offset along the leaving axis into a CSS translate. */
 function translateFor(direction: DragDirection, offset: number): string {
   const distance = `${direction === "top" || direction === "left" ? -offset : offset}px`;
@@ -171,7 +202,7 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(funct
 
   const moving = drag.isDragging || drag.isDismissing;
   const dragState = drag.isDragging ? "dragging" : drag.isDismissing ? "dismissing" : undefined;
-  const withHandle = showHandle ?? (draggable && axisOf(direction) === "y");
+  const withHandle = showHandle ?? draggable;
 
   return (
     <Overlay
@@ -223,7 +254,7 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(funct
         <div
           data-slot="drawer-handle"
           aria-hidden="true"
-          className="mx-auto mt-4 h-2 w-[100px] shrink-0 rounded-full bg-muted"
+          className={cn("shrink-0 rounded-full bg-muted", HANDLE_CLASSES[direction])}
         />
       ) : null}
       {children}
