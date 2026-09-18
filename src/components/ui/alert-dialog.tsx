@@ -59,10 +59,12 @@ function AlertDialog({ open, defaultOpen, onOpenChange, children }: AlertDialogP
 
 export interface AlertDialogTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const AlertDialogTrigger = React.forwardRef<HTMLButtonElement, AlertDialogTriggerProps>(
-  function AlertDialogTrigger({ asChild = false, onClick, ...props }, ref) {
+  function AlertDialogTrigger({ asChild = false, render, onClick, ...props }, ref) {
     const { open, setOpen, contentId } = useAlertDialogContext("AlertDialogTrigger");
 
     const shared = {
@@ -75,7 +77,10 @@ const AlertDialogTrigger = React.forwardRef<HTMLButtonElement, AlertDialogTrigge
       ...props,
     } as const;
 
-    if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+    const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
     return <button ref={ref} type="button" {...shared} />;
   },
 );

@@ -1,11 +1,13 @@
 /**
- * Slot — renders a component's props onto the child element instead of onto a
- * wrapper. This is what powers the `asChild` prop:
+ * Slot — renders a component's props onto another element instead of onto a
+ * wrapper of its own. This is what powers replacing a trigger's element:
  *
- *     <Button asChild><a href="/">Home</a></Button>
+ *     <Button asChild><a href="/">Home</a></Button>      // Radix spelling
+ *     <Button render={<a href="/">Home</a>} />           // Base UI spelling
  *
- * renders a single `<a>` carrying the button's classes and handlers, rather
- * than a `<button>` wrapping an `<a>`.
+ * Both render a single `<a>` carrying the button's classes and handlers,
+ * rather than a `<button>` wrapping an `<a>`. shadcn publishes a Radix and a
+ * Base UI flavour, so philcn accepts either.
  */
 
 import * as React from "react";
@@ -15,22 +17,33 @@ import { composeRefs, mergeProps, type AnyProps } from "./compose.ts";
 
 export interface SlotProps extends React.HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
+  /** The element to render. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const Slot = React.forwardRef<HTMLElement, SlotProps>(function Slot(
-  { children, ...slotProps },
+  { children, render, ...slotProps },
   forwardedRef,
 ) {
-  if (!React.isValidElement(children)) return null;
+  const element = render ?? children;
+  if (!React.isValidElement(element)) return null;
 
-  const childProps = children.props as AnyProps;
+  const childProps = element.props as AnyProps;
   // React 19 exposes `ref` as a normal prop; React 18 keeps it on the element.
   const childRef =
     (childProps["ref"] as React.Ref<HTMLElement> | undefined) ??
-    (children as unknown as { ref?: React.Ref<HTMLElement> }).ref;
+    (element as unknown as { ref?: React.Ref<HTMLElement> }).ref;
 
-  return React.cloneElement(children, {
-    ...mergeProps(slotProps as AnyProps, childProps, cn),
+  const merged = mergeProps(slotProps as AnyProps, childProps, cn);
+
+  // With `render`, anything between the tags belongs to the rendered element —
+  // unless it brought its own children.
+  if (render !== undefined && childProps["children"] === undefined && children !== undefined) {
+    merged["children"] = children;
+  }
+
+  return React.cloneElement(element, {
+    ...merged,
     ref: composeRefs<HTMLElement>(forwardedRef, childRef),
   } as Partial<unknown> & React.Attributes);
 });

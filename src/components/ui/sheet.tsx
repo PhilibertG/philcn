@@ -58,10 +58,12 @@ function Sheet({ open, defaultOpen, onOpenChange, modal = true, children }: Shee
 
 export interface SheetTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const SheetTrigger = React.forwardRef<HTMLButtonElement, SheetTriggerProps>(function SheetTrigger(
-  { asChild = false, onClick, ...props },
+  { asChild = false, render, onClick, ...props },
   ref,
 ) {
   const { open, setOpen, contentId } = useSheetContext("SheetTrigger");
@@ -76,16 +78,21 @@ const SheetTrigger = React.forwardRef<HTMLButtonElement, SheetTriggerProps>(func
     ...props,
   } as const;
 
-  if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+  const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
   return <button ref={ref} type="button" {...shared} />;
 });
 
 export interface SheetCloseProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const SheetClose = React.forwardRef<HTMLButtonElement, SheetCloseProps>(function SheetClose(
-  { asChild = false, onClick, ...props },
+  { asChild = false, render, onClick, ...props },
   ref,
 ) {
   const { setOpen } = useSheetContext("SheetClose");
@@ -96,7 +103,10 @@ const SheetClose = React.forwardRef<HTMLButtonElement, SheetCloseProps>(function
     ...props,
   } as const;
 
-  if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+  const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
   return <button ref={ref} type="button" {...shared} />;
 });
 

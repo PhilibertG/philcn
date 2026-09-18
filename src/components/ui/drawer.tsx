@@ -96,10 +96,12 @@ function Drawer({
 
 export interface DrawerTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
-  function DrawerTrigger({ asChild = false, onClick, ...props }, ref) {
+  function DrawerTrigger({ asChild = false, render, onClick, ...props }, ref) {
     const { open, setOpen, contentId } = useDrawerContext("DrawerTrigger");
 
     const shared = {
@@ -112,17 +114,22 @@ const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
       ...props,
     } as const;
 
-    if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+    const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
     return <button ref={ref} type="button" {...shared} />;
   },
 );
 
 export interface DrawerCloseProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const DrawerClose = React.forwardRef<HTMLButtonElement, DrawerCloseProps>(function DrawerClose(
-  { asChild = false, onClick, ...props },
+  { asChild = false, render, onClick, ...props },
   ref,
 ) {
   const { setOpen } = useDrawerContext("DrawerClose");
@@ -133,7 +140,10 @@ const DrawerClose = React.forwardRef<HTMLButtonElement, DrawerCloseProps>(functi
     ...props,
   } as const;
 
-  if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+  const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
   return <button ref={ref} type="button" {...shared} />;
 });
 

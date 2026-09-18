@@ -39,15 +39,25 @@ const BreadcrumbItem = React.forwardRef<HTMLLIElement, React.ComponentPropsWitho
 );
 
 export interface BreadcrumbLinkProps extends React.ComponentPropsWithoutRef<"a"> {
-  asChild?: boolean;
+  asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
-  function BreadcrumbLink({ className, asChild = false, ...props }, ref) {
+  function BreadcrumbLink({ className, asChild = false, render, ...props }, ref) {
     const classes = cn("transition-colors hover:text-foreground", className);
 
-    if (asChild) {
-      return <Slot ref={ref as React.Ref<HTMLElement>} data-slot="breadcrumb-link" className={classes} {...props} />;
+    if (asChild || render !== undefined) {
+      return (
+        <Slot
+          ref={ref as React.Ref<HTMLElement>}
+          render={render}
+          data-slot="breadcrumb-link"
+          className={classes}
+          {...props}
+        />
+      );
     }
 
     return <a ref={ref} data-slot="breadcrumb-link" className={classes} {...props} />;

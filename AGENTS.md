@@ -101,6 +101,17 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
    de focus visible.
 6. **Aucun composant livré sans que j'aie dit quoi tester à la main.**
 
+## Quelle « flaveur » de shadcn on suit
+shadcn publie désormais **trois** implémentations : Base UI (celle par
+défaut), Radix UI et React Aria. Elles diffèrent sur la façon de remplacer
+l'élément d'un déclencheur.
+- **philcn accepte les deux écritures** (décidé par Phil le 18/09/2026) :
+  `asChild` (Radix) et `render` (Base UI). `<Button asChild><a/></Button>` et
+  `<Button render={<a/>} />` donnent le même résultat.
+- Raison : la quasi-totalité des blocs, tutoriels et projets existants
+  utilisent `asChild`, mais la documentation actuelle montre `render`. Coller
+  du code venu de l'une ou l'autre doit marcher.
+
 ## Divergences assumées avec shadcn
 La règle « rendu visuel identique » admet les écarts listés ici, et
 uniquement ceux-là. Toute autre différence est un bug.

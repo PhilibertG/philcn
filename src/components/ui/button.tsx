@@ -66,17 +66,27 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   /** Render the child element instead of a `<button>`, keeping these styles. */
-  asChild?: boolean;
+  asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { className, variant, size, asChild = false, ...props },
+  { className, variant, size, asChild = false, render, ...props },
   ref,
 ) {
   const classes = cn(buttonVariants({ variant, size }), className);
 
-  if (asChild) {
-    return <Slot ref={ref as React.Ref<HTMLElement>} data-slot="button" className={classes} {...props} />;
+  if (asChild || render !== undefined) {
+    return (
+      <Slot
+        ref={ref as React.Ref<HTMLElement>}
+        render={render}
+        data-slot="button"
+        className={classes}
+        {...props}
+      />
+    );
   }
 
   return <button ref={ref} data-slot="button" className={classes} {...props} />;

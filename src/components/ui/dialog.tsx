@@ -58,10 +58,12 @@ function Dialog({ open, defaultOpen, onOpenChange, modal = true, children }: Dia
 
 export interface DialogTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
-  function DialogTrigger({ asChild = false, onClick, ...props }, ref) {
+  function DialogTrigger({ asChild = false, render, onClick, ...props }, ref) {
     const { open, setOpen, contentId } = useDialogContext("DialogTrigger");
 
     const shared = {
@@ -74,17 +76,22 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
       ...props,
     } as const;
 
-    if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+    const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
     return <button ref={ref} type="button" {...shared} />;
   },
 );
 
 export interface DialogCloseProps extends React.ComponentPropsWithoutRef<"button"> {
   asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const DialogClose = React.forwardRef<HTMLButtonElement, DialogCloseProps>(function DialogClose(
-  { asChild = false, onClick, ...props },
+  { asChild = false, render, onClick, ...props },
   ref,
 ) {
   const { setOpen } = useDialogContext("DialogClose");
@@ -95,7 +102,10 @@ const DialogClose = React.forwardRef<HTMLButtonElement, DialogCloseProps>(functi
     ...props,
   } as const;
 
-  if (asChild) return <Slot ref={ref as React.Ref<HTMLElement>} {...shared} />;
+  const slotted = asChild || render !== undefined;
+    if (slotted) {
+      return <Slot ref={ref as React.Ref<HTMLElement>} render={render} {...shared} />;
+    }
   return <button ref={ref} type="button" {...shared} />;
 });
 

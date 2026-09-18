@@ -34,17 +34,27 @@ const badgeVariants = variants(
 export interface BadgeProps
   extends React.ComponentPropsWithoutRef<"span">,
     VariantProps<typeof badgeVariants> {
-  asChild?: boolean;
+  asChild?: boolean | undefined;
+  /** Replace the rendered element with this one. Base UI's spelling of `asChild`. */
+  render?: React.ReactElement | undefined;
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
-  { className, variant, asChild = false, ...props },
+  { className, variant, asChild = false, render, ...props },
   ref,
 ) {
   const classes = cn(badgeVariants({ variant }), className);
 
-  if (asChild) {
-    return <Slot ref={ref as React.Ref<HTMLElement>} data-slot="badge" className={classes} {...props} />;
+  if (asChild || render !== undefined) {
+    return (
+      <Slot
+        ref={ref as React.Ref<HTMLElement>}
+        render={render}
+        data-slot="badge"
+        className={classes}
+        {...props}
+      />
+    );
   }
 
   return <span ref={ref} data-slot="badge" className={classes} {...props} />;
