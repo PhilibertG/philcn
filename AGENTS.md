@@ -139,4 +139,8 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
   Calendar, DatePicker, puis la commande `philcn add`.
 
 ## Où on en est
-- **18 septembre 2026** — Phase 0 en cours.
+- **18 septembre 2026** — Phase 0 terminée. Jetons de couleur clair/sombre,
+  `cn()` et `variants()` écrits de zéro, 33 tests au vert, aucune dépendance
+  de production. Phase 1 (les 18 composants simples) en attente du feu vert.
+- Points encore ouverts : dépôt public ou privé ; faut-il garder `CLAUDE.md`
+  dans le dépôt ; nom du détenteur du copyright pour le fichier LICENSE.
