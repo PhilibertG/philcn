@@ -118,6 +118,9 @@ uniquement ceux-là. Toute autre différence est un bug.
   saute pendant que l'anneau apparaît en fondu.
 - **Image d'avatar en fondu** : elle remplace les initiales en 200 ms au lieu
   d'apparaître d'un coup.
+- **Dialogue à défilement interne** : un dialogue plus haut que l'écran
+  défile en lui-même (`max-h-[calc(100dvh-2rem)] overflow-y-auto`). Chez
+  shadcn il déborde et le bas devient inatteignable.
 - **Animations maison plutôt que `tw-animate-css`** : les courbes et les
   images-clés sont définies dans `philcn.css`. Ça évite une dépendance et
   garde les durées modifiables. Deux jetons de courbe : `--ease-out-strong`

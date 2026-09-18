@@ -180,6 +180,9 @@ const DialogContentImpl = React.forwardRef<
             "pointer-events-auto fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)]",
             "-translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-6 shadow-lg",
             "sm:max-w-lg",
+            // Long content scrolls inside the dialog rather than running off
+            // the screen where it cannot be reached.
+            "max-h-[calc(100dvh-2rem)] overflow-y-auto",
             "data-[state=open]:animate-content-in data-[state=closed]:animate-content-out",
             className,
           )}

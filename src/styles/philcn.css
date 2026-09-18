@@ -134,20 +134,26 @@
 
 @theme inline {
   /* Entering and leaving both use ease-out: ease-in starts slow, right when
-     the eye is watching. */
-  --animate-fade-in: philcn-fade-in 200ms var(--ease-out-strong);
-  --animate-overlay-in: philcn-fade-in 150ms var(--ease-out-strong);
-  --animate-overlay-out: philcn-fade-out 150ms var(--ease-out-strong);
-  --animate-content-in: philcn-content-in 200ms var(--ease-out-strong);
-  --animate-content-out: philcn-content-out 150ms var(--ease-out-strong);
-  --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer);
-  --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer);
-  --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer);
-  --animate-slide-out-bottom: philcn-slide-out-bottom 250ms var(--ease-drawer);
-  --animate-slide-in-left: philcn-slide-in-left 300ms var(--ease-drawer);
-  --animate-slide-out-left: philcn-slide-out-left 250ms var(--ease-drawer);
-  --animate-slide-in-right: philcn-slide-in-right 300ms var(--ease-drawer);
-  --animate-slide-out-right: philcn-slide-out-right 250ms var(--ease-drawer);
+     the eye is watching.
+
+     The fill mode is not decoration. Without `forwards` on an exit, the
+     element snaps back to its base style the instant the animation ends and
+     stays fully visible until React unmounts it — a flash of the dialog
+     reappearing just after it closed. `both` on an entrance holds the start
+     frame until the animation begins, avoiding the mirror-image flash. */
+  --animate-fade-in: philcn-fade-in 200ms var(--ease-out-strong) both;
+  --animate-overlay-in: philcn-fade-in 150ms var(--ease-out-strong) both;
+  --animate-overlay-out: philcn-fade-out 150ms var(--ease-out-strong) forwards;
+  --animate-content-in: philcn-content-in 200ms var(--ease-out-strong) both;
+  --animate-content-out: philcn-content-out 150ms var(--ease-out-strong) forwards;
+  --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) both;
+  --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer) forwards;
+  --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) both;
+  --animate-slide-out-bottom: philcn-slide-out-bottom 250ms var(--ease-drawer) forwards;
+  --animate-slide-in-left: philcn-slide-in-left 300ms var(--ease-drawer) both;
+  --animate-slide-out-left: philcn-slide-out-left 250ms var(--ease-drawer) forwards;
+  --animate-slide-in-right: philcn-slide-in-right 300ms var(--ease-drawer) both;
+  --animate-slide-out-right: philcn-slide-out-right 250ms var(--ease-drawer) forwards;
 }
 
 @keyframes philcn-fade-in {
@@ -215,12 +221,14 @@
     animation-name: philcn-fade-in;
     animation-duration: 120ms;
     animation-timing-function: var(--ease-out-strong);
+    animation-fill-mode: both;
   }
 
   [data-slot="dialog-overlay"][data-state="closed"],
   [data-slot="dialog-content"][data-state="closed"],
   [data-slot="sheet-content"][data-state="closed"] {
     animation-name: philcn-fade-out;
+    animation-fill-mode: forwards;
   }
 
   /* Tailwind v4 presses the button with the `scale` property, not `transform`. */
