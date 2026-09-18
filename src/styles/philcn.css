@@ -211,6 +211,19 @@
   to { translate: 100% 0; }
 }
 
+/* While a drawer is under the finger its position is driven directly, so the
+   open/close keyframes must stand down or they would fight the gesture.
+   During the drag there is no transition either — the panel follows the finger
+   exactly. Once released, the transition carries it home or out. */
+[data-slot="drawer-content"][data-drag],
+[data-slot="drawer-overlay"][data-drag] {
+  animation: none !important;
+}
+
+[data-slot="drawer-content"][data-drag="dragging"] {
+  transition: none !important;
+}
+
 /* Reduced motion means less movement, not none. The fade stays — it explains
    that something appeared — while every translate and scale is dropped.
    Presence still reads a real duration, so unmounting keeps working. */

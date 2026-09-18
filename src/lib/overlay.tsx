@@ -36,6 +36,8 @@ export interface OverlayProps extends Omit<React.ComponentPropsWithoutRef<"div">
   dismissOnEscape?: boolean | undefined;
   container?: Element | DocumentFragment | null | undefined;
   overlayClassName?: string | undefined;
+  /** Extra props for the backdrop — a drawer fades it as the panel is dragged. */
+  overlayProps?: React.ComponentPropsWithoutRef<"div"> | undefined;
   onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined;
   onPointerDownOutside?: ((event: PointerEvent) => void) | undefined;
   onInteractOutside?: ((event: PointerEvent | FocusEvent) => void) | undefined;
@@ -50,6 +52,7 @@ const OverlaySurface = React.forwardRef<HTMLDivElement, SurfaceProps>(function O
   {
     className,
     overlayClassName,
+    overlayProps,
     children,
     slot,
     role = "dialog",
@@ -68,10 +71,12 @@ const OverlaySurface = React.forwardRef<HTMLDivElement, SurfaceProps>(function O
 ) {
   const { isTopmost } = useLayerState();
   const covered = !isTopmost;
+  const { className: backdropClassName, ...backdropProps } = overlayProps ?? {};
 
   return (
     <>
       <div
+        {...backdropProps}
         data-slot={`${slot}-overlay`}
         // Marks this as the backdrop: a click here counts as outside, even
         // though it sits inside the layer.
@@ -85,6 +90,7 @@ const OverlaySurface = React.forwardRef<HTMLDivElement, SurfaceProps>(function O
           // stacking two dimmed backdrops.
           "transition-opacity duration-200 ease-out-strong data-[covered=true]:opacity-0",
           overlayClassName,
+          backdropClassName,
         )}
       />
       <FocusScope
