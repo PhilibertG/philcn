@@ -148,8 +148,10 @@ uniquement ceux-là. Toute autre différence est un bug.
   `Typography` a été retiré de la liste : shadcn n'a pas de composant de ce
   nom, seulement une page de documentation. En livrer un serait une
   divergence non listée.
-- **Phase 2 — Briques de base** : composition, portails, apparition/
-  disparition, état contrôlé.
+- **Phase 2 — Briques de base : TERMINÉE.** `composeRefs`,
+  `composeEventHandlers`, `mergeProps` (extraits de `Slot`), `Portal`,
+  `Presence`, `useControllableState`, `useCallbackRef`, `useId`,
+  `useIsomorphicLayoutEffect`.
 - **Phase 3 — Fenêtres superposées** : Dialog, AlertDialog, Sheet, Drawer.
 - **Phase 4 — Positionnement flottant** : Popover, DropdownMenu, Tooltip,
   Select, Combobox, ContextMenu, HoverCard. Un moteur de positionnement
@@ -173,5 +175,10 @@ uniquement ceux-là. Toute autre différence est un bug.
 - **Phase 1 terminée** le 18/09/2026 : 17 composants, thème clair et sombre
   vérifiés, accessibilité vérifiée (attributs ARIA, anneaux de focus,
   textes pour lecteurs d'écran). Aucune dépendance de production.
-- Prochaine étape : Phase 2 (briques de base : portails, apparition/
-  disparition, état contrôlé), en attente du feu vert.
+- **Phase 2 terminée** le 18/09/2026 : 9 briques, 59 tests au vert.
+  `Presence` a un filet de sécurité — si l'animation de sortie ne se termine
+  jamais (onglet en arrière-plan, animation interrompue), un minuteur
+  démonte quand même l'élément. Sans ça il restait à l'écran pour toujours,
+  bug constaté pendant les essais.
+- Prochaine étape : Phase 3 (fenêtres superposées : Dialog, AlertDialog,
+  Sheet, Drawer), en attente du feu vert.
