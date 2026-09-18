@@ -10,7 +10,16 @@ const buttonVariants = variants(
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
     // deliberate divergence from shadcn: buttons show a pointer cursor
     "cursor-pointer",
-    "rounded-md text-sm font-medium transition-all",
+    "rounded-md text-sm font-medium",
+    // Only the properties that actually change. `transition-all` would also
+    // animate width, height and position, forcing a layout recalculation
+    // every frame.
+    // `scale` is its own CSS property in Tailwind v4, not part of `transform`;
+    // leaving it out makes the press feedback snap instead of animating.
+    "transition-[color,background-color,border-color,box-shadow,transform,scale]",
+    "duration-[160ms] ease-out",
+    // deliberate divergence from shadcn: a pressed button gives way
+    "active:scale-[0.97]",
     // icons sized and inert unless the caller says otherwise
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
     "[&_svg:not([class*='size-'])]:size-4",
@@ -36,7 +45,8 @@ const buttonVariants = variants(
         ],
         secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        // a text link must not shrink when pressed
+        link: "text-primary underline-offset-4 hover:underline active:scale-100",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

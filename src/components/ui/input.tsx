@@ -11,7 +11,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentPropsWithoutRef<
         data-slot="input"
         className={cn(
           "flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1",
-          "text-base shadow-xs outline-none transition-[color,box-shadow] md:text-sm",
+          "text-base shadow-xs outline-none transition-[color,border-color,box-shadow] md:text-sm",
           "dark:bg-input/30",
           // text rendering
           "placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground",

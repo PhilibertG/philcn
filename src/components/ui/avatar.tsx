@@ -28,7 +28,7 @@ const Avatar = React.forwardRef<HTMLSpanElement, React.ComponentPropsWithoutRef<
           ref={ref}
           data-slot="avatar"
           className={cn(
-            "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+            "relative flex size-8 shrink-0 overflow-hidden rounded-full bg-muted",
             className,
           )}
           {...props}
@@ -74,7 +74,7 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ComponentPropsWitho
         ref={ref}
         src={src}
         data-slot="avatar-image"
-        className={cn("aspect-square size-full object-cover", className)}
+        className={cn("aspect-square size-full object-cover animate-fade-in", className)}
         onLoad={onLoad}
         onError={onError}
         {...props}
