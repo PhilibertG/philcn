@@ -17,7 +17,7 @@ export type ClassValue =
   | boolean
   | null
   | undefined
-  | ClassValue[]
+  | readonly ClassValue[]
   | { [key: string]: unknown };
 
 /* -------------------------------------------------------------------------
@@ -49,8 +49,11 @@ function collect(value: ClassValue, out: string[]): void {
   }
 
   if (typeof value === "object") {
-    for (const key of Object.keys(value)) {
-      if (value[key]) pushWords(key, out);
+    // `Array.isArray` narrows a readonly array in its true branch only, so the
+    // remaining type still mentions it here. Everything left is a record.
+    const record = value as Record<string, unknown>;
+    for (const key of Object.keys(record)) {
+      if (record[key]) pushWords(key, out);
     }
   }
 }

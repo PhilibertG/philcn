@@ -20,6 +20,11 @@ describe("cn — joining", () => {
     assert.equal(cn("  a   b  "), "a b");
   });
 
+  it("accepts a readonly array", () => {
+    const frozen = ["a", "b"] as const;
+    assert.equal(cn(frozen), "a b");
+  });
+
   it("returns an empty string for no input", () => {
     assert.equal(cn(), "");
   });
