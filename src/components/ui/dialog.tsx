@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "../../lib/cn.ts";
 import { composeEventHandlers } from "../../lib/compose.ts";
-import { DismissableLayer } from "../../lib/dismissable-layer.tsx";
+import { DismissableLayer, useLayerState } from "../../lib/dismissable-layer.tsx";
 import { FocusScope } from "../../lib/focus-scope.tsx";
 import { Portal } from "../../lib/portal.tsx";
 import { Presence } from "../../lib/presence.tsx";
@@ -112,6 +112,9 @@ const DialogOverlay = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
         className={cn(
           "fixed inset-0 z-50 bg-black/50",
           "data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out",
+          // A dialog opened on top of this one covers it: step aside rather
+          // than stacking two dimmed backdrops.
+          "transition-opacity duration-200 ease-out-strong data-[covered=true]:opacity-0",
           className,
         )}
         {...props}
@@ -129,16 +132,88 @@ export interface DialogContentProps extends React.ComponentPropsWithoutRef<"div"
   onInteractOutside?: ((event: PointerEvent | FocusEvent) => void) | undefined;
 }
 
+interface DialogSurfaceProps extends DialogContentProps {
+  state: string | undefined;
+}
+
+/** The overlay and the dialog box, both aware of whether they are covered. */
+const DialogSurface = React.forwardRef<HTMLDivElement, DialogSurfaceProps>(function DialogSurface(
+  { className, children, showCloseButton = true, state, ...props },
+  ref,
+) {
+  const { modal, contentId, titleId, descriptionId } = useDialogContext("DialogContent");
+  const { isTopmost } = useLayerState();
+  const covered = !isTopmost;
+
+  return (
+    <>
+      <DialogOverlay data-state={state} data-covered={covered ? "true" : undefined} />
+      <FocusScope
+        ref={ref}
+        id={contentId}
+        role="dialog"
+        aria-modal={modal}
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        data-slot="dialog-content"
+        data-state={state}
+        data-covered={covered ? "true" : undefined}
+        // A covered dialog is out of reach: no focus trap, and hidden from
+        // assistive technology until it comes back to the front.
+        trapped={isTopmost}
+        inert={covered}
+        className={cn(
+          "pointer-events-auto fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)]",
+          "-translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-6 shadow-lg",
+          "sm:max-w-lg",
+          // Long content scrolls inside the dialog rather than running off
+          // the screen where it cannot be reached.
+          "max-h-[calc(100dvh-2rem)] overflow-y-auto",
+          "data-[state=open]:animate-content-in data-[state=closed]:animate-content-out",
+          // Recede when another dialog opens on top, come back when it closes.
+          "transition-[opacity,scale] duration-200 ease-out-strong",
+          "data-[covered=true]:scale-95 data-[covered=true]:opacity-0",
+          "data-[covered=true]:pointer-events-none",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {showCloseButton ? (
+          <DialogClose
+            data-slot="dialog-close"
+            aria-label="Close"
+            className={cn(
+              "absolute right-4 top-4 cursor-pointer rounded-xs opacity-70 transition-opacity",
+              "hover:opacity-100 focus-visible:outline-none focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50 disabled:pointer-events-none",
+            )}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="size-4"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </DialogClose>
+        ) : null}
+      </FocusScope>
+    </>
+  );
+});
+
 /** Rendered by DialogContent once Presence has decided it should be on screen. */
 const DialogContentImpl = React.forwardRef<
   HTMLDivElement,
   DialogContentProps & { "data-state"?: string }
 >(function DialogContentImpl(
   {
-    className,
-    children,
     container,
-    showCloseButton = true,
     onEscapeKeyDown,
     onPointerDownOutside,
     onInteractOutside,
@@ -147,8 +222,7 @@ const DialogContentImpl = React.forwardRef<
   },
   ref,
 ) {
-  const { open, setOpen, modal, contentId, titleId, descriptionId } =
-    useDialogContext("DialogContent");
+  const { setOpen, modal } = useDialogContext("DialogContent");
 
   // Keyed on being mounted, not on `open`: Presence keeps this component alive
   // through the exit animation, and releasing the lock early brings the
@@ -157,7 +231,6 @@ const DialogContentImpl = React.forwardRef<
 
   return (
     <Portal container={container} data-slot="dialog-portal">
-      <DialogOverlay data-state={state} />
       {/* display:contents keeps this listener out of the layout. */}
       <DismissableLayer
         style={{ display: "contents" }}
@@ -167,52 +240,7 @@ const DialogContentImpl = React.forwardRef<
         onInteractOutside={onInteractOutside}
         onDismiss={() => setOpen(false)}
       >
-        <FocusScope
-          ref={ref}
-          id={contentId}
-          role="dialog"
-          aria-modal={modal}
-          aria-labelledby={titleId}
-          aria-describedby={descriptionId}
-          data-slot="dialog-content"
-          data-state={state}
-          className={cn(
-            "pointer-events-auto fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)]",
-            "-translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-6 shadow-lg",
-            "sm:max-w-lg",
-            // Long content scrolls inside the dialog rather than running off
-            // the screen where it cannot be reached.
-            "max-h-[calc(100dvh-2rem)] overflow-y-auto",
-            "data-[state=open]:animate-content-in data-[state=closed]:animate-content-out",
-            className,
-          )}
-          {...props}
-        >
-          {children}
-          {showCloseButton ? (
-            <DialogClose
-              data-slot="dialog-close"
-              aria-label="Close"
-              className={cn(
-                "absolute right-4 top-4 cursor-pointer rounded-xs opacity-70 transition-opacity",
-                "hover:opacity-100 focus-visible:outline-none focus-visible:ring-[3px]",
-                "focus-visible:ring-ring/50 disabled:pointer-events-none",
-              )}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                className="size-4"
-                aria-hidden="true"
-              >
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
-            </DialogClose>
-          ) : null}
-        </FocusScope>
+        <DialogSurface ref={ref} state={state} {...props} />
       </DismissableLayer>
     </Portal>
   );

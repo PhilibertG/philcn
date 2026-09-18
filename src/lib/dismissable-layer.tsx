@@ -13,6 +13,42 @@ const layers: HTMLElement[] = [];
 const blockingLayers = new Set<HTMLElement>();
 let restoreBodyPointerEvents: (() => void) | null = null;
 
+/* The stack is shared module state, so React learns about changes through a
+   subscription rather than a re-render of a common parent. */
+const subscribers = new Set<() => void>();
+let stackVersion = 0;
+
+function subscribeToStack(listener: () => void): () => void {
+  subscribers.add(listener);
+  return () => {
+    subscribers.delete(listener);
+  };
+}
+
+function getStackVersion(): number {
+  return stackVersion;
+}
+
+function notifyStackChanged(): void {
+  stackVersion += 1;
+  for (const listener of subscribers) listener();
+}
+
+interface LayerState {
+  /** False when another layer has opened on top of this one. */
+  isTopmost: boolean;
+}
+
+const LayerContext = React.createContext<LayerState>({ isTopmost: true });
+
+/**
+ * Tells a layer's content whether it is still the one on top. A dialog that
+ * is no longer topmost stays open and mounted, but can step out of the way.
+ */
+export function useLayerState(): LayerState {
+  return React.useContext(LayerContext);
+}
+
 export interface DismissableLayerProps extends React.ComponentPropsWithoutRef<"div"> {
   /** Makes everything behind this layer unclickable. Modal dialogs use this. */
   disableOutsidePointerEvents?: boolean | undefined;
@@ -46,6 +82,18 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
   ) {
     const [node, setNode] = React.useState<HTMLDivElement | null>(null);
 
+    const version = React.useSyncExternalStore(
+      subscribeToStack,
+      getStackVersion,
+      getStackVersion,
+    );
+    const layerState = React.useMemo<LayerState>(
+      () => ({ isTopmost: node === null || layers[layers.length - 1] === node }),
+      // `version` is the signal that the stack changed.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [node, version],
+    );
+
     const handleEscapeKeyDown = useCallbackRef(onEscapeKeyDown);
     const handlePointerDownOutside = useCallbackRef(onPointerDownOutside);
     const handleFocusOutside = useCallbackRef(onFocusOutside);
@@ -58,6 +106,7 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
 
       layers.push(node);
       if (disableOutsidePointerEvents) blockingLayers.add(node);
+      notifyStackChanged();
 
       if (blockingLayers.size > 0 && restoreBodyPointerEvents === null) {
         const body = document.body;
@@ -72,6 +121,7 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
         const index = layers.indexOf(node);
         if (index !== -1) layers.splice(index, 1);
         blockingLayers.delete(node);
+        notifyStackChanged();
 
         if (blockingLayers.size === 0 && restoreBodyPointerEvents !== null) {
           restoreBodyPointerEvents();
@@ -131,13 +181,16 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
     ]);
 
     return (
-      <div
-        ref={composeRefs<HTMLDivElement>(forwardedRef, setNode)}
-        data-slot="dismissable-layer"
-        // The page behind is made unclickable; this layer must stay clickable.
-        style={{ pointerEvents: blockingLayers.size > 0 ? "auto" : undefined, ...style }}
-        {...props}
-      />
+      <LayerContext.Provider value={layerState}>
+        <div
+          ref={composeRefs<HTMLDivElement>(forwardedRef, setNode)}
+          data-slot="dismissable-layer"
+          data-topmost={layerState.isTopmost ? "true" : "false"}
+          // The page behind is made unclickable; this layer must stay clickable.
+          style={{ pointerEvents: blockingLayers.size > 0 ? "auto" : undefined, ...style }}
+          {...props}
+        />
+      </LayerContext.Provider>
     );
   },
 );

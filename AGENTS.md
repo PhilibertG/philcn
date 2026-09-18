@@ -118,6 +118,11 @@ uniquement ceux-là. Toute autre différence est un bug.
   saute pendant que l'anneau apparaît en fondu.
 - **Image d'avatar en fondu** : elle remplace les initiales en 200 ms au lieu
   d'apparaître d'un coup.
+- **Dialogues empilés** (demandé par Phil le 18/09/2026) : quand un dialogue
+  s'ouvre par-dessus un autre, celui du dessous reste ouvert mais s'efface —
+  fondu et léger retrait — et revient quand celui du dessus se ferme. Il est
+  aussi rendu inerte : pas de piège à focus, invisible aux lecteurs d'écran
+  tant qu'il est couvert. shadcn les empile visuellement.
 - **Dialogue à défilement interne** : un dialogue plus haut que l'écran
   défile en lui-même (`max-h-[calc(100dvh-2rem)] overflow-y-auto`). Chez
   shadcn il déborde et le bas devient inatteignable.

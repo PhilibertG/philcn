@@ -141,18 +141,18 @@
      stays fully visible until React unmounts it — a flash of the dialog
      reappearing just after it closed. `both` on an entrance holds the start
      frame until the animation begins, avoiding the mirror-image flash. */
-  --animate-fade-in: philcn-fade-in 200ms var(--ease-out-strong) both;
-  --animate-overlay-in: philcn-fade-in 150ms var(--ease-out-strong) both;
+  --animate-fade-in: philcn-fade-in 200ms var(--ease-out-strong) backwards;
+  --animate-overlay-in: philcn-fade-in 150ms var(--ease-out-strong) backwards;
   --animate-overlay-out: philcn-fade-out 150ms var(--ease-out-strong) forwards;
-  --animate-content-in: philcn-content-in 200ms var(--ease-out-strong) both;
+  --animate-content-in: philcn-content-in 200ms var(--ease-out-strong) backwards;
   --animate-content-out: philcn-content-out 150ms var(--ease-out-strong) forwards;
-  --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) both;
+  --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) backwards;
   --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer) forwards;
-  --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) both;
+  --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) backwards;
   --animate-slide-out-bottom: philcn-slide-out-bottom 250ms var(--ease-drawer) forwards;
-  --animate-slide-in-left: philcn-slide-in-left 300ms var(--ease-drawer) both;
+  --animate-slide-in-left: philcn-slide-in-left 300ms var(--ease-drawer) backwards;
   --animate-slide-out-left: philcn-slide-out-left 250ms var(--ease-drawer) forwards;
-  --animate-slide-in-right: philcn-slide-in-right 300ms var(--ease-drawer) both;
+  --animate-slide-in-right: philcn-slide-in-right 300ms var(--ease-drawer) backwards;
   --animate-slide-out-right: philcn-slide-out-right 250ms var(--ease-drawer) forwards;
 }
 
@@ -221,7 +221,7 @@
     animation-name: philcn-fade-in;
     animation-duration: 120ms;
     animation-timing-function: var(--ease-out-strong);
-    animation-fill-mode: both;
+    animation-fill-mode: backwards;
   }
 
   [data-slot="dialog-overlay"][data-state="closed"],
