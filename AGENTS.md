@@ -118,6 +118,10 @@ uniquement ceux-là. Toute autre différence est un bug.
   saute pendant que l'anneau apparaît en fondu.
 - **Image d'avatar en fondu** : elle remplace les initiales en 200 ms au lieu
   d'apparaître d'un coup.
+- **Drawer sans mise à l'échelle du fond** : `vaul` réduit légèrement la
+  page derrière le tiroir. Pas reproduit — ça demande de transformer un
+  conteneur autour de toute l'application, trop intrusif pour une
+  bibliothèque qu'on copie dans un projet existant.
 - **Dialogues empilés** (demandé par Phil le 18/09/2026) : quand un dialogue
   s'ouvre par-dessus un autre, celui du dessous reste ouvert mais s'efface —
   fondu et léger retrait — et revient quand celui du dessus se ferme. Il est
@@ -176,8 +180,11 @@ uniquement ceux-là. Toute autre différence est un bug.
   TERMINÉS.** Les trois reposent sur une brique commune, `Overlay`
   (`src/lib/overlay.tsx`) : portail, fond assombri, piège à focus, Échap, clic
   extérieur, page figée, sortie animée. Une correction faite là profite aux
-  trois. **Reste le Drawer** : shadcn s'appuie sur `vaul`, interdit ici, donc
-  le glisser-pour-fermer est à écrire à la main.
+  trois. **Drawer inclus** : shadcn s'appuie sur `vaul`, interdit ici, donc le
+  glisser-pour-fermer est écrit à la main (`src/lib/drag-dismiss.ts` pour les
+  règles, testé unitairement ; `use-drag-dismiss.ts` pour le branchement au
+  doigt). Le panneau suit le doigt, résiste quand on le tire trop ouvert, et
+  se ferme sur un geste rapide ou passé le quart de sa taille.
 - **Phase 4 — Positionnement flottant** : Popover, DropdownMenu, Tooltip,
   Select, Combobox, ContextMenu, HoverCard. Un moteur de positionnement
   externe est autorisé (voir la règle sur les dépendances), ce qui allège
@@ -205,6 +212,11 @@ uniquement ceux-là. Toute autre différence est un bug.
   jamais (onglet en arrière-plan, animation interrompue), un minuteur
   démonte quand même l'élément. Sans ça il restait à l'écran pour toujours,
   bug constaté pendant les essais.
-- **Phase 3 en cours** : Dialog, AlertDialog et Sheet livrés et vérifiés.
-  Prochaine étape : le Drawer (glisser-pour-fermer maison), en attente du
-  feu vert.
+- **Phase 3 terminée** le 18/09/2026 : Dialog, AlertDialog, Sheet et Drawer,
+  81 tests au vert, zéro dépendance de production.
+- **Non testé par moi** : le geste au doigt sur un vrai écran tactile. Mon
+  navigateur d'inspection ne simule que des événements, et il y gèle les
+  animations comme les transitions. La fluidité et le ressenti du glissement
+  doivent être jugés par Phil sur son téléphone.
+- Prochaine étape : Phase 4 (positionnement flottant : Popover, DropdownMenu,
+  Tooltip, Select, Combobox, ContextMenu, HoverCard), en attente du feu vert.
