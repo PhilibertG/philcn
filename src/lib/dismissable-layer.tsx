@@ -49,6 +49,9 @@ export function useLayerState(): LayerState {
   return React.useContext(LayerContext);
 }
 
+/** Why a layer was asked to close. Lets an owner accept some routes and not others. */
+export type DismissReason = "escape" | "outside";
+
 export interface DismissableLayerProps extends React.ComponentPropsWithoutRef<"div"> {
   /** Makes everything behind this layer unclickable. Modal dialogs use this. */
   disableOutsidePointerEvents?: boolean | undefined;
@@ -58,7 +61,7 @@ export interface DismissableLayerProps extends React.ComponentPropsWithoutRef<"d
   /** Called for either kind of outside interaction. */
   onInteractOutside?: ((event: PointerEvent | FocusEvent) => void) | undefined;
   /** Called when the layer should close, unless a handler above prevented it. */
-  onDismiss?: (() => void) | undefined;
+  onDismiss?: ((reason: DismissReason) => void) | undefined;
 }
 
 /**
@@ -82,17 +85,26 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
   ) {
     const [node, setNode] = React.useState<HTMLDivElement | null>(null);
 
+    // Stable identity: see the note in focus-scope.tsx.
+    const setRef = React.useMemo(
+      () => composeRefs<HTMLDivElement>(forwardedRef, setNode),
+      [forwardedRef],
+    );
+
     const version = React.useSyncExternalStore(
       subscribeToStack,
       getStackVersion,
       getStackVersion,
     );
-    const layerState = React.useMemo<LayerState>(
-      () => ({ isTopmost: node === null || layers[layers.length - 1] === node }),
+    const layerState = React.useMemo<LayerState>(() => {
+      // A layer that is not in the stack yet — first render, or the gap while
+      // React remounts the component — must not consider itself covered.
+      // Doing so would make it inert, and anything inside it unfocusable.
+      const index = node === null ? -1 : layers.indexOf(node);
+      return { isTopmost: index === -1 || index === layers.length - 1 };
       // `version` is the signal that the stack changed.
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [node, version],
-    );
+    }, [node, version]);
 
     const handleEscapeKeyDown = useCallbackRef(onEscapeKeyDown);
     const handlePointerDownOutside = useCallbackRef(onPointerDownOutside);
@@ -138,18 +150,24 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
       const onKeyDown = (event: KeyboardEvent) => {
         if (event.key !== "Escape" || !isTopmost()) return;
         handleEscapeKeyDown(event);
-        if (!event.defaultPrevented) handleDismiss();
+        if (!event.defaultPrevented) handleDismiss("escape");
       };
 
       const onPointerDown = (event: PointerEvent) => {
         const target = event.target;
-        if (!(target instanceof Node) || node.contains(target)) return;
+        if (!(target instanceof Element)) return;
+
+        // The dimmed backdrop lives inside the layer so it can follow its
+        // state, but a click on it means "outside".
+        const onBackdrop = target.closest("[data-layer-backdrop]") !== null;
+        if (!onBackdrop && node.contains(target)) return;
+
         // Only the layer on top reacts, so one click closes one layer.
         if (!isTopmost()) return;
 
         handlePointerDownOutside(event);
         handleInteractOutside(event);
-        if (!event.defaultPrevented) handleDismiss();
+        if (!event.defaultPrevented) handleDismiss("outside");
       };
 
       const onFocusIn = (event: FocusEvent) => {
@@ -183,7 +201,7 @@ const DismissableLayer = React.forwardRef<HTMLDivElement, DismissableLayerProps>
     return (
       <LayerContext.Provider value={layerState}>
         <div
-          ref={composeRefs<HTMLDivElement>(forwardedRef, setNode)}
+          ref={setRef}
           data-slot="dismissable-layer"
           data-topmost={layerState.isTopmost ? "true" : "false"}
           // The page behind is made unclickable; this layer must stay clickable.

@@ -28,6 +28,19 @@ function Presence({ present, children }: PresenceProps): React.ReactElement | nu
   const [node, setNode] = React.useState<HTMLElement | null>(null);
   const [isRendered, setIsRendered] = React.useState(present);
 
+  // Memoised per child ref: a fresh ref callback on every render would make
+  // React detach and re-attach the node, flipping `node` to null and back and
+  // restarting the effects below.
+  const refCache = React.useRef(new Map<unknown, (node: HTMLElement | null) => void>());
+  const setRef = React.useCallback((childRef: React.Ref<HTMLElement> | undefined) => {
+    const cache = refCache.current;
+    const existing = cache.get(childRef ?? null);
+    if (existing !== undefined) return existing;
+    const composed = composeRefs<HTMLElement>(setNode, childRef);
+    cache.set(childRef ?? null, composed);
+    return composed;
+  }, []);
+
   React.useEffect(() => {
     if (present) setIsRendered(true);
   }, [present]);
@@ -73,7 +86,7 @@ function Presence({ present, children }: PresenceProps): React.ReactElement | nu
 
   return React.cloneElement(child, {
     "data-state": present ? "open" : "closed",
-    ref: composeRefs<HTMLElement>(setNode, childRef),
+    ref: setRef(childRef),
   } as Partial<unknown> & React.Attributes);
 }
 

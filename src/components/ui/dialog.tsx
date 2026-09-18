@@ -2,14 +2,10 @@ import * as React from "react";
 
 import { cn } from "../../lib/cn.ts";
 import { composeEventHandlers } from "../../lib/compose.ts";
-import { DismissableLayer, useLayerState } from "../../lib/dismissable-layer.tsx";
-import { FocusScope } from "../../lib/focus-scope.tsx";
-import { Portal } from "../../lib/portal.tsx";
-import { Presence } from "../../lib/presence.tsx";
+import { Overlay } from "../../lib/overlay.tsx";
 import { Slot } from "../../lib/slot.tsx";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
 import { useId } from "../../lib/use-id.ts";
-import { useScrollLock } from "../../lib/use-scroll-lock.ts";
 
 interface DialogContextValue {
   open: boolean;
@@ -103,165 +99,87 @@ const DialogClose = React.forwardRef<HTMLButtonElement, DialogCloseProps>(functi
   return <button ref={ref} type="button" {...shared} />;
 });
 
-const DialogOverlay = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
-  function DialogOverlay({ className, ...props }, ref) {
-    return (
-      <div
-        ref={ref}
-        data-slot="dialog-overlay"
-        className={cn(
-          "fixed inset-0 z-50 bg-black/50",
-          "data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out",
-          // A dialog opened on top of this one covers it: step aside rather
-          // than stacking two dimmed backdrops.
-          "transition-opacity duration-200 ease-out-strong data-[covered=true]:opacity-0",
-          className,
-        )}
-        {...props}
-      />
-    );
-  },
-);
+/** The cross in the corner. */
+function DialogCloseIcon() {
+  return (
+    <DialogClose
+      aria-label="Close"
+      className={cn(
+        "absolute right-4 top-4 cursor-pointer rounded-xs opacity-70 transition-opacity",
+        "hover:opacity-100 focus-visible:outline-none focus-visible:ring-[3px]",
+        "focus-visible:ring-ring/50 disabled:pointer-events-none",
+      )}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        className="size-4"
+        aria-hidden="true"
+      >
+        <path d="M18 6 6 18M6 6l12 12" />
+      </svg>
+    </DialogClose>
+  );
+}
 
-export interface DialogContentProps extends React.ComponentPropsWithoutRef<"div"> {
+// `role` and `slot` are set by the dialog itself and must not be overridden.
+export interface DialogContentProps
+  extends Omit<React.ComponentPropsWithoutRef<"div">, "role" | "slot"> {
   /** Where the dialog is rendered. Defaults to `document.body`. */
   container?: Element | DocumentFragment | null | undefined;
   showCloseButton?: boolean | undefined;
+  overlayClassName?: string | undefined;
   onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined;
   onPointerDownOutside?: ((event: PointerEvent) => void) | undefined;
   onInteractOutside?: ((event: PointerEvent | FocusEvent) => void) | undefined;
 }
 
-interface DialogSurfaceProps extends DialogContentProps {
-  state: string | undefined;
-}
-
-/** The overlay and the dialog box, both aware of whether they are covered. */
-const DialogSurface = React.forwardRef<HTMLDivElement, DialogSurfaceProps>(function DialogSurface(
-  { className, children, showCloseButton = true, state, ...props },
-  ref,
-) {
-  const { modal, contentId, titleId, descriptionId } = useDialogContext("DialogContent");
-  const { isTopmost } = useLayerState();
-  const covered = !isTopmost;
-
-  return (
-    <>
-      <DialogOverlay data-state={state} data-covered={covered ? "true" : undefined} />
-      <FocusScope
-        ref={ref}
-        id={contentId}
-        role="dialog"
-        aria-modal={modal}
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-        data-slot="dialog-content"
-        data-state={state}
-        data-covered={covered ? "true" : undefined}
-        // A covered dialog is out of reach: no focus trap, and hidden from
-        // assistive technology until it comes back to the front.
-        trapped={isTopmost}
-        inert={covered}
-        className={cn(
-          "pointer-events-auto fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)]",
-          "-translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-6 shadow-lg",
-          "sm:max-w-lg",
-          // Long content scrolls inside the dialog rather than running off
-          // the screen where it cannot be reached.
-          "max-h-[calc(100dvh-2rem)] overflow-y-auto",
-          "data-[state=open]:animate-content-in data-[state=closed]:animate-content-out",
-          // Recede when another dialog opens on top, come back when it closes.
-          "transition-[opacity,scale] duration-200 ease-out-strong",
-          "data-[covered=true]:scale-95 data-[covered=true]:opacity-0",
-          "data-[covered=true]:pointer-events-none",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-        {showCloseButton ? (
-          <DialogClose
-            data-slot="dialog-close"
-            aria-label="Close"
-            className={cn(
-              "absolute right-4 top-4 cursor-pointer rounded-xs opacity-70 transition-opacity",
-              "hover:opacity-100 focus-visible:outline-none focus-visible:ring-[3px]",
-              "focus-visible:ring-ring/50 disabled:pointer-events-none",
-            )}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              className="size-4"
-              aria-hidden="true"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          </DialogClose>
-        ) : null}
-      </FocusScope>
-    </>
-  );
-});
-
-/** Rendered by DialogContent once Presence has decided it should be on screen. */
-const DialogContentImpl = React.forwardRef<
-  HTMLDivElement,
-  DialogContentProps & { "data-state"?: string }
->(function DialogContentImpl(
-  {
-    container,
-    onEscapeKeyDown,
-    onPointerDownOutside,
-    onInteractOutside,
-    "data-state": state,
-    ...props
-  },
-  ref,
-) {
-  const { setOpen, modal } = useDialogContext("DialogContent");
-
-  // Keyed on being mounted, not on `open`: Presence keeps this component alive
-  // through the exit animation, and releasing the lock early brings the
-  // scrollbar back mid-animation, shifting the page sideways.
-  useScrollLock(modal);
-
-  return (
-    <Portal container={container} data-slot="dialog-portal">
-      {/* display:contents keeps this listener out of the layout. */}
-      <DismissableLayer
-        style={{ display: "contents" }}
-        disableOutsidePointerEvents={modal}
-        onEscapeKeyDown={onEscapeKeyDown}
-        onPointerDownOutside={onPointerDownOutside}
-        onInteractOutside={onInteractOutside}
-        onDismiss={() => setOpen(false)}
-      >
-        <DialogSurface ref={ref} state={state} {...props} />
-      </DismissableLayer>
-    </Portal>
-  );
-});
-
 const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent(
-  props,
+  { className, children, showCloseButton = true, ...props },
   ref,
 ) {
-  const { open } = useDialogContext("DialogContent");
+  const { open, setOpen, modal, contentId, titleId, descriptionId } =
+    useDialogContext("DialogContent");
 
   return (
-    <Presence present={open}>
-      <DialogContentImpl ref={ref} {...props} />
-    </Presence>
+    <Overlay
+      ref={ref}
+      id={contentId}
+      slot="dialog"
+      role="dialog"
+      present={open}
+      modal={modal}
+      labelledBy={titleId}
+      describedBy={descriptionId}
+      onDismiss={() => setOpen(false)}
+      className={cn(
+        "left-1/2 top-1/2 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2",
+        "gap-4 rounded-lg border bg-background p-6 shadow-lg sm:max-w-lg",
+        // Long content scrolls inside the dialog rather than running off the
+        // screen where it cannot be reached.
+        "max-h-[calc(100dvh-2rem)] overflow-y-auto",
+        "data-[state=open]:animate-content-in data-[state=closed]:animate-content-out",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      {showCloseButton ? <DialogCloseIcon /> : null}
+    </Overlay>
   );
 });
 
 /** Kept for API compatibility: the portal is already inside DialogContent. */
 function DialogPortal({ children }: { children?: React.ReactNode }) {
   return <>{children}</>;
+}
+
+/** Kept for API compatibility: the backdrop is already inside DialogContent. */
+function DialogOverlay(_props: React.ComponentPropsWithoutRef<"div">) {
+  return null;
 }
 
 function DialogHeader({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {

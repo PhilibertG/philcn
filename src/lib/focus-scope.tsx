@@ -25,6 +25,15 @@ const FocusScope = React.forwardRef<HTMLDivElement, FocusScopeProps>(function Fo
 ) {
   const [node, setNode] = React.useState<HTMLDivElement | null>(null);
 
+  // Memoised on purpose. A fresh ref callback on every render makes React
+  // detach the old one with null and re-attach the new one, so `node` flips
+  // to null and back. That re-runs the effects below, and the auto-focus
+  // cleanup hands focus back to the page a moment after taking it.
+  const setRef = React.useMemo(
+    () => composeRefs<HTMLDivElement>(forwardedRef, setNode),
+    [forwardedRef],
+  );
+
   const handleMountAutoFocus = useCallbackRef(onMountAutoFocus);
   const handleUnmountAutoFocus = useCallbackRef(onUnmountAutoFocus);
 
@@ -36,14 +45,28 @@ const FocusScope = React.forwardRef<HTMLDivElement, FocusScopeProps>(function Fo
     const mountEvent = new CustomEvent("focusScope.autoFocusOnMount", { cancelable: true });
     handleMountAutoFocus(mountEvent);
 
+    let retry: number | undefined;
+
     if (!mountEvent.defaultPrevented) {
       const [first] = getFocusableElements(node);
       // Nothing focusable inside: focus the box itself so the keyboard has a
       // starting point and a screen reader announces the dialog.
-      (first ?? node).focus({ preventScroll: true });
+      const target = first ?? node;
+
+      const take = () => target.focus({ preventScroll: true });
+      take();
+
+      // focus() fails silently when the element is momentarily unreachable —
+      // still being inserted, or inside a subtree another layer has just made
+      // inert. One more attempt on the next task settles it.
+      if (document.activeElement !== target) {
+        retry = window.setTimeout(take, 0);
+      }
     }
 
     return () => {
+      if (retry !== undefined) window.clearTimeout(retry);
+
       const unmountEvent = new CustomEvent("focusScope.autoFocusOnUnmount", { cancelable: true });
       handleUnmountAutoFocus(unmountEvent);
 
@@ -102,7 +125,7 @@ const FocusScope = React.forwardRef<HTMLDivElement, FocusScopeProps>(function Fo
 
   return (
     <div
-      ref={composeRefs<HTMLDivElement>(forwardedRef, setNode)}
+      ref={setRef}
       data-slot="focus-scope"
       tabIndex={tabIndex ?? -1}
       {...props}
