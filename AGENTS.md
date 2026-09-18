@@ -106,9 +106,16 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
   button` écrit le fichier directement dans le projet de l'utilisateur.
   philcn n'est pas un paquet à installer — c'est du code qui devient le tien.
 - **Tailwind CSS** est autorisé et utilisé pour les styles.
-- **Dépendances** : aucune bibliothèque fournissant un composant fini. Un
-  petit utilitaire sans interface (ex. un calculateur de position) peut être
-  accepté au cas par cas, et je dois pouvoir le justifier face à l'école.
+- **Dépendances — corrigé le 18/09/2026 par Phil.** Le fait que philcn ait
+  des dépendances n'enlève rien au droit d'utiliser philcn dans les projets
+  d'école : la règle de l'école vise les bibliothèques qui livrent des
+  widgets et des dashboards tout faits, pas l'outillage interne de philcn.
+  - **Autorisé** : les petits utilitaires sans interface — assemblage de
+    classes CSS, déclinaisons de composants, calcul de position d'un menu
+    flottant. Je ne dois pas me l'interdire par excès de prudence.
+  - **Interdit** : toute bibliothèque livrant des composants d'interface
+    finis, même sans style (shadcn, Radix, Headless UI, NuxtUI, MUI…).
+  - En cas de doute sur un paquet, je demande avant de l'ajouter.
 - **Pas de fichier LICENSE shadcn, pas d'attribution shadcn** : le code est
   original, donc rien n'est dû. En mettre une reviendrait à déclarer par
   écrit qu'on a utilisé leur code, ce qui serait faux.
@@ -131,8 +138,10 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
 - **Phase 2 — Briques de base** : composition, portails, apparition/
   disparition, état contrôlé.
 - **Phase 3 — Fenêtres superposées** : Dialog, AlertDialog, Sheet, Drawer.
-- **Phase 4 — Moteur de positionnement** (le plus lourd) : Popover,
-  DropdownMenu, Tooltip, Select, Combobox, ContextMenu, HoverCard.
+- **Phase 4 — Positionnement flottant** : Popover, DropdownMenu, Tooltip,
+  Select, Combobox, ContextMenu, HoverCard. Un moteur de positionnement
+  externe est autorisé (voir la règle sur les dépendances), ce qui allège
+  nettement cette phase.
 - **Phase 5 — Navigation clavier** : Tabs, Accordion, RadioGroup,
   ToggleGroup, NavigationMenu, Menubar.
 - **Phase 6 — Formulaires et CLI** : Checkbox, Switch, Slider, Form,
@@ -142,5 +151,8 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
 - **18 septembre 2026** — Phase 0 terminée. Jetons de couleur clair/sombre,
   `cn()` et `variants()` écrits de zéro, 33 tests au vert, aucune dépendance
   de production. Phase 1 (les 18 composants simples) en attente du feu vert.
-- Points encore ouverts : dépôt public ou privé ; faut-il garder `CLAUDE.md`
-  dans le dépôt ; nom du détenteur du copyright pour le fichier LICENSE.
+- **Dépôt** : `git@github.com:PhilibertG/philcn.git`, **privé**. Les 4
+  commits de la Phase 0 sont poussés sur `main`.
+- Points encore ouverts : faut-il garder `CLAUDE.md` dans le dépôt ; nom du
+  détenteur du copyright pour le fichier LICENSE ; garder `cn()` et
+  `variants()` maison ou passer aux bibliothèques existantes.
