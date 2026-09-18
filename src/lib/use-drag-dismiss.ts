@@ -76,6 +76,8 @@ export interface UseDragDismissResult extends DragDismissState {
   };
   /** Call when the exit transition has finished. */
   finishDismiss: () => void;
+  /** Call once the panel has been removed, to clear the gesture. */
+  reset: () => void;
 }
 
 /** Matches the transition declared on the drawer content. */
@@ -223,10 +225,22 @@ export function useDragDismiss({
     [direction, readPosition],
   );
 
+  /**
+   * Ends the gesture by telling the owner to close.
+   *
+   * The offset is deliberately left in place. The panel has already travelled
+   * out of view, so clearing it here would snap it back to its resting place
+   * for the frame before it unmounts — it would look as though the panel
+   * reappeared, then left a second time.
+   */
   const finishDismiss = React.useCallback(() => {
-    setState((current) => (current.isDismissing ? REST : current));
     handleDismiss();
   }, [handleDismiss]);
+
+  /** Clears the gesture once the panel is gone, ready for the next opening. */
+  const reset = React.useCallback(() => {
+    setState((current) => (current === REST ? current : REST));
+  }, []);
 
   /**
    * The exit is normally ended by the transition reporting that it finished.
@@ -243,6 +257,7 @@ export function useDragDismiss({
   return {
     ...state,
     finishDismiss,
+    reset,
     handlers: {
       onPointerDown,
       onPointerMove,

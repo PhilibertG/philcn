@@ -200,6 +200,13 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(funct
     onDismiss: () => setOpen(false),
   });
 
+  // The gesture keeps its final offset until the panel is actually gone, so
+  // it never flashes back into place. Clear it once that has happened.
+  const { reset } = drag;
+  React.useEffect(() => {
+    if (!open) reset();
+  }, [open, reset]);
+
   const moving = drag.isDragging || drag.isDismissing;
   const dragState = drag.isDragging ? "dragging" : drag.isDismissing ? "dismissing" : undefined;
   const withHandle = showHandle ?? draggable;
