@@ -150,7 +150,10 @@ const DialogContentImpl = React.forwardRef<
   const { open, setOpen, modal, contentId, titleId, descriptionId } =
     useDialogContext("DialogContent");
 
-  useScrollLock(modal && open);
+  // Keyed on being mounted, not on `open`: Presence keeps this component alive
+  // through the exit animation, and releasing the lock early brings the
+  // scrollbar back mid-animation, shifting the page sideways.
+  useScrollLock(modal);
 
   return (
     <Portal container={container} data-slot="dialog-portal">
