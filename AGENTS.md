@@ -172,7 +172,12 @@ uniquement ceux-là. Toute autre différence est un bug.
   `composeEventHandlers`, `mergeProps` (extraits de `Slot`), `Portal`,
   `Presence`, `useControllableState`, `useCallbackRef`, `useId`,
   `useIsomorphicLayoutEffect`.
-- **Phase 3 — Fenêtres superposées** : Dialog, AlertDialog, Sheet, Drawer.
+- **Phase 3 — Fenêtres superposées : Dialog, AlertDialog et Sheet
+  TERMINÉS.** Les trois reposent sur une brique commune, `Overlay`
+  (`src/lib/overlay.tsx`) : portail, fond assombri, piège à focus, Échap, clic
+  extérieur, page figée, sortie animée. Une correction faite là profite aux
+  trois. **Reste le Drawer** : shadcn s'appuie sur `vaul`, interdit ici, donc
+  le glisser-pour-fermer est à écrire à la main.
 - **Phase 4 — Positionnement flottant** : Popover, DropdownMenu, Tooltip,
   Select, Combobox, ContextMenu, HoverCard. Un moteur de positionnement
   externe est autorisé (voir la règle sur les dépendances), ce qui allège
@@ -200,5 +205,6 @@ uniquement ceux-là. Toute autre différence est un bug.
   jamais (onglet en arrière-plan, animation interrompue), un minuteur
   démonte quand même l'élément. Sans ça il restait à l'écran pour toujours,
   bug constaté pendant les essais.
-- Prochaine étape : Phase 3 (fenêtres superposées : Dialog, AlertDialog,
-  Sheet, Drawer), en attente du feu vert.
+- **Phase 3 en cours** : Dialog, AlertDialog et Sheet livrés et vérifiés.
+  Prochaine étape : le Drawer (glisser-pour-fermer maison), en attente du
+  feu vert.
