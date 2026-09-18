@@ -8,3 +8,9 @@ build/
 !.env.example
 npm-debug.log*
 .npmrc
+
+# Local demo app — not part of what philcn delivers
+playground/
+
+# Local tooling config pointing at the gitignored playground
+.claude/
