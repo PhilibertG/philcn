@@ -115,6 +115,119 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * Overlay animations
+ *
+ * shadcn pulls these from the tw-animate-css plugin. They are defined here
+ * instead, so philcn needs no extra package and the timings stay editable.
+ * Each one becomes a Tailwind utility: --animate-overlay-in -> animate-overlay-in
+ * ------------------------------------------------------------------------ */
+
+/* Easing tokens. Not `inline`, so they reach :root and the animation tokens
+   below can reference them. The built-in ease-out is too weak for motion that
+   is meant to be noticed. */
+@theme {
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@theme inline {
+  /* Entering and leaving both use ease-out: ease-in starts slow, right when
+     the eye is watching. */
+  --animate-fade-in: philcn-fade-in 200ms var(--ease-out-strong);
+  --animate-overlay-in: philcn-fade-in 150ms var(--ease-out-strong);
+  --animate-overlay-out: philcn-fade-out 150ms var(--ease-out-strong);
+  --animate-content-in: philcn-content-in 200ms var(--ease-out-strong);
+  --animate-content-out: philcn-content-out 150ms var(--ease-out-strong);
+  --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer);
+  --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer);
+  --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer);
+  --animate-slide-out-bottom: philcn-slide-out-bottom 250ms var(--ease-drawer);
+  --animate-slide-in-left: philcn-slide-in-left 300ms var(--ease-drawer);
+  --animate-slide-out-left: philcn-slide-out-left 250ms var(--ease-drawer);
+  --animate-slide-in-right: philcn-slide-in-right 300ms var(--ease-drawer);
+  --animate-slide-out-right: philcn-slide-out-right 250ms var(--ease-drawer);
+}
+
+@keyframes philcn-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes philcn-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* The dialog is centred with a -50%/-50% translate, so the keyframes must
+   carry that translate too or it would jump on open. */
+@keyframes philcn-content-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes philcn-content-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+}
+
+@keyframes philcn-slide-in-top {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+@keyframes philcn-slide-out-top {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+@keyframes philcn-slide-in-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes philcn-slide-out-bottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+@keyframes philcn-slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes philcn-slide-out-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+@keyframes philcn-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes philcn-slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+/* Reduced motion means less movement, not none. The fade stays — it explains
+   that something appeared — while every translate and scale is dropped.
+   Presence still reads a real duration, so unmounting keeps working. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="sheet-content"] {
+    animation-name: philcn-fade-in;
+    animation-duration: 120ms;
+    animation-timing-function: var(--ease-out-strong);
+  }
+
+  [data-slot="dialog-overlay"][data-state="closed"],
+  [data-slot="dialog-content"][data-state="closed"],
+  [data-slot="sheet-content"][data-state="closed"] {
+    animation-name: philcn-fade-out;
+  }
+
+  /* Tailwind v4 presses the button with the `scale` property, not `transform`. */
+  [data-slot="button"]:active {
+    scale: none;
+    transform: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
