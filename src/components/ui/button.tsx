@@ -8,6 +8,8 @@ const buttonVariants = variants(
   [
     // layout
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
+    // deliberate divergence from shadcn: buttons show a pointer cursor
+    "cursor-pointer",
     "rounded-md text-sm font-medium transition-all",
     // icons sized and inert unless the caller says otherwise
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -61,16 +63,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { className, variant, size, asChild = false, ...props },
   ref,
 ) {
-  const Component = asChild ? Slot : "button";
+  const classes = cn(buttonVariants({ variant, size }), className);
 
-  return (
-    <Component
-      ref={ref as React.Ref<HTMLButtonElement & HTMLElement>}
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size }), className)}
-      {...props}
-    />
-  );
+  if (asChild) {
+    return <Slot ref={ref as React.Ref<HTMLElement>} data-slot="button" className={classes} {...props} />;
+  }
+
+  return <button ref={ref} data-slot="button" className={classes} {...props} />;
 });
 
 export { Button, buttonVariants };

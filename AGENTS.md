@@ -101,6 +101,16 @@ Si l'une de ces règles est violée, prévenir Phil immédiatement.
    de focus visible.
 6. **Aucun composant livré sans que j'aie dit quoi tester à la main.**
 
+## Divergences assumées avec shadcn
+La règle « rendu visuel identique » admet les écarts listés ici, et
+uniquement ceux-là. Toute autre différence est un bug.
+- **Curseur sur les éléments cliquables** (demandé par Phil le 18/09/2026) :
+  les boutons portent `cursor-pointer`. Tailwind v4 a retiré ce curseur par
+  défaut et shadcn ne le remet pas ; nous si. S'applique aux boutons et à
+  tout futur composant cliquable (éléments de menu, onglets, déclencheurs).
+  Sans effet sur un bouton désactivé, qui ne reçoit plus les événements de
+  souris.
+
 ## Conventions et décisions prises
 - **Distribution : modèle CLI + registre**, comme shadcn. `npx philcn add
   button` écrit le fichier directement dans le projet de l'utilisateur.
