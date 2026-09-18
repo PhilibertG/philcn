@@ -142,9 +142,12 @@ uniquement ceux-là. Toute autre différence est un bug.
 ## Feuille de route
 - **Phase 0 — Fondations** : outils de style maison, jetons de couleur
   clair/sombre, configuration TypeScript et Tailwind.
-- **Phase 1 — Composants simples** (~18) : Button, Input, Textarea, Label,
-  Card, Badge, Alert, Table, Skeleton, Separator, Avatar, Progress,
-  Breadcrumb, Kbd, Aspect Ratio, Typography, Spinner, Empty State.
+- **Phase 1 — Composants simples : TERMINÉE**, 17 composants livrés.
+  Button, Input, Textarea, Label, Card, Badge, Alert, Table, Skeleton,
+  Separator, Avatar, Progress, Breadcrumb, Kbd, AspectRatio, Spinner, Empty.
+  `Typography` a été retiré de la liste : shadcn n'a pas de composant de ce
+  nom, seulement une page de documentation. En livrer un serait une
+  divergence non listée.
 - **Phase 2 — Briques de base** : composition, portails, apparition/
   disparition, état contrôlé.
 - **Phase 3 — Fenêtres superposées** : Dialog, AlertDialog, Sheet, Drawer.
@@ -167,4 +170,8 @@ uniquement ceux-là. Toute autre différence est un bug.
   ça évite toute installation de paquet dans les projets qui utilisent
   philcn. `CLAUDE.md` **reste** dans le dépôt. Licence **MIT**, au nom de
   **Philibert Gentien**.
-- Prochaine étape : Phase 1, en attente du feu vert.
+- **Phase 1 terminée** le 18/09/2026 : 17 composants, thème clair et sombre
+  vérifiés, accessibilité vérifiée (attributs ARIA, anneaux de focus,
+  textes pour lecteurs d'écran). Aucune dépendance de production.
+- Prochaine étape : Phase 2 (briques de base : portails, apparition/
+  disparition, état contrôlé), en attente du feu vert.
