@@ -9,6 +9,14 @@ export {
 } from "./anchored.ts";
 export { cn, mergeClasses, type ClassValue } from "./cn.ts";
 export {
+  CollectionProvider,
+  useCollection,
+  useCollectionEntry,
+  useListNavigation,
+  type CollectionEntry,
+  type UseListNavigationOptions,
+} from "./collection.tsx";
+export {
   composeEventHandlers,
   composeRefs,
   mergeProps,
@@ -32,6 +40,13 @@ export { DismissableLayer, useLayerState, type DismissReason } from "./dismissab
 export { FocusScope, type FocusScopeProps } from "./focus-scope.tsx";
 export { getFocusableElements, isReachable, FOCUSABLE_SELECTOR } from "./focusable.ts";
 export { Floating, type FloatingProps } from "./floating.tsx";
+export {
+  moveFor,
+  nextIndex,
+  typeaheadIndex,
+  TYPEAHEAD_RESET_MS,
+  type NavigationMove,
+} from "./list-navigation.ts";
 export { Overlay, type OverlayProps } from "./overlay.tsx";
 export { Portal, type PortalProps } from "./portal.tsx";
 export { Presence, type PresenceProps } from "./presence.tsx";

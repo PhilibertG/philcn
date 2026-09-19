@@ -49,6 +49,12 @@ export interface FloatingProps
   matchAnchorWidth?: boolean | undefined;
   trapFocus?: boolean | undefined;
   autoFocus?: boolean | undefined;
+  /**
+   * Fired once the panel and everything in it are on screen. Prevent it to
+   * place the focus yourself — a menu puts it on an entry, not on the box.
+   */
+  onMountAutoFocus?: ((event: Event) => void) | undefined;
+  onUnmountAutoFocus?: ((event: Event) => void) | undefined;
   dismissOnOutsideClick?: boolean | undefined;
   dismissOnEscape?: boolean | undefined;
   container?: Element | DocumentFragment | null | undefined;
@@ -74,6 +80,8 @@ const FloatingImpl = React.forwardRef<HTMLDivElement, ImplProps>(function Floati
     matchAnchorWidth = false,
     trapFocus = false,
     autoFocus = true,
+    onMountAutoFocus,
+    onUnmountAutoFocus,
     dismissOnOutsideClick = true,
     dismissOnEscape = true,
     container,
@@ -164,6 +172,8 @@ const FloatingImpl = React.forwardRef<HTMLDivElement, ImplProps>(function Floati
           data-align={resolved.align}
           trapped={trapFocus}
           autoFocus={autoFocus}
+          onMountAutoFocus={onMountAutoFocus}
+          onUnmountAutoFocus={onUnmountAutoFocus}
           className={cn("z-50", className)}
           style={{
             ...floatingStyles,
