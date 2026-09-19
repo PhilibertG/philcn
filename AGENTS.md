@@ -170,11 +170,16 @@ uniquement ceux-là. Toute autre différence est un bug.
   - **Interdit** : toute bibliothèque livrant des composants d'interface
     finis, même sans style (shadcn, Radix, Headless UI, NuxtUI, MUI…).
   - En cas de doute sur un paquet, je demande avant de l'ajouter.
-  - **Seule dépendance de production à ce jour** : `@floating-ui/react-dom`
-    (décidé par Phil le 18/09/2026), du calcul de position pur — aucun
-    composant, aucune interaction. Elle ne concerne que les composants
-    flottants (Popover, Tooltip, Select…). Les 17 composants de la Phase 1 et
-    les fenêtres de la Phase 3 n'ont toujours besoin d'aucun paquet.
+  - **Deux dépendances, toutes deux facultatives** (`peerDependenciesMeta`),
+    donc un projet ne les installe que s'il utilise les composants concernés :
+    - `@floating-ui/react-dom` (décidé par Phil le 18/09/2026) : du calcul de
+      position pur, aucun composant, aucune interaction. Elle ne concerne que
+      les composants flottants (Popover, Tooltip, Select, menus…).
+    - `react-hook-form` (décidé par Phil le 19/09/2026) : la mécanique d'un
+      formulaire — valeurs, champs touchés, validation. Elle ne dessine rien.
+      Seul `Form` en dépend ; les 39 autres composants n'en ont pas besoin.
+      Sans elle, un bloc shadcn avec `useForm` ne marcherait pas, et c'est
+      pour ça qu'elle est là.
 - **Pas de fichier LICENSE shadcn, pas d'attribution shadcn** : le code est
   original, donc rien n'est dû. En mettre une reviendrait à déclarer par
   écrit qu'on a utilisé leur code, ce qui serait faux.
@@ -206,14 +211,13 @@ uniquement ceux-là. Toute autre différence est un bug.
   tout reste local et rien n'est publié.
 
 ## À faire ensuite
-1. **`Form` — en attente d'une décision de Phil.** Chez shadcn, `Form` est une
-   surcouche de `react-hook-form` : `useForm`, `FormField`, `Controller`. Sans
-   ce paquet, un bloc shadcn collé ne marche pas. `react-hook-form` ne livre
-   aucun composant d'interface, seulement la mécanique d'un formulaire, donc
-   la règle sur les dépendances l'autorise — mais j'attends l'accord.
-2. **Le survol à juger à la main.** L'ouverture au survol de Menubar,
+1. **Le survol à juger à la main.** L'ouverture au survol de Menubar,
    NavigationMenu et des sous-menus n'est pas constatée par moi : mon
    navigateur d'inspection n'émet ni vrais survols ni événements de focus.
+2. **La feuille de route est terminée.** Les six phases sont livrées. La
+   suite, quand Phil voudra : publier sur npm (garde-fou, je demande avant),
+   trancher public ou privé, ou rattraper les composants shadcn sortis depuis
+   (Sidebar, Chart, Carousel, Resizable, Sonner, InputOTP, Pagination…).
 
 ## Feuille de route
 - **Phase 0 — Fondations** : outils de style maison, jetons de couleur
@@ -248,10 +252,10 @@ uniquement ceux-là. Toute autre différence est un bug.
   Toggle, ToggleGroup, Menubar, NavigationMenu. `Toggle` s'ajoute à la liste
   d'origine (accord de Phil, 19/09/2026) : chez shadcn, `ToggleGroup` importe
   ses styles depuis `toggle.tsx`, donc sans lui un bloc collé ne compile pas.
-- **Phase 6 — Formulaires et CLI : TERMINÉE sauf `Form`.** Checkbox, Switch,
-  Slider, Calendar et la commande `philcn` sont livrés. `DatePicker` n'est pas
-  un composant : chez shadcn c'est un `Calendar` dans un `Popover`, et la même
-  composition marche ici — comme pour `Combobox`.
+- **Phase 6 — Formulaires et CLI : TERMINÉE.** Checkbox, Switch, Slider,
+  Form, Calendar et la commande `philcn`. `DatePicker` n'est pas un composant :
+  chez shadcn c'est un `Calendar` dans un `Popover`, et la même composition
+  marche ici — comme pour `Combobox`.
 
 ## Où on en est
 - **18 septembre 2026** — Phase 0 terminée. Jetons de couleur clair/sombre,
@@ -330,6 +334,12 @@ uniquement ceux-là. Toute autre différence est un bug.
   l'emporte avec lui tout seul. Les imports sont réécrits vers les alias du
   projet d'accueil (`@/components/ui`, `@/lib/philcn`) et l'extension est
   retirée. 189 tests, dont ceux du CLI. 39 composants en tout.
+- **`Form` livré** (19/09/2026), 40 composants en tout, 189 tests au vert.
+  C'est le seul composant qui s'appuie sur un paquet extérieur pour son
+  fonctionnement. Le fichier ne fait que dessiner : il pose les identifiants
+  qui relient l'étiquette, l'aide et l'erreur au champ, met `aria-invalid` sur
+  le champ fautif et affiche le message de validation. Vérifié en vrai : un
+  envoi à vide affiche quatre erreurs, corriger un champ efface la sienne.
 - **Divergence Select** : `SelectScrollUpButton` et `SelectScrollDownButton`
   existent pour la compatibilité d'API mais ne rendent rien — la liste
   défile d'elle-même et ne dépasse jamais la place disponible à l'écran.

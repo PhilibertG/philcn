@@ -12,8 +12,8 @@ files into your project, where they become yours to edit.
 
 ## Status
 
-39 components, covering the simple ones, the overlays, the floating panels,
-the keyboard-driven groups and the form controls — plus a `philcn` command
+40 components, covering the simple ones, the overlays, the floating panels,
+the keyboard-driven groups, the form controls and a form wrapper — plus a `philcn` command
 that copies any of them into your own project. Design tokens for light and dark themes, and one
 production dependency: `@floating-ui/react-dom`, a pure positioning
 calculator.
