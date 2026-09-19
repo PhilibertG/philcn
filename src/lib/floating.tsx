@@ -6,6 +6,7 @@ import {
   size,
   useFloating,
   type Middleware,
+  type VirtualElement,
 } from "@floating-ui/react-dom";
 import * as React from "react";
 
@@ -29,8 +30,11 @@ export interface FloatingProps
   extends Omit<React.ComponentPropsWithoutRef<"div">, "role" | "slot"> {
   /** Whether the panel should be on screen. */
   present: boolean;
-  /** The element the panel is attached to. */
-  anchor: HTMLElement | null;
+  /**
+   * What the panel is attached to: an element, or a bare point on screen for
+   * a menu opened by right-clicking.
+   */
+  anchor: HTMLElement | VirtualElement | null;
   onDismiss: () => void;
   /** Names the pieces in the markup, e.g. "popover" gives data-slot="popover-content". */
   slot: string;
