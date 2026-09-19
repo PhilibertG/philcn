@@ -9,6 +9,12 @@ export {
 } from "./anchored.ts";
 export { cn, mergeClasses, type ClassValue } from "./cn.ts";
 export {
+  defaultCommandFilter,
+  rankEntries,
+  type CommandFilter,
+  type RankedEntry,
+} from "./command-filter.ts";
+export {
   CollectionProvider,
   useCollection,
   useCollectionEntry,
@@ -47,6 +53,12 @@ export {
   TYPEAHEAD_RESET_MS,
   type NavigationMove,
 } from "./list-navigation.ts";
+export {
+  MenuList,
+  MenuRootProvider,
+  useMenuRoot,
+  type MenuRootValue,
+} from "./menu.tsx";
 export { Overlay, type OverlayProps } from "./overlay.tsx";
 export { Portal, type PortalProps } from "./portal.tsx";
 export { Presence, type PresenceProps } from "./presence.tsx";
