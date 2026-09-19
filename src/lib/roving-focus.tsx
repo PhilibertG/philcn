@@ -30,6 +30,8 @@ interface RovingFocusValue {
   tabbable: HTMLElement | null;
   /** Hand the tab stop to this entry. */
   claim: (node: HTMLElement) => void;
+  /** Work out the tab stop again after the entries have changed. */
+  refresh: () => void;
   onKeyDown: React.KeyboardEventHandler<HTMLElement>;
 }
 
@@ -61,11 +63,10 @@ function RovingFocusProvider({
   const { onKeyDown } = useListNavigation({ orientation, loop, typeahead });
   const [tabbable, setTabbable] = React.useState<HTMLElement | null>(null);
 
-  // Runs after every render: entries appear, disappear and switch to disabled
-  // at any time, and the tab stop must never be left on one that is gone.
+  // Keeps the tab stop on an entry that is still there and still usable.
   // The updater form matters — an entry claiming the stop from its own effect
   // runs first, and this then sees that claim rather than the value it replaced.
-  React.useEffect(() => {
+  const refresh = React.useCallback(() => {
     setTabbable((current) => {
       const entries = getEntries();
       if (current !== null && entries.some((entry) => entry.node === current && !entry.disabled)) {
@@ -73,13 +74,18 @@ function RovingFocusProvider({
       }
       return entries.find((entry) => !entry.disabled)?.node ?? null;
     });
-  });
+  }, [getEntries]);
+
+  // Entries appear, disappear and switch to disabled at any time, and the tab
+  // stop must never be left on one that is gone. Entries arriving on their own
+  // do not re-render this provider, so each one calls `refresh` as it registers.
+  React.useEffect(refresh);
 
   const claim = React.useCallback((node: HTMLElement) => setTabbable(node), []);
 
   const value = React.useMemo<RovingFocusValue>(
-    () => ({ tabbable, claim, onKeyDown }),
-    [tabbable, claim, onKeyDown],
+    () => ({ tabbable, claim, refresh, onKeyDown }),
+    [tabbable, claim, refresh, onKeyDown],
   );
 
   return <RovingFocusContext.Provider value={value}>{children}</RovingFocusContext.Provider>;
@@ -116,10 +122,17 @@ function useRovingFocusItem<E extends HTMLElement = HTMLElement>({
   label = "",
   active = false,
 }: UseRovingFocusItemOptions = {}): RovingFocusItemProps<E> {
-  const { tabbable, claim, onKeyDown } = useRovingFocus("useRovingFocusItem");
+  const { tabbable, claim, refresh, onKeyDown } = useRovingFocus("useRovingFocusItem");
   const [node, setNode] = React.useState<E | null>(null);
 
   useCollectionEntry(useId(), node, label, disabled);
+
+  // Registering does not tell the group anything by itself, so say so here:
+  // without this a group with no selection would have no tab stop at all.
+  React.useEffect(() => {
+    if (node === null) return;
+    refresh();
+  }, [node, disabled, refresh]);
 
   React.useEffect(() => {
     if (!active || disabled || node === null) return;
