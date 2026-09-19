@@ -244,10 +244,13 @@ uniquement ceux-là. Toute autre différence est un bug.
   au clavier. Le tronc commun des menus est dans `src/lib/menu.tsx`, la
   navigation dans `list-navigation.ts` (règles pures, testées) et
   `collection.tsx` (registre des entrées).
-- **Reste en Phase 4 : Combobox.** Chez shadcn il se construit sur `cmdk`,
-  une bibliothèque de composants, donc interdite ici. Il faut écrire le
-  composant `Command` à la main : champ de recherche, filtrage, liste.
-  Chantier comparable au Drawer.
+- **Phase 4 TERMINÉE** (19/09/2026). `Command` est écrit à la main (shadcn
+  s'appuie sur `cmdk`, interdit ici) : le focus reste dans le champ, les
+  flèches déplacent un marqueur, et le champ annonce l'entrée marquée aux
+  lecteurs d'écran. Filtrage insensible aux accents, meilleur résultat remonté
+  en tête via `order` CSS pour ne pas remuer le balisage, groupe vidé masqué.
+  Le **Combobox** n'est pas un composant : chez shadcn c'est un `Command`
+  dans un `Popover`, et la même composition marche ici.
 - **Divergence Select** : `SelectScrollUpButton` et `SelectScrollDownButton`
   existent pour la compatibilité d'API mais ne rendent rien — la liste
   défile d'elle-même et ne dépasse jamais la place disponible à l'écran.
