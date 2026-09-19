@@ -154,6 +154,13 @@
      have nothing to grow towards. */
   --animate-accordion-down: philcn-accordion-down 200ms var(--ease-out-strong) backwards;
   --animate-accordion-up: philcn-accordion-up 200ms var(--ease-out-strong) forwards;
+  /* A navigation panel slides in from the side the previous one was on, so
+     the movement follows the eye along the bar. */
+  --animate-nav-from-start: philcn-nav-from-start 150ms var(--ease-out-strong) backwards;
+  --animate-nav-from-end: philcn-nav-from-end 150ms var(--ease-out-strong) backwards;
+  --animate-nav-out: philcn-fade-out 150ms var(--ease-out-strong) forwards;
+  --animate-viewport-in: philcn-viewport-in 150ms var(--ease-out-strong) backwards;
+  --animate-viewport-out: philcn-viewport-out 150ms var(--ease-out-strong) forwards;
   --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) backwards;
   --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer) forwards;
   --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) backwards;
@@ -206,6 +213,26 @@
 @keyframes philcn-accordion-up {
   from { height: var(--philcn-accordion-height, auto); }
   to { height: 0; }
+}
+
+/* Tailwind v4 has `translate` and `scale` as standalone properties. These
+   keyframes touch those rather than `transform`, so a panel that is placed by
+   a utility class is not thrown back to the corner while it animates. */
+@keyframes philcn-nav-from-start {
+  from { opacity: 0; translate: -13rem 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes philcn-nav-from-end {
+  from { opacity: 0; translate: 13rem 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes philcn-viewport-in {
+  from { opacity: 0; scale: 0.9; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes philcn-viewport-out {
+  from { opacity: 1; scale: 1; }
+  to { opacity: 0; scale: 0.95; }
 }
 
 @keyframes philcn-slide-in-top {
@@ -269,7 +296,9 @@
   [data-slot="sheet-content"],
   [data-slot="popover-content"],
   [data-slot="tooltip-content"],
-  [data-slot="hover-card-content"] {
+  [data-slot="hover-card-content"],
+  [data-slot="navigation-menu-content"],
+  [data-slot="navigation-menu-viewport"] {
     animation-name: philcn-fade-in;
     animation-duration: 120ms;
     animation-timing-function: var(--ease-out-strong);
@@ -281,7 +310,9 @@
   [data-slot="sheet-content"][data-state="closed"],
   [data-slot="popover-content"][data-state="closed"],
   [data-slot="tooltip-content"][data-state="closed"],
-  [data-slot="hover-card-content"][data-state="closed"] {
+  [data-slot="hover-card-content"][data-state="closed"],
+  [data-slot="navigation-menu-content"][data-state="closed"],
+  [data-slot="navigation-menu-viewport"][data-state="closed"] {
     animation-name: philcn-fade-out;
     animation-fill-mode: forwards;
   }
