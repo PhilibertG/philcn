@@ -41,9 +41,18 @@
   - `style:` du formatage sans effet sur le code
   - `feat!:` ou `BREAKING CHANGE:` un changement qui casse l'existant
   - Portée optionnelle entre parenthèses : `feat(button): add ghost variant`
+  - Types acceptés aussi, parce que le robot de version les comprend :
+    `perf:`, `build:`, `ci:`, `revert:`.
 - Phil n'écrira jamais un message de commit lui-même : c'est mon travail, à
   chaque fois.
 - Messages de commit, titres d'issues et de pull requests **en anglais**.
+- **La forme des commits est vérifiée automatiquement** sur chaque pull
+  request (`scripts/check-commits.mjs`, joué par le workflow CI). Le même
+  script refuse tout commit portant une co-signature, la mention d'un outil
+  d'IA ou un emoji robot. À jouer avant de pousser :
+  `node scripts/check-commits.mjs origin/main..HEAD`.
+- **Ces étiquettes décident du numéro de version et du changelog** : un
+  commit mal étiqueté coûte une ligne de release. Voir `docs/RELEASE.md`.
 
 ## Langue
 - On se parle en **français**. Mais le CODE — noms de variables, de fichiers,
@@ -176,8 +185,34 @@ uniquement ceux-là. Toute autre différence est un bug.
 - Ce qu'on reprend légitimement et qui n'est protégé par rien : les **noms
   d'API**, les **valeurs de design** (codes couleur, arrondis, espacements),
   l'**apparence**.
+- **Chaîne de mise en ligne** (montée le 19/09/2026, à la demande de Phil) :
+  les commits arrivent sur `main`, le robot **release-please** tient à jour
+  une release PR permanente (numéro de version + changelog), et **rien
+  n'atteint les utilisateurs tant que Phil ne merge pas cette PR**. Le merge
+  pose le tag, publie le changelog et appelle le déploiement depuis le même
+  workflow — une release faite avec le jeton GitHub standard ne réveille pas
+  les autres workflows, donc on ne compte pas dessus. Tout est décrit en
+  langage courant dans `docs/RELEASE.md`.
+  - **Règle d'usage** : Phil ne merge la release PR qu'APRÈS son parcours de
+    test à la main.
+  - **Le déploiement n'a pas encore de cible** : philcn est une bibliothèque,
+    il n'y a ni serveur ni site. Le workflow est branché et vérifie la version
+    taguée, puis dit qu'il n'y a rien à livrer. Les réglages pour l'allumer
+    (SSH) sont dans `docs/RELEASE.md`.
 - **Dépôt public ou privé : NON DÉCIDÉ.** Tant que Phil n'a pas tranché,
   tout reste local et rien n'est publié.
+
+## À faire ensuite — dette connue, décidée avec Phil le 19/09/2026
+Ces points sont repérés et assumés ; on s'en occupe après le chantier de mise
+en ligne, avant d'ouvrir la Phase 6.
+1. **Les sous-menus.** `DropdownMenu`, `ContextMenu` et `Menubar` n'ont pas
+   `Sub` / `SubTrigger` / `SubContent`. Un bloc shadcn qui ouvre un sous-menu
+   ne marche pas. À écrire dans `src/lib/menu.tsx` : les trois en profitent
+   d'un coup.
+2. **Le survol à juger à la main.** L'ouverture au survol de Menubar et de
+   NavigationMenu, et la fermeture quand le focus quitte NavigationMenu, sont
+   écrites mais pas constatées par moi — mon navigateur d'inspection n'émet
+   ni vrais survols ni événements de focus.
 
 ## Feuille de route
 - **Phase 0 — Fondations** : outils de style maison, jetons de couleur

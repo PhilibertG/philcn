@@ -1,0 +1,88 @@
+name: Deploy
+
+# Called by the release workflow once a version has been tagged, and nowhere
+# else — a plain push never reaches this file. It can also be run by hand for
+# a tag that is already published, to replay a delivery.
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: The tag that was just released, for example v0.1.0.
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to deploy, for example v0.1.0.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deliver ${{ inputs.tag }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Nothing is delivered that does not build and pass its tests, even
+      # though the same check already ran on the pull request: the tag is what
+      # reaches people, so the tag is what gets checked.
+      - run: npm run check
+
+      - name: Work out where this version goes
+        id: target
+        run: echo "name=${DEPLOY_TARGET:-none}" >> "$GITHUB_OUTPUT"
+        env:
+          DEPLOY_TARGET: ${{ vars.DEPLOY_TARGET }}
+
+      - name: No target set, nothing delivered
+        if: steps.target.outputs.name == 'none'
+        run: |
+          echo "::notice title=Nothing to deploy::Version ${{ inputs.tag }} is tagged and its release notes are published, but no delivery target is configured. Set the repository variable DEPLOY_TARGET to 'ssh' and add the DEPLOY_* secrets to turn this on."
+
+      - name: Deploy over SSH
+        if: steps.target.outputs.name == 'ssh'
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_COMMAND: ${{ vars.DEPLOY_COMMAND }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_COMMAND; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error title=Missing setting::$name is not set, so the deployment cannot run."
+              exit 1
+            fi
+          done
+
+          # The key lives in the repository secrets and only ever exists on
+          # this runner, for the length of this job.
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" "TAG=$TAG $DEPLOY_COMMAND"
+
+      - name: Say what happened
+        run: |
+          {
+            echo "### ${{ inputs.tag }}"
+            echo
+            echo "Target: \`${{ steps.target.outputs.name }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

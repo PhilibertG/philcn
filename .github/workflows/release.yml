@@ -1,0 +1,48 @@
+name: Release
+
+# The release robot. Every commit that lands on main is read, and a single
+# permanent pull request is kept up to date with the next version number and
+# the changelog it would publish. Nothing else happens until that pull
+# request is merged — merging it is what tags the version, writes the
+# release notes, and starts the deployment below.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One release at a time. Two runs writing the same pull request would fight.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Keep the release pull request up to date
+    runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  deploy:
+    name: Deploy the released version
+    needs: release-please
+    # A release made with the standard GitHub token does not start other
+    # workflows on its own, so the deployment is called from here rather than
+    # left to listen for a published release that would never reach it.
+    if: needs.release-please.outputs.released == 'true'
+    uses: ./.github/workflows/deploy.yml
+    with:
+      tag: ${{ needs.release-please.outputs.tag }}
+    secrets: inherit

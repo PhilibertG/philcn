@@ -12,8 +12,13 @@ files into your project, where they become yours to edit.
 
 ## Status
 
-Phase 0 — foundations. Design tokens and the two class utilities are in place.
-No components yet.
+35 components, covering the simple ones, the overlays, the floating panels and
+the keyboard-driven groups. Design tokens for light and dark themes, and one
+production dependency: `@floating-ui/react-dom`, a pure positioning
+calculator.
+
+Released versions and their changelog live on the
+[releases page](https://github.com/PhilibertG/philcn/releases).
 
 ## Requirements
 

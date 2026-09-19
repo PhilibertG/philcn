@@ -1,0 +1,44 @@
+name: CI
+
+# Every pull request is checked twice: the code has to build and pass its
+# tests, and the commits themselves have to be shaped the way the release
+# robot expects. A badly shaped commit costs a line in the changelog.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Types and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+  commits:
+    name: Commit format
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The whole branch is needed: the check reads every commit the pull
+          # request would add, not just the last one.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the commits in this pull request
+        run: node scripts/check-commits.mjs "${BASE}..${HEAD}"
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
