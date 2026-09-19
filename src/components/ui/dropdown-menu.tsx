@@ -12,6 +12,9 @@ import {
   MenuRootProvider,
   MenuSeparator,
   MenuShortcut,
+  MenuSub,
+  MenuSubContent,
+  MenuSubTrigger,
   useMenuRoot,
   type MenuCheckboxItemProps,
   type MenuItemBaseProps,
@@ -19,6 +22,9 @@ import {
   type MenuRadioGroupProps,
   type MenuRadioItemProps,
   type MenuRootValue,
+  type MenuSubContentProps,
+  type MenuSubProps,
+  type MenuSubTriggerProps,
 } from "../../lib/menu.tsx";
 import { Slot } from "../../lib/slot.tsx";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
@@ -118,6 +124,9 @@ export type DropdownMenuItemProps = MenuItemBaseProps;
 export type DropdownMenuCheckboxItemProps = MenuCheckboxItemProps;
 export type DropdownMenuRadioGroupProps = MenuRadioGroupProps;
 export type DropdownMenuRadioItemProps = MenuRadioItemProps;
+export type DropdownMenuSubProps = MenuSubProps;
+export type DropdownMenuSubTriggerProps = MenuSubTriggerProps;
+export type DropdownMenuSubContentProps = MenuSubContentProps;
 
 const DropdownMenuContent = MenuList;
 const DropdownMenuItem = MenuItem;
@@ -128,6 +137,9 @@ const DropdownMenuLabel = MenuLabel;
 const DropdownMenuSeparator = MenuSeparator;
 const DropdownMenuShortcut = MenuShortcut;
 const DropdownMenuGroup = MenuGroup;
+const DropdownMenuSub = MenuSub;
+const DropdownMenuSubTrigger = MenuSubTrigger;
+const DropdownMenuSubContent = MenuSubContent;
 
 /** Kept for API compatibility: the portal is already inside the content. */
 function DropdownMenuPortal({ children }: { children?: React.ReactNode }) {
@@ -146,5 +158,8 @@ export {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 };

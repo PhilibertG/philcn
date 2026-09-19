@@ -56,8 +56,14 @@ export {
 export {
   MenuList,
   MenuRootProvider,
+  MenuSub,
+  MenuSubContent,
+  MenuSubTrigger,
   useMenuRoot,
   type MenuRootValue,
+  type MenuSubContentProps,
+  type MenuSubProps,
+  type MenuSubTriggerProps,
 } from "./menu.tsx";
 export { Overlay, type OverlayProps } from "./overlay.tsx";
 export {

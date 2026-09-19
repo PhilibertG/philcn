@@ -13,6 +13,9 @@ import {
   MenuRootProvider,
   MenuSeparator,
   MenuShortcut,
+  MenuSub,
+  MenuSubContent,
+  MenuSubTrigger,
   useMenuRoot,
   type MenuCheckboxItemProps,
   type MenuItemBaseProps,
@@ -20,6 +23,9 @@ import {
   type MenuRadioGroupProps,
   type MenuRadioItemProps,
   type MenuRootValue,
+  type MenuSubContentProps,
+  type MenuSubProps,
+  type MenuSubTriggerProps,
 } from "../../lib/menu.tsx";
 import {
   mergeRovingFocusProps,
@@ -313,6 +319,9 @@ export type MenubarItemProps = MenuItemBaseProps;
 export type MenubarCheckboxItemProps = MenuCheckboxItemProps;
 export type MenubarRadioGroupProps = MenuRadioGroupProps;
 export type MenubarRadioItemProps = MenuRadioItemProps;
+export type MenubarSubProps = MenuSubProps;
+export type MenubarSubTriggerProps = MenuSubTriggerProps;
+export type MenubarSubContentProps = MenuSubContentProps;
 
 const MenubarItem = MenuItem;
 const MenubarCheckboxItem = MenuCheckboxItem;
@@ -322,6 +331,9 @@ const MenubarLabel = MenuLabel;
 const MenubarSeparator = MenuSeparator;
 const MenubarShortcut = MenuShortcut;
 const MenubarGroup = MenuGroup;
+const MenubarSub = MenuSub;
+const MenubarSubTrigger = MenuSubTrigger;
+const MenubarSubContent = MenuSubContent;
 
 /** Kept for API compatibility: the portal is already inside the content. */
 function MenubarPortal({ children }: { children?: React.ReactNode }) {
@@ -341,5 +353,8 @@ export {
   MenubarRadioItem,
   MenubarSeparator,
   MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
   MenubarTrigger,
 };

@@ -13,6 +13,9 @@ import {
   MenuRootProvider,
   MenuSeparator,
   MenuShortcut,
+  MenuSub,
+  MenuSubContent,
+  MenuSubTrigger,
   useMenuRoot,
   type MenuCheckboxItemProps,
   type MenuItemBaseProps,
@@ -20,6 +23,9 @@ import {
   type MenuRadioGroupProps,
   type MenuRadioItemProps,
   type MenuRootValue,
+  type MenuSubContentProps,
+  type MenuSubProps,
+  type MenuSubTriggerProps,
 } from "../../lib/menu.tsx";
 import { Slot } from "../../lib/slot.tsx";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
@@ -148,6 +154,9 @@ export type ContextMenuItemProps = MenuItemBaseProps;
 export type ContextMenuCheckboxItemProps = MenuCheckboxItemProps;
 export type ContextMenuRadioGroupProps = MenuRadioGroupProps;
 export type ContextMenuRadioItemProps = MenuRadioItemProps;
+export type ContextMenuSubProps = MenuSubProps;
+export type ContextMenuSubTriggerProps = MenuSubTriggerProps;
+export type ContextMenuSubContentProps = MenuSubContentProps;
 
 /** Hangs from the click itself, so there is no gap to leave. */
 const ContextMenuContent = React.forwardRef<HTMLDivElement, ContextMenuContentProps>(
@@ -164,6 +173,9 @@ const ContextMenuLabel = MenuLabel;
 const ContextMenuSeparator = MenuSeparator;
 const ContextMenuShortcut = MenuShortcut;
 const ContextMenuGroup = MenuGroup;
+const ContextMenuSub = MenuSub;
+const ContextMenuSubTrigger = MenuSubTrigger;
+const ContextMenuSubContent = MenuSubContent;
 
 /** Kept for API compatibility: the portal is already inside the content. */
 function ContextMenuPortal({ children }: { children?: React.ReactNode }) {
@@ -182,5 +194,8 @@ export {
   ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
   ContextMenuTrigger,
 };
