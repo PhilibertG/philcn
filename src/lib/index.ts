@@ -60,6 +60,15 @@ export {
   type MenuRootValue,
 } from "./menu.tsx";
 export { Overlay, type OverlayProps } from "./overlay.tsx";
+export {
+  mergeRovingFocusProps,
+  RovingFocusGroup,
+  useRovingFocusItem,
+  type RovingFocusGroupProps,
+  type RovingFocusItemProps,
+  type RovingFocusOwnHandlers,
+  type UseRovingFocusItemOptions,
+} from "./roving-focus.tsx";
 export { Portal, type PortalProps } from "./portal.tsx";
 export { Presence, type PresenceProps } from "./presence.tsx";
 export { Slot, type SlotProps } from "./slot.tsx";
