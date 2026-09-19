@@ -205,17 +205,15 @@ uniquement ceux-là. Toute autre différence est un bug.
 - **Dépôt public ou privé : NON DÉCIDÉ.** Tant que Phil n'a pas tranché,
   tout reste local et rien n'est publié.
 
-## À faire ensuite — dette connue, décidée avec Phil le 19/09/2026
-Ces points sont repérés et assumés ; on s'en occupe après le chantier de mise
-en ligne, avant d'ouvrir la Phase 6.
-1. **Les sous-menus.** `DropdownMenu`, `ContextMenu` et `Menubar` n'ont pas
-   `Sub` / `SubTrigger` / `SubContent`. Un bloc shadcn qui ouvre un sous-menu
-   ne marche pas. À écrire dans `src/lib/menu.tsx` : les trois en profitent
-   d'un coup.
-2. **Le survol à juger à la main.** L'ouverture au survol de Menubar et de
-   NavigationMenu, et la fermeture quand le focus quitte NavigationMenu, sont
-   écrites mais pas constatées par moi — mon navigateur d'inspection n'émet
-   ni vrais survols ni événements de focus.
+## À faire ensuite
+1. **`Form` — en attente d'une décision de Phil.** Chez shadcn, `Form` est une
+   surcouche de `react-hook-form` : `useForm`, `FormField`, `Controller`. Sans
+   ce paquet, un bloc shadcn collé ne marche pas. `react-hook-form` ne livre
+   aucun composant d'interface, seulement la mécanique d'un formulaire, donc
+   la règle sur les dépendances l'autorise — mais j'attends l'accord.
+2. **Le survol à juger à la main.** L'ouverture au survol de Menubar,
+   NavigationMenu et des sous-menus n'est pas constatée par moi : mon
+   navigateur d'inspection n'émet ni vrais survols ni événements de focus.
 
 ## Feuille de route
 - **Phase 0 — Fondations** : outils de style maison, jetons de couleur
@@ -250,8 +248,10 @@ en ligne, avant d'ouvrir la Phase 6.
   Toggle, ToggleGroup, Menubar, NavigationMenu. `Toggle` s'ajoute à la liste
   d'origine (accord de Phil, 19/09/2026) : chez shadcn, `ToggleGroup` importe
   ses styles depuis `toggle.tsx`, donc sans lui un bloc collé ne compile pas.
-- **Phase 6 — Formulaires et CLI** : Checkbox, Switch, Slider, Form,
-  Calendar, DatePicker, puis la commande `philcn add`.
+- **Phase 6 — Formulaires et CLI : TERMINÉE sauf `Form`.** Checkbox, Switch,
+  Slider, Calendar et la commande `philcn` sont livrés. `DatePicker` n'est pas
+  un composant : chez shadcn c'est un `Calendar` dans un `Popover`, et la même
+  composition marche ici — comme pour `Combobox`.
 
 ## Où on en est
 - **18 septembre 2026** — Phase 0 terminée. Jetons de couleur clair/sombre,
@@ -312,6 +312,24 @@ en ligne, avant d'ouvrir la Phase 6.
   (Menubar et NavigationMenu). Mon navigateur d'inspection n'émet pas de vrais
   événements de survol ni de focus, et sa fenêtre est masquée. À juger à la
   main.
+- **Sous-menus livrés** (19/09/2026) dans `src/lib/menu.tsx` : `Sub`,
+  `SubTrigger`, `SubContent` pour DropdownMenu, ContextMenu et Menubar, sur
+  plusieurs niveaux. Un menu imbriqué garde son propre état, mais choisir une
+  entrée referme toute la pile — c'est le rôle de `closeAll`.
+- **Phase 6** (19/09/2026) : Checkbox (avec l'état à demi coché), Switch,
+  Slider (plusieurs poignées, distance minimale, clavier et glissement),
+  Calendar (modes simple, multiple et plage, mois multiples, listes
+  déroulantes de mois et d'année, langue au choix). Deux modules de calcul
+  purs et testés : `slider-math.ts` et `calendar-math.ts`.
+- **`react-day-picker` est interdit** pour Calendar, comme `cmdk` l'était pour
+  Command : c'est une bibliothèque qui livre un composant d'interface fini.
+  Tout est écrit ici.
+- **La commande `philcn`** (`cli/`) : `philcn list`, `philcn init`,
+  `philcn add <nom>`. Le registre n'est pas écrit à la main — il est lu depuis
+  le code, donc un composant qui se met à dépendre d'une nouvelle brique
+  l'emporte avec lui tout seul. Les imports sont réécrits vers les alias du
+  projet d'accueil (`@/components/ui`, `@/lib/philcn`) et l'extension est
+  retirée. 189 tests, dont ceux du CLI. 39 composants en tout.
 - **Divergence Select** : `SelectScrollUpButton` et `SelectScrollDownButton`
   existent pour la compatibilité d'API mais ne rendent rien — la liste
   défile d'elle-même et ne dépasse jamais la place disponible à l'écran.
