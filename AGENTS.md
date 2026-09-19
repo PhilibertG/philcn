@@ -195,10 +195,13 @@ uniquement ceux-là. Toute autre différence est un bug.
   langage courant dans `docs/RELEASE.md`.
   - **Règle d'usage** : Phil ne merge la release PR qu'APRÈS son parcours de
     test à la main.
-  - **Le déploiement n'a pas encore de cible** : philcn est une bibliothèque,
-    il n'y a ni serveur ni site. Le workflow est branché et vérifie la version
-    taguée, puis dit qu'il n'y a rien à livrer. Les réglages pour l'allumer
-    (SSH) sont dans `docs/RELEASE.md`.
+  - **Cible de déploiement : aucune pour l'instant** (décidé par Phil le
+    19/09/2026). philcn est une bibliothèque : ni serveur, ni site. Le
+    workflow de déploiement est branché et se déclenche bien sur la release,
+    il revérifie que la version taguée compile et passe les tests, puis
+    annonce qu'il n'y a rien à livrer. Plus tard, ce sera probablement npm —
+    et publier sur npm reste un garde-fou : je demande avant. Les réglages
+    pour allumer une cible SSH sont dans `docs/RELEASE.md`.
 - **Dépôt public ou privé : NON DÉCIDÉ.** Tant que Phil n'a pas tranché,
   tout reste local et rien n'est publié.
 
