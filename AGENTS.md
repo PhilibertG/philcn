@@ -208,8 +208,10 @@ uniquement ceux-là. Toute autre différence est un bug.
   Select, Combobox, ContextMenu, HoverCard. Un moteur de positionnement
   externe est autorisé (voir la règle sur les dépendances), ce qui allège
   nettement cette phase.
-- **Phase 5 — Navigation clavier** : Tabs, Accordion, RadioGroup,
-  ToggleGroup, NavigationMenu, Menubar.
+- **Phase 5 — Navigation clavier : TERMINÉE.** Tabs, Accordion, RadioGroup,
+  Toggle, ToggleGroup, Menubar, NavigationMenu. `Toggle` s'ajoute à la liste
+  d'origine (accord de Phil, 19/09/2026) : chez shadcn, `ToggleGroup` importe
+  ses styles depuis `toggle.tsx`, donc sans lui un bloc collé ne compile pas.
 - **Phase 6 — Formulaires et CLI** : Checkbox, Switch, Slider, Form,
   Calendar, DatePicker, puis la commande `philcn add`.
 
@@ -251,6 +253,27 @@ uniquement ceux-là. Toute autre différence est un bug.
   en tête via `order` CSS pour ne pas remuer le balisage, groupe vidé masqué.
   Le **Combobox** n'est pas un composant : chez shadcn c'est un `Command`
   dans un `Popover`, et la même composition marche ici.
+- **Phase 5 terminée** (19/09/2026) : 7 composants, 35 en tout, 122 tests au
+  vert. Nouvelle brique commune `src/lib/roving-focus.tsx` — le « focus
+  glissant » : dans une rangée d'onglets, de boutons radio ou de bascules, la
+  touche Tab n'entre qu'une fois dans le groupe et les flèches déplacent
+  ensuite. Elle sert à Tabs, RadioGroup, ToggleGroup, Menubar et
+  NavigationMenu. L'accordéon ne l'utilise pas : la règle d'accessibilité veut
+  que chaque en-tête reste dans l'ordre de tabulation.
+- **Mesure de hauteur de l'accordéon** : un panneau se déplie de 0 à sa
+  hauteur réelle, connue seulement une fois le contenu en place. Elle est
+  mesurée et rangée dans `--philcn-accordion-height`, et un observateur de
+  taille la corrige si le contenu change. Même principe pour la boîte partagée
+  de NavigationMenu (`--philcn-navigation-menu-viewport-*`, avec les noms
+  `--radix-*` en alias pour le code collé depuis shadcn).
+- **Manque connu, à traiter plus tard : les sous-menus.** `DropdownMenu`,
+  `ContextMenu` et `Menubar` n'ont pas `Sub` / `SubTrigger` / `SubContent`.
+  Un bloc shadcn qui ouvre un sous-menu ne marchera pas. Le manque date de la
+  Phase 4 ; l'ajouter dans `src/lib/menu.tsx` profiterait aux trois d'un coup.
+- **Non testé par moi en Phase 5** : l'ouverture au survol de la souris
+  (Menubar et NavigationMenu). Mon navigateur d'inspection n'émet pas de vrais
+  événements de survol ni de focus, et sa fenêtre est masquée. À juger à la
+  main.
 - **Divergence Select** : `SelectScrollUpButton` et `SelectScrollDownButton`
   existent pour la compatibilité d'API mais ne rendent rien — la liste
   défile d'elle-même et ne dépasse jamais la place disponible à l'écran.
