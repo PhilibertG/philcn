@@ -1,6 +1,6 @@
 {
   "name": "philcn",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "A React component library written from scratch, API-compatible with shadcn/ui.",
   "license": "MIT",
