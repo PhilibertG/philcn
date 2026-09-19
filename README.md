@@ -20,6 +20,16 @@ calculator.
 Released versions and their changelog live on the
 [releases page](https://github.com/PhilibertG/philcn/releases).
 
+## Releases
+
+Versions are cut by a robot, not by hand. Every commit carries a conventional
+commit label; a permanent release pull request tracks the next version number
+and its changelog, and merging that pull request is what tags the version and
+publishes the notes. Nothing reaches anyone before that merge.
+
+The process, and how to run the commit check locally, is described in
+[docs/RELEASE.md](docs/RELEASE.md).
+
 ## Requirements
 
 - React 18 or later
