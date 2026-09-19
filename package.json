@@ -13,6 +13,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "node --test \"src/**/*.test.ts\"",
+    "lint:commits": "node scripts/check-commits.mjs",
     "check": "npm run typecheck && npm run test"
   },
   "peerDependencies": {
