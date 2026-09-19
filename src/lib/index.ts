@@ -47,6 +47,12 @@ export {
   type UseDragDismissOptions,
   type UseDragDismissResult,
 } from "./use-drag-dismiss.ts";
+export {
+  useHoverOpen,
+  type HoverOpenHandlers,
+  type UseHoverOpenOptions,
+  type UseHoverOpenResult,
+} from "./use-hover-open.ts";
 export { useId } from "./use-id.ts";
 export { useScrollLock } from "./use-scroll-lock.ts";
 export { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect.ts";
