@@ -148,6 +148,12 @@
   --animate-content-out: philcn-content-out 150ms var(--ease-out-strong) forwards;
   --animate-floating-in: philcn-floating-in 150ms var(--ease-out-strong) backwards;
   --animate-floating-out: philcn-floating-out 120ms var(--ease-out-strong) forwards;
+  /* The accordion grows to a height that is only known once its content is in
+     the page. The component measures it and writes it as
+     --philcn-accordion-height on the panel; without that the keyframes would
+     have nothing to grow towards. */
+  --animate-accordion-down: philcn-accordion-down 200ms var(--ease-out-strong) backwards;
+  --animate-accordion-up: philcn-accordion-up 200ms var(--ease-out-strong) forwards;
   --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) backwards;
   --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer) forwards;
   --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) backwards;
@@ -193,6 +199,15 @@
   to { opacity: 0; scale: 0.95; }
 }
 
+@keyframes philcn-accordion-down {
+  from { height: 0; }
+  to { height: var(--philcn-accordion-height, auto); }
+}
+@keyframes philcn-accordion-up {
+  from { height: var(--philcn-accordion-height, auto); }
+  to { height: 0; }
+}
+
 @keyframes philcn-slide-in-top {
   from { translate: 0 -100%; }
   to { translate: 0 0; }
@@ -224,6 +239,12 @@
 @keyframes philcn-slide-out-right {
   from { translate: 0 0; }
   to { translate: 100% 0; }
+}
+
+/* A panel kept in the page while closed holds no height. The closing
+   animation overrides this while it runs, and leaves it at zero afterwards. */
+[data-slot="accordion-content"][data-state="closed"] {
+  height: 0;
 }
 
 /* While a drawer is under the finger its position is driven directly, so the
@@ -263,6 +284,12 @@
   [data-slot="hover-card-content"][data-state="closed"] {
     animation-name: philcn-fade-out;
     animation-fill-mode: forwards;
+  }
+
+  /* A panel that unfolds is movement, and there is no fade that would say the
+     same thing. It opens and closes at once instead. */
+  [data-slot="accordion-content"] {
+    animation-name: none;
   }
 
   /* Tailwind v4 presses the button with the `scale` property, not `transform`. */
