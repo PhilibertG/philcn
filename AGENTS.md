@@ -237,5 +237,9 @@ uniquement ceux-là. Toute autre différence est un bug.
   navigateur d'inspection ne simule que des événements, et il y gèle les
   animations comme les transitions. La fluidité et le ressenti du glissement
   doivent être jugés par Phil sur son téléphone.
-- Prochaine étape : Phase 4 (positionnement flottant : Popover, DropdownMenu,
-  Tooltip, Select, Combobox, ContextMenu, HoverCard), en attente du feu vert.
+- **Phase 4 en cours** (19/09/2026) : `Floating` (brique commune :
+  placement, repli quand ça sort de l'écran, suivi au défilement),
+  **Popover**, **Tooltip** et **HoverCard** livrés et vérifiés. 89 tests.
+- Reste en Phase 4 : DropdownMenu, ContextMenu, Select, Combobox. Ils
+  demandent tous la navigation au clavier dans une liste (flèches, saisie
+  rapide), qui était prévue en Phase 5 mais leur est indispensable.
