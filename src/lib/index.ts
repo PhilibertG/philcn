@@ -1,4 +1,12 @@
 export { longestAnimationMs, parseCssTime } from "./animation-time.ts";
+export {
+  fromPlacement,
+  toPlacement,
+  transformOriginFor,
+  type Align,
+  type Placement,
+  type Side,
+} from "./anchored.ts";
 export { cn, mergeClasses, type ClassValue } from "./cn.ts";
 export {
   composeEventHandlers,
@@ -23,6 +31,7 @@ export {
 export { DismissableLayer, useLayerState, type DismissReason } from "./dismissable-layer.tsx";
 export { FocusScope, type FocusScopeProps } from "./focus-scope.tsx";
 export { getFocusableElements, isReachable, FOCUSABLE_SELECTOR } from "./focusable.ts";
+export { Floating, type FloatingProps } from "./floating.tsx";
 export { Overlay, type OverlayProps } from "./overlay.tsx";
 export { Portal, type PortalProps } from "./portal.tsx";
 export { Presence, type PresenceProps } from "./presence.tsx";

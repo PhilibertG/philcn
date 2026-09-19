@@ -146,6 +146,8 @@
   --animate-overlay-out: philcn-fade-out 150ms var(--ease-out-strong) forwards;
   --animate-content-in: philcn-content-in 200ms var(--ease-out-strong) backwards;
   --animate-content-out: philcn-content-out 150ms var(--ease-out-strong) forwards;
+  --animate-floating-in: philcn-floating-in 150ms var(--ease-out-strong) backwards;
+  --animate-floating-out: philcn-floating-out 120ms var(--ease-out-strong) forwards;
   --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) backwards;
   --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer) forwards;
   --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) backwards;
@@ -174,6 +176,19 @@
   to { opacity: 1; scale: 1; }
 }
 @keyframes philcn-content-out {
+  from { opacity: 1; scale: 1; }
+  to { opacity: 0; scale: 0.95; }
+}
+
+/* A floating panel is placed by the positioning engine, which owns the
+   `transform` property. These keyframes therefore touch `scale` only —
+   animating `transform` here would throw the panel back to the top-left
+   corner for the length of the animation. */
+@keyframes philcn-floating-in {
+  from { opacity: 0; scale: 0.95; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes philcn-floating-out {
   from { opacity: 1; scale: 1; }
   to { opacity: 0; scale: 0.95; }
 }
@@ -230,7 +245,10 @@
 @media (prefers-reduced-motion: reduce) {
   [data-slot="dialog-overlay"],
   [data-slot="dialog-content"],
-  [data-slot="sheet-content"] {
+  [data-slot="sheet-content"],
+  [data-slot="popover-content"],
+  [data-slot="tooltip-content"],
+  [data-slot="hover-card-content"] {
     animation-name: philcn-fade-in;
     animation-duration: 120ms;
     animation-timing-function: var(--ease-out-strong);
@@ -239,7 +257,10 @@
 
   [data-slot="dialog-overlay"][data-state="closed"],
   [data-slot="dialog-content"][data-state="closed"],
-  [data-slot="sheet-content"][data-state="closed"] {
+  [data-slot="sheet-content"][data-state="closed"],
+  [data-slot="popover-content"][data-state="closed"],
+  [data-slot="tooltip-content"][data-state="closed"],
+  [data-slot="hover-card-content"][data-state="closed"] {
     animation-name: philcn-fade-out;
     animation-fill-mode: forwards;
   }
