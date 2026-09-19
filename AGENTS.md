@@ -240,6 +240,14 @@ uniquement ceux-là. Toute autre différence est un bug.
 - **Phase 4 en cours** (19/09/2026) : `Floating` (brique commune :
   placement, repli quand ça sort de l'écran, suivi au défilement),
   **Popover**, **Tooltip** et **HoverCard** livrés et vérifiés. 89 tests.
-- Reste en Phase 4 : DropdownMenu, ContextMenu, Select, Combobox. Ils
-  demandent tous la navigation au clavier dans une liste (flèches, saisie
-  rapide), qui était prévue en Phase 5 mais leur est indispensable.
+- **DropdownMenu, ContextMenu et Select livrés** (19/09/2026) et vérifiés
+  au clavier. Le tronc commun des menus est dans `src/lib/menu.tsx`, la
+  navigation dans `list-navigation.ts` (règles pures, testées) et
+  `collection.tsx` (registre des entrées).
+- **Reste en Phase 4 : Combobox.** Chez shadcn il se construit sur `cmdk`,
+  une bibliothèque de composants, donc interdite ici. Il faut écrire le
+  composant `Command` à la main : champ de recherche, filtrage, liste.
+  Chantier comparable au Drawer.
+- **Divergence Select** : `SelectScrollUpButton` et `SelectScrollDownButton`
+  existent pour la compatibilité d'API mais ne rendent rien — la liste
+  défile d'elle-même et ne dépasse jamais la place disponible à l'écran.
