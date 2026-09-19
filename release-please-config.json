@@ -7,21 +7,57 @@
       "package-name": "philcn",
       "changelog-path": "CHANGELOG.md",
       "include-v-in-tag": true,
+      "include-component-in-tag": false,
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
       "changelog-sections": [
-        { "type": "feat", "section": "Features" },
-        { "type": "fix", "section": "Bug fixes" },
-        { "type": "perf", "section": "Performance" },
-        { "type": "refactor", "section": "Rewrites" },
-        { "type": "docs", "section": "Documentation" },
-        { "type": "test", "section": "Tests", "hidden": true },
-        { "type": "build", "section": "Build", "hidden": true },
-        { "type": "ci", "section": "Continuous integration", "hidden": true },
-        { "type": "chore", "section": "Housekeeping", "hidden": true },
-        { "type": "style", "section": "Formatting", "hidden": true }
+        {
+          "type": "feat",
+          "section": "Features"
+        },
+        {
+          "type": "fix",
+          "section": "Bug fixes"
+        },
+        {
+          "type": "perf",
+          "section": "Performance"
+        },
+        {
+          "type": "refactor",
+          "section": "Rewrites"
+        },
+        {
+          "type": "docs",
+          "section": "Documentation"
+        },
+        {
+          "type": "test",
+          "section": "Tests",
+          "hidden": true
+        },
+        {
+          "type": "build",
+          "section": "Build",
+          "hidden": true
+        },
+        {
+          "type": "ci",
+          "section": "Continuous integration",
+          "hidden": true
+        },
+        {
+          "type": "chore",
+          "section": "Housekeeping",
+          "hidden": true
+        },
+        {
+          "type": "style",
+          "section": "Formatting",
+          "hidden": true
+        }
       ]
     }
   },
