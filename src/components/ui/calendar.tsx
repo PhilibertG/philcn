@@ -338,7 +338,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calend
     <div
       ref={ref}
       data-slot="calendar"
-      className={cn("bg-background p-3 [--cell-size:2rem]", className)}
+      className={cn("w-fit bg-background p-3 [--cell-size:2rem]", className)}
       {...(rest as React.ComponentPropsWithoutRef<"div">)}
     >
       <div className={cn("flex flex-col gap-4 sm:flex-row", classNames?.months)}>
@@ -346,11 +346,23 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calend
           <div
             key={monthDate.getTime()}
             data-slot="calendar-month"
-            className={cn("flex w-full flex-col gap-4", classNames?.month)}
+            className={cn(
+              "flex w-full flex-col gap-4",
+              // Seven columns of a full cell each: the grid can stretch, but
+              // it can never squash the days into one another.
+              "min-w-[calc(var(--cell-size)*7)]",
+              classNames?.month,
+            )}
           >
             <div
               data-slot="calendar-caption"
-              className={cn("relative flex h-[var(--cell-size)] items-center justify-center", classNames?.caption)}
+              className={cn(
+                "relative flex h-[var(--cell-size)] items-center justify-center",
+                // Room for the arrows on both sides, so the month name can
+                // never end up underneath one of them.
+                "px-[var(--cell-size)]",
+                classNames?.caption,
+              )}
             >
               {monthIndex === 0 ? (
                 <button
@@ -399,7 +411,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calend
                 <div
                   aria-live="polite"
                   data-slot="calendar-caption-label"
-                  className={cn("text-sm font-medium", classNames?.caption_label)}
+                  className={cn("truncate text-sm font-medium", classNames?.caption_label)}
                 >
                   {monthFormat.format(monthDate)}
                 </div>
@@ -477,7 +489,10 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calend
                           )}
                         >
                           {hidden ? (
-                            <span className="block size-[var(--cell-size)]" aria-hidden="true" />
+                            <span
+                              className="block h-[var(--cell-size)] w-full"
+                              aria-hidden="true"
+                            />
                           ) : (
                             <button
                               type="button"
@@ -506,7 +521,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calend
                               onKeyDown={onDayKeyDown(cell.date)}
                               onFocus={() => setFocused(cell.date)}
                               className={cn(
-                                "flex size-[var(--cell-size)] w-full items-center justify-center",
+                                "flex aspect-square h-[var(--cell-size)] w-full items-center justify-center",
                                 "rounded-md p-0 text-sm font-normal",
                                 // deliberate divergence from shadcn: a clickable control shows a pointer
                                 "cursor-pointer select-none",
