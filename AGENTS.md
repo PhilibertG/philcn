@@ -161,6 +161,11 @@ uniquement ceux-là. Toute autre différence est un bug.
   - **Interdit** : toute bibliothèque livrant des composants d'interface
     finis, même sans style (shadcn, Radix, Headless UI, NuxtUI, MUI…).
   - En cas de doute sur un paquet, je demande avant de l'ajouter.
+  - **Seule dépendance de production à ce jour** : `@floating-ui/react-dom`
+    (décidé par Phil le 18/09/2026), du calcul de position pur — aucun
+    composant, aucune interaction. Elle ne concerne que les composants
+    flottants (Popover, Tooltip, Select…). Les 17 composants de la Phase 1 et
+    les fenêtres de la Phase 3 n'ont toujours besoin d'aucun paquet.
 - **Pas de fichier LICENSE shadcn, pas d'attribution shadcn** : le code est
   original, donc rien n'est dû. En mettre une reviendrait à déclarer par
   écrit qu'on a utilisé leur code, ce qui serait faux.
