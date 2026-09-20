@@ -12,8 +12,7 @@ import { Label } from "@philcn/components/ui/label.tsx";
 import { Progress } from "@philcn/components/ui/progress.tsx";
 import { Skeleton } from "@philcn/components/ui/skeleton.tsx";
 
-import { HeroBackdrop } from "@/components/hero-backdrop";
-import { HeroComposition } from "@/components/hero-composition";
+import { ComponentShowcase } from "@/components/component-showcase";
 import {
   BoltIcon,
   GitHubIcon,
@@ -24,6 +23,8 @@ import {
   TailwindIcon,
   TypeScriptIcon,
 } from "@/components/icons";
+import { ShaderCanvas } from "@/components/shader-canvas";
+import { beams } from "@/components/shaders";
 import { PillLink, SiteHeader, Wordmark } from "@/components/site-header";
 
 const stack = [
@@ -65,57 +66,69 @@ const values = [
 export default function Home() {
   return (
     <div className="p-2 sm:p-3" id="top">
-      {/* =========================== hero card =========================== */}
-      <section className="relative overflow-hidden rounded-[28px] bg-brand-canvas sm:rounded-[36px]">
-        <HeroBackdrop />
+      {/* ====================== hero card, on ink ====================== */}
+      <section className="relative overflow-hidden rounded-[28px] bg-[#0A0B0F] sm:rounded-[36px]">
+        <ShaderCanvas
+          fragment={beams.fragment}
+          fallback={beams.fallback}
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        />
+
+        {/* The beams run bright; this keeps the words on top of them
+            readable without dimming the whole card. */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(58% 52% at 50% 52%, rgba(10,11,15,.78) 0%, rgba(10,11,15,.52) 45%, transparent 78%)",
+          }}
+          aria-hidden
+        />
 
         <div className="relative z-10">
           <SiteHeader />
 
-          <div className="grid items-center gap-12 px-7 pt-14 pb-10 sm:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:pt-16">
-            <div>
-              <p className="rise flex items-center gap-2.5 text-[13px] font-medium tracking-[0.16em] text-brand-primary uppercase">
-                <span className="size-1.5 rounded-full bg-brand-primary" aria-hidden />
-                Open source
-              </p>
+          {/* Text only. The components get the card below, to themselves. */}
+          <div className="mx-auto max-w-[46rem] px-7 pt-24 pb-28 text-center sm:px-10 sm:pt-32 sm:pb-36">
+            <p className="rise inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/8 px-4 py-1.5 text-[13px] font-medium tracking-[0.14em] text-white/70 uppercase backdrop-blur-sm">
+              <span className="size-1.5 rounded-full bg-brand-primary" aria-hidden />
+              Open source
+            </p>
 
-              <h1
-                className="rise mt-6 text-[clamp(2.75rem,5.6vw,4.5rem)] leading-[0.98] font-semibold tracking-[-0.05em] text-balance"
-                style={{ animationDelay: "70ms" }}
-              >
-                Beautiful components
-                <br />
-                for <span className="text-brand-primary">React.</span>
-              </h1>
+            <h1
+              className="rise mt-8 text-[clamp(2.9rem,6.4vw,5.2rem)] leading-[0.96] font-semibold tracking-[-0.05em] text-balance text-white"
+              style={{ animationDelay: "70ms" }}
+            >
+              Beautiful components
+              <br />
+              for <span className="text-brand-accent">React.</span>
+            </h1>
 
-              <p
-                className="rise mt-6 max-w-[32rem] text-lg leading-relaxed text-brand-ink-soft"
-                style={{ animationDelay: "140ms" }}
-              >
-                A collection of accessible, customizable and design-focused components to
-                build modern interfaces — your way. Small components, big possibilities.
-              </p>
+            <p
+              className="rise mx-auto mt-7 max-w-[34rem] text-lg leading-relaxed text-white/60"
+              style={{ animationDelay: "140ms" }}
+            >
+              A collection of accessible, customizable and design-focused components to
+              build modern interfaces — your way. Small components, big possibilities.
+            </p>
 
-              <div
-                className="rise mt-9 flex flex-wrap items-center gap-3"
-                style={{ animationDelay: "210ms" }}
-              >
-                <PillLink href="#library">Get started</PillLink>
-                <PillLink href="https://github.com/PhilibertG/philcn" tone="light">
-                  Browse components
-                </PillLink>
-              </div>
+            <div
+              className="rise mt-10 flex flex-wrap items-center justify-center gap-3"
+              style={{ animationDelay: "210ms" }}
+            >
+              <PillLink href="#library">Get started</PillLink>
+              <PillLink href="https://github.com/PhilibertG/philcn" tone="light">
+                Browse components
+              </PillLink>
             </div>
-
-            <HeroComposition />
           </div>
 
-          {/* The strip along the foot of the card, the way Sparrow lays it out. */}
-          <div className="mx-7 flex flex-col gap-7 border-t border-brand-line/80 py-7 sm:mx-10 sm:flex-row sm:items-center">
-            <ul className="flex flex-wrap items-center gap-x-7 gap-y-3 text-[15px] text-brand-ink-soft">
+          {/* The strip along the foot of the card. */}
+          <div className="mx-7 flex flex-col gap-7 border-t border-white/10 py-7 sm:mx-10 sm:flex-row sm:items-center">
+            <ul className="flex flex-wrap items-center gap-x-7 gap-y-3 text-[15px] text-white/55">
               {stack.map(({ icon: Icon, label }) => (
                 <li key={label} className="flex items-center gap-2.5">
-                  <Icon className="size-[19px] text-brand-ink/70" />
+                  <Icon className="size-[19px] text-white/45" />
                   {label}
                 </li>
               ))}
@@ -124,8 +137,10 @@ export default function Home() {
             <div className="flex gap-9 sm:ml-auto sm:gap-12">
               {figures.map((figure) => (
                 <div key={figure.label}>
-                  <div className="text-2xl font-semibold tracking-tight">{figure.value}</div>
-                  <div className="mt-0.5 text-[13px] text-brand-ink-soft">{figure.label}</div>
+                  <div className="text-2xl font-semibold tracking-tight text-white">
+                    {figure.value}
+                  </div>
+                  <div className="mt-0.5 text-[13px] text-white/50">{figure.label}</div>
                 </div>
               ))}
             </div>
@@ -133,7 +148,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ========================= library card ========================= */}
+      {/* ================= library card, in the light ================= */}
       <section
         id="library"
         className="mt-2 scroll-mt-4 rounded-[28px] bg-brand-surface px-7 py-16 sm:mt-3 sm:rounded-[36px] sm:px-10 sm:py-20"
@@ -164,9 +179,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Real components, on philcn's own tokens — no site colours here, so
-            what you see is what lands in your project. */}
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Not a picture: everything below is running. */}
+        <div className="mt-12">
+          <ComponentShowcase />
+        </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
           <ShowcaseTile title="Cards and type" caption="card · badge">
             <Card className="w-full">
               <CardHeader>
@@ -236,8 +254,8 @@ export default function Home() {
           <span className="font-mono text-xs">v0.3.1 · 2026</span>
         </div>
 
-        {/* The name, once, at the very bottom — large enough to be felt rather
-            than read, and cropped by the edge of the page. */}
+        {/* The name, once, large enough to be felt rather than read, and
+            cropped by the edge of the page. */}
         <div className="bleed-mark -mb-[0.18em] translate-y-[0.06em] text-center whitespace-nowrap">
           philcn<span className="text-brand-primary/25">.</span>
         </div>
