@@ -6,12 +6,51 @@ import { cn } from "../../lib/cn.ts";
 
 type LoadStatus = "idle" | "loading" | "loaded" | "error";
 
-const AvatarContext = React.createContext<{
-  status: LoadStatus;
-  setStatus: (status: LoadStatus) => void;
-} | null>(null);
+/**
+ * A value two components share, kept outside React state on purpose.
+ *
+ * The image reports its progress from a browser callback and from an effect.
+ * Writing React state straight from an effect costs an extra render of the
+ * whole avatar every time; writing here re-renders only whoever reads the
+ * value, and `useSyncExternalStore` keeps that safe during hydration.
+ */
+interface Store<T> {
+  read: () => T;
+  write: (value: T) => void;
+  subscribe: (onChange: () => void) => () => void;
+}
 
-function useAvatarContext(component: string) {
+function createStore<T>(initial: T): Store<T> {
+  let current = initial;
+  const listeners = new Set<() => void>();
+
+  return {
+    read: () => current,
+    write: (value) => {
+      if (Object.is(value, current)) return;
+      current = value;
+      for (const onChange of listeners) onChange();
+    },
+    subscribe: (onChange) => {
+      listeners.add(onChange);
+      return () => {
+        listeners.delete(onChange);
+      };
+    },
+  };
+}
+
+function useStore<T>(store: Store<T>, readOnServer: () => T): T {
+  return React.useSyncExternalStore(store.subscribe, store.read, readOnServer);
+}
+
+/** Nothing has loaded during a server render, so the initials show there. */
+const readIdle = (): LoadStatus => "idle";
+const readNoUrl = (): string | undefined => undefined;
+
+const AvatarContext = React.createContext<Store<LoadStatus> | null>(null);
+
+function useAvatarStatusStore(component: string): Store<LoadStatus> {
   const context = React.useContext(AvatarContext);
   if (context === null) {
     throw new Error(`${component} must be used inside <Avatar>`);
@@ -21,11 +60,10 @@ function useAvatarContext(component: string) {
 
 const Avatar = React.forwardRef<HTMLSpanElement, React.ComponentPropsWithoutRef<"span">>(
   function Avatar({ className, ...props }, ref) {
-    const [status, setStatus] = React.useState<LoadStatus>("idle");
-    const value = React.useMemo(() => ({ status, setStatus }), [status]);
+    const [store] = React.useState(() => createStore<LoadStatus>("idle"));
 
     return (
-      <AvatarContext.Provider value={value}>
+      <AvatarContext.Provider value={store}>
         <span
           ref={ref}
           data-slot="avatar"
@@ -42,7 +80,8 @@ const Avatar = React.forwardRef<HTMLSpanElement, React.ComponentPropsWithoutRef<
 
 const AvatarImage = React.forwardRef<HTMLImageElement, React.ComponentPropsWithoutRef<"img">>(
   function AvatarImage({ className, onLoad, onError, src, ...props }, ref) {
-    const { status, setStatus } = useAvatarContext("AvatarImage");
+    const store = useAvatarStatusStore("AvatarImage");
+    const status = useStore(store, readIdle);
 
     /**
      * React leaves the type of an image's `src` open for frameworks to widen —
@@ -50,50 +89,51 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ComponentPropsWitho
      * a blob is turned into one here and released as soon as it is no longer
      * on screen, which is what keeps it from leaking.
      */
-    const [url, setUrl] = React.useState<string | undefined>(
-      typeof src === "string" ? src : undefined,
+    const [urlStore] = React.useState(() =>
+      createStore<string | undefined>(typeof src === "string" ? src : undefined),
     );
+    const url = useStore(urlStore, readNoUrl);
 
     React.useEffect(() => {
       const value: unknown = src;
 
       if (value === undefined || typeof value === "string") {
-        setUrl(value);
+        urlStore.write(value);
         return;
       }
       if (typeof Blob !== "undefined" && value instanceof Blob) {
         const objectUrl = URL.createObjectURL(value);
-        setUrl(objectUrl);
+        urlStore.write(objectUrl);
         return () => URL.revokeObjectURL(objectUrl);
       }
-      setUrl(undefined);
+      urlStore.write(undefined);
       return;
-    }, [src]);
+    }, [src, urlStore]);
 
     // Resolve the image out of band so the fallback can show while it loads,
     // and so a broken URL never leaves a torn image on screen.
     React.useEffect(() => {
       if (url === undefined || url === "") {
-        setStatus("error");
+        store.write("error");
         return;
       }
 
       let cancelled = false;
-      setStatus("loading");
+      store.write("loading");
 
       const image = new window.Image();
       image.onload = () => {
-        if (!cancelled) setStatus("loaded");
+        if (!cancelled) store.write("loaded");
       };
       image.onerror = () => {
-        if (!cancelled) setStatus("error");
+        if (!cancelled) store.write("error");
       };
       image.src = url;
 
       return () => {
         cancelled = true;
       };
-    }, [url, setStatus]);
+    }, [url, store]);
 
     if (status !== "loaded") return null;
 
@@ -118,7 +158,7 @@ export interface AvatarFallbackProps extends React.ComponentPropsWithoutRef<"spa
 
 const AvatarFallback = React.forwardRef<HTMLSpanElement, AvatarFallbackProps>(
   function AvatarFallback({ className, delayMs, ...props }, ref) {
-    const { status } = useAvatarContext("AvatarFallback");
+    const status = useStore(useAvatarStatusStore("AvatarFallback"), readIdle);
     const [canRender, setCanRender] = React.useState(delayMs === undefined);
 
     React.useEffect(() => {
