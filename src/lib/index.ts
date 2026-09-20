@@ -7,7 +7,7 @@ export {
   type Placement,
   type Side,
 } from "./anchored.ts";
-export { cn, mergeClasses, type ClassValue } from "./cn.ts";
+export { cn, type ClassValue } from "./cn.ts";
 export {
   defaultCommandFilter,
   rankEntries,

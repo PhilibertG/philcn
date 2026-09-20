@@ -68,9 +68,15 @@ describe("buildRegistry", () => {
   });
 
   it("names the packages the project will need", () => {
-    assert.deepEqual(registry["dropdown-menu"].dependencies, ["@floating-ui/react-dom"]);
-    // A component with nothing floating in it needs no package at all.
-    assert.deepEqual(registry["button"].dependencies, []);
+    // Every component joins class names, so every component needs those two.
+    assert.deepEqual(registry["button"].dependencies, ["clsx", "tailwind-merge"]);
+    // Only the ones that float need the positioning engine on top.
+    assert.deepEqual(registry["dropdown-menu"].dependencies, [
+      "@floating-ui/react-dom",
+      "clsx",
+      "tailwind-merge",
+    ]);
+    assert.ok(!registry["button"].dependencies.includes("@floating-ui/react-dom"));
   });
 
   it("never lists a file twice", () => {
