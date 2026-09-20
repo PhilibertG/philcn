@@ -30,6 +30,20 @@ npx philcn list                    # everything on offer
 npx philcn add button card         # copy those in
 ```
 
+The stylesheet opens with two imports, and both matter:
+
+```css
+@import "tailwindcss";
+@import "philcn/source.css";
+```
+
+The second tells Tailwind to look inside the installed package. Some of the
+shared behaviour carries Tailwind classes, and Tailwind does not scan
+`node_modules` on its own — without that line, menus and dialogs come out
+unstyled. `init` writes it for you; a project set up with philcn 0.3.0 has to
+add it by hand.
+
+
 Each component lands in your own source tree as a file you own, with its
 imports rewritten to your aliases. The shared behaviour behind it — focus
 traps, portals, keyboard navigation — is imported from the `philcn` package

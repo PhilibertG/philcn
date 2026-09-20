@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { aliasesFrom, DEFAULT_ALIASES, rewriteFile, targetFor } from "./paths.mjs";
+import {
+  aliasesFrom,
+  DEFAULT_ALIASES,
+  rewriteFile,
+  targetFor,
+  withPackageSource,
+} from "./paths.mjs";
 
 const aliases = { ui: "@/components/ui", lib: "@/lib/philcn", utils: "@/lib/utils" };
 const resolveAlias = (alias) => alias.replace(/^@\//, "src/");
@@ -103,5 +109,29 @@ describe("rewriteFile, copying everything", () => {
       rewriteFile("src/components/ui/popover.tsx", source, aliases, options),
       'import type { Side } from "@/lib/philcn/anchored";',
     );
+  });
+});
+
+describe("withPackageSource", () => {
+  const theme = '@import "tailwindcss";\n\n@custom-variant dark (&:is(.dark *));\n';
+
+  it("points Tailwind at the package, right under the Tailwind import", () => {
+    const out = withPackageSource(theme);
+    assert.equal(
+      out,
+      '@import "tailwindcss";\n@import "philcn/source.css";\n\n@custom-variant dark (&:is(.dark *));\n',
+    );
+  });
+
+  it("leaves a standalone project alone — its shared files are already in view", () => {
+    assert.equal(withPackageSource(theme, { standalone: true }), theme);
+  });
+
+  it("does not add the import twice", () => {
+    assert.equal(withPackageSource(withPackageSource(theme)), withPackageSource(theme));
+  });
+
+  it("still adds it when there is no Tailwind import to sit under", () => {
+    assert.equal(withPackageSource(":root { --radius: 0.625rem; }"), '@import "philcn/source.css";\n:root { --radius: 0.625rem; }');
   });
 });
