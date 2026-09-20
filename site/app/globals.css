@@ -35,8 +35,10 @@
   --font-mono: ui-monospace, "SF Mono", monospace;
 }
 
+/* The page itself is ink. Everything readable sits in a rounded card on top
+   of it, with a margin all round — that gap is the whole look. */
 body {
-  background-color: var(--brand-canvas);
+  background-color: var(--brand-ink);
   color: var(--brand-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -93,4 +95,14 @@ body {
   .float {
     animation: none;
   }
+}
+
+/* The wordmark bleeding off the bottom of the page: present, never read. */
+.bleed-mark {
+  font-size: clamp(7rem, 22vw, 19rem);
+  line-height: 0.76;
+  letter-spacing: -0.06em;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--brand-surface) 7%, transparent);
+  user-select: none;
 }
