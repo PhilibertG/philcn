@@ -6,6 +6,7 @@ import { cn } from "../../lib/cn.ts";
 import { composeEventHandlers } from "../../lib/compose.ts";
 import { closestIndex, moveValue, percentFor, valueAt } from "../../lib/slider-math.ts";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
+import { useIsomorphicLayoutEffect } from "../../lib/use-isomorphic-layout-effect.ts";
 
 export interface SliderProps
   extends Omit<React.ComponentPropsWithoutRef<"div">, "defaultValue" | "onChange" | "dir"> {
@@ -56,10 +57,14 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Slider(
   const track = React.useRef<HTMLSpanElement | null>(null);
   const thumbs = React.useRef<(HTMLSpanElement | null)[]>([]);
   const dragging = React.useRef<number | null>(null);
-  // The values are read back when the handle is let go, without making the
-  // pointer handlers depend on them.
+  // The values are read back when a drag starts and when the handle is let go,
+  // without making the pointer handlers depend on them. Written from an effect
+  // rather than during the render: a render may be thrown away and run again,
+  // and a value written on the way through would survive it.
   const latest = React.useRef(values);
-  latest.current = values;
+  useIsomorphicLayoutEffect(() => {
+    latest.current = values;
+  });
 
   /**
    * Moves one handle. The new row is worked out from the row as it stands at

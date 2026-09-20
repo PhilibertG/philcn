@@ -44,10 +44,36 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ComponentPropsWitho
   function AvatarImage({ className, onLoad, onError, src, ...props }, ref) {
     const { status, setStatus } = useAvatarContext("AvatarImage");
 
+    /**
+     * React leaves the type of an image's `src` open for frameworks to widen —
+     * Next.js, for one, accepts a `Blob`. Everything below needs a real URL, so
+     * a blob is turned into one here and released as soon as it is no longer
+     * on screen, which is what keeps it from leaking.
+     */
+    const [url, setUrl] = React.useState<string | undefined>(
+      typeof src === "string" ? src : undefined,
+    );
+
+    React.useEffect(() => {
+      const value: unknown = src;
+
+      if (value === undefined || typeof value === "string") {
+        setUrl(value);
+        return;
+      }
+      if (typeof Blob !== "undefined" && value instanceof Blob) {
+        const objectUrl = URL.createObjectURL(value);
+        setUrl(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
+      }
+      setUrl(undefined);
+      return;
+    }, [src]);
+
     // Resolve the image out of band so the fallback can show while it loads,
     // and so a broken URL never leaves a torn image on screen.
     React.useEffect(() => {
-      if (src === undefined || src === "") {
+      if (url === undefined || url === "") {
         setStatus("error");
         return;
       }
@@ -62,19 +88,19 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ComponentPropsWitho
       image.onerror = () => {
         if (!cancelled) setStatus("error");
       };
-      image.src = src;
+      image.src = url;
 
       return () => {
         cancelled = true;
       };
-    }, [src, setStatus]);
+    }, [url, setStatus]);
 
     if (status !== "loaded") return null;
 
     return (
       <img
         ref={ref}
-        src={src}
+        src={url}
         data-slot="avatar-image"
         className={cn("aspect-square size-full object-cover animate-fade-in", className)}
         onLoad={onLoad}
