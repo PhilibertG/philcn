@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.2.0](https://github.com/PhilibertG/philcn/compare/v0.1.0...v0.2.0) (2026-09-20)
+
+
+### Features
+
+* **calendar:** add Calendar with single, multiple and range modes ([37ae7a6](https://github.com/PhilibertG/philcn/commit/37ae7a67ded70e1bf13ee98b95adc0289aac2e3a))
+* **checkbox:** add Checkbox ([d968b67](https://github.com/PhilibertG/philcn/commit/d968b670ea6f5b501fe2be80ed020042a80f9f58))
+* **cli:** add the philcn command that copies components into a project ([a05592f](https://github.com/PhilibertG/philcn/commit/a05592f0df9772a847ebbb29022329417d97eb61))
+* **cli:** speak the project's own package manager ([52f7b23](https://github.com/PhilibertG/philcn/commit/52f7b2372c945e5ec7b77c8dff78f53e2decfde5))
+* **form:** add Form on top of react-hook-form ([9a28aff](https://github.com/PhilibertG/philcn/commit/9a28aff7eaa1a421eade822c198fe3bee196d557))
+* **lib:** add the calendar arithmetic ([1313795](https://github.com/PhilibertG/philcn/commit/13137957f207bd10b4b79f8bbbe71af026f7d569))
+* **lib:** add the slider arithmetic ([4cc96d8](https://github.com/PhilibertG/philcn/commit/4cc96d8edbd505f892d7fcf8a7abd637ce954410))
+* **menu:** add submenus to DropdownMenu, ContextMenu and Menubar ([26fd8d7](https://github.com/PhilibertG/philcn/commit/26fd8d78293015be1c71477f22341c3f0b914e94))
+* **slider:** add Slider ([406c467](https://github.com/PhilibertG/philcn/commit/406c467f7342d5147753bd52f981a310eaca7dd1))
+* **switch:** add Switch ([2aede00](https://github.com/PhilibertG/philcn/commit/2aede000245b54af55fcfc122b3e1b4229172d50))
+
+
+### Bug fixes
+
+* **calendar:** drop its own background inside a popover or a card ([67b70e9](https://github.com/PhilibertG/philcn/commit/67b70e9a86573bdaa9aae3d0959f8c75ed7711ac))
+* **calendar:** keep the grid from squashing in a narrow container ([1e516db](https://github.com/PhilibertG/philcn/commit/1e516db821b375665b2a9ec700df3083d160cf73))
+
+
+### Documentation
+
+* clear the phase 5 to-do list ([956dbc8](https://github.com/PhilibertG/philcn/commit/956dbc8bee5299f19b1eb298418cfcfac00a03c0))
+* drop the design decisions document ([1cfde68](https://github.com/PhilibertG/philcn/commit/1cfde680a1b5003264228b97c09a436cae961ade))
+* mark the phase 5 submenu gap as settled ([8745d9d](https://github.com/PhilibertG/philcn/commit/8745d9df6e313ce30071f78e65d624ebcd21a1cb))
+* record Form and the end of phase 6 ([0d88f0f](https://github.com/PhilibertG/philcn/commit/0d88f0fea2fd34b521dc92af39b4b8946b96594a))
+* record phase 6 and the submenus ([258eec9](https://github.com/PhilibertG/philcn/commit/258eec9edea680059bce44c3c9c7a272c2e45b2d))
+* replace the working notes with a design decisions document ([c853362](https://github.com/PhilibertG/philcn/commit/c8533628ac39a540947f2a3b5e2044e3a562fb47))
+
 ## 0.1.0 (2026-09-19)
 
 
