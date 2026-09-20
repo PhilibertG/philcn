@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0](https://github.com/PhilibertG/philcn/compare/v0.2.1...v0.3.0) (2026-09-20)
+
+
+### Features
+
+* **cli:** import the shared behaviour rather than copying it ([f123afe](https://github.com/PhilibertG/philcn/commit/f123afe34deebb5f86046bb49f8aea9fed56685f))
+* hand components over the way shadcn does ([1cb32b4](https://github.com/PhilibertG/philcn/commit/1cb32b4cfddb2467bb463cb4c67926c695828d32))
+* **lib:** ship the shared behaviour as a compiled package ([2fb9ff8](https://github.com/PhilibertG/philcn/commit/2fb9ff8a173a3986f21001ae0ce9b8a03364d5e0))
+
+
+### Bug fixes
+
+* **avatar:** accept an image source widened by a framework ([26dee37](https://github.com/PhilibertG/philcn/commit/26dee372431a2736665a64267b94c9a3ad5a17a9))
+* **components:** mark the interactive components as client components ([2568d5c](https://github.com/PhilibertG/philcn/commit/2568d5cbfc3ea6bb3a913b4f0ef2b4c771832875))
+* make the components work in a Next.js App Router project ([88b9078](https://github.com/PhilibertG/philcn/commit/88b90780215cf84991ce19fefc32c67ead651571))
+
+
+### Rewrites
+
+* **lib:** build cn on clsx and tailwind-merge ([7cb1554](https://github.com/PhilibertG/philcn/commit/7cb1554ff006bb96f12fbbc1d3f5fe4faa70e9d6))
+* **lib:** use class-variance-authority for the variants ([662bebe](https://github.com/PhilibertG/philcn/commit/662bebe755a096e1e2d8b26a394c9b52d040d7dd))
+
 ## [0.2.1](https://github.com/PhilibertG/philcn/compare/v0.2.0...v0.2.1) (2026-09-20)
 
 
