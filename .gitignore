@@ -14,3 +14,8 @@ playground/
 
 # Local tooling config pointing at the gitignored playground
 .claude/
+
+# Working notes, kept on this machine only — not part of what philcn delivers
+AGENTS.md
+CLAUDE.md
+plans/
