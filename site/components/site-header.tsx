@@ -49,36 +49,44 @@ export function PillLink({
   );
 }
 
-/** The navigation, which lives inside the hero card rather than above it. */
+/**
+ * The navigation, pinned to the top of the window.
+ *
+ * It floats over whatever is under it — the ink hero, then the light cards —
+ * so it carries its own dark, blurred bar rather than borrowing a background
+ * from the section behind it. That way it stays readable the whole way down.
+ */
 export function SiteHeader() {
   return (
-    <div className="flex items-center gap-10 px-7 pt-6 sm:px-10">
-      <a href="#top" className="shrink-0">
-        <Wordmark className="text-[22px] text-white" />
-      </a>
-
-      <nav className="hidden items-center gap-8 text-[15px] text-white/55 lg:flex">
-        {links.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            className="transition-colors duration-200 hover:text-white"
-          >
-            {link.label}
-          </a>
-        ))}
-        <a
-          href="https://github.com/PhilibertG/philcn"
-          className="flex items-center gap-2 transition-colors duration-200 hover:text-white"
-        >
-          <GitHubIcon className="size-[17px]" />
-          GitHub
+    <header className="fixed inset-x-2 top-2 z-50 sm:inset-x-3 sm:top-3">
+      <div className="flex items-center gap-10 rounded-[20px] border border-white/10 bg-[#0A0B0F]/72 px-6 py-3 backdrop-blur-xl lg:px-20">
+        <a href="#top" className="shrink-0">
+          <Wordmark className="text-[22px] text-white" />
         </a>
-      </nav>
 
-      <div className="ml-auto">
-        <PillLink href="#library">Get started</PillLink>
+        <nav className="hidden items-center gap-8 text-[15px] text-white/55 lg:flex">
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="transition-colors duration-200 hover:text-white"
+            >
+              {link.label}
+            </a>
+          ))}
+          <a
+            href="https://github.com/PhilibertG/philcn"
+            className="flex items-center gap-2 transition-colors duration-200 hover:text-white"
+          >
+            <GitHubIcon className="size-[17px]" />
+            GitHub
+          </a>
+        </nav>
+
+        <div className="ml-auto">
+          <PillLink href="#library">Get started</PillLink>
+        </div>
       </div>
-    </div>
+    </header>
   );
 }

@@ -66,6 +66,8 @@ const values = [
 export default function Home() {
   return (
     <div className="p-2 sm:p-3" id="top">
+      <SiteHeader />
+
       {/* ====================== hero card, on ink ====================== */}
       <section className="relative overflow-hidden rounded-[28px] bg-[#0A0B0F] sm:rounded-[36px]">
         <ShaderCanvas
@@ -85,18 +87,13 @@ export default function Home() {
           aria-hidden
         />
 
-        <div className="relative z-10">
-          <SiteHeader />
-
-          {/* Text only. The components get the card below, to themselves. */}
-          <div className="mx-auto max-w-[46rem] px-7 pt-24 pb-28 text-center sm:px-10 sm:pt-32 sm:pb-36">
-            <p className="rise inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/8 px-4 py-1.5 text-[13px] font-medium tracking-[0.14em] text-white/70 uppercase backdrop-blur-sm">
-              <span className="size-1.5 rounded-full bg-brand-primary" aria-hidden />
-              Open source
-            </p>
+        {/* Text only, and the card stops a little short of the window, so
+            the next one shows beneath it and says there is more to come. */}
+        <div className="relative z-10 flex min-h-[86svh] flex-col justify-center px-6 pt-28 pb-16 lg:px-20">
+          <div className="mx-auto max-w-[46rem] text-center">
 
             <h1
-              className="rise mt-8 text-[clamp(2.9rem,6.4vw,5.2rem)] leading-[0.96] font-semibold tracking-[-0.05em] text-balance text-white"
+              className="rise text-[clamp(2.9rem,6.4vw,5.2rem)] leading-[0.96] font-semibold tracking-[-0.05em] text-balance text-white"
               style={{ animationDelay: "70ms" }}
             >
               Beautiful components
@@ -124,7 +121,7 @@ export default function Home() {
           </div>
 
           {/* The strip along the foot of the card. */}
-          <div className="mx-7 flex flex-col gap-7 border-t border-white/10 py-7 sm:mx-10 sm:flex-row sm:items-center">
+          {/* <div className="mx-7 flex flex-col gap-7 border-t border-white/10 py-7 sm:mx-10 sm:flex-row sm:items-center">
             <ul className="flex flex-wrap items-center gap-x-7 gap-y-3 text-[15px] text-white/55">
               {stack.map(({ icon: Icon, label }) => (
                 <li key={label} className="flex items-center gap-2.5">
@@ -144,14 +141,14 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
       {/* ================= library card, in the light ================= */}
       <section
         id="library"
-        className="mt-2 scroll-mt-4 rounded-[28px] bg-brand-surface px-7 py-16 sm:mt-3 sm:rounded-[36px] sm:px-10 sm:py-20"
+        className="mt-2 scroll-mt-24 rounded-[28px] bg-brand-surface px-6 py-16 sm:mt-3 sm:rounded-[36px] sm:py-20 lg:px-20"
       >
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
           <div>
@@ -221,7 +218,7 @@ export default function Home() {
       {/* ========================== values card ========================== */}
       <section
         id="why"
-        className="mt-2 scroll-mt-4 rounded-[28px] bg-[#16171d] px-7 py-16 text-white sm:mt-3 sm:rounded-[36px] sm:px-10 sm:py-20"
+        className="mt-2 scroll-mt-24 rounded-[28px] bg-[#16171d] px-6 py-16 text-white sm:mt-3 sm:rounded-[36px] sm:py-20 lg:px-20"
       >
         <p className="text-[13px] font-medium tracking-[0.16em] text-white/45 uppercase">
           What we stand for
@@ -246,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* ============================ footer ============================ */}
-      <footer className="relative overflow-hidden px-7 pt-16 sm:px-10">
+      <footer className="relative overflow-hidden px-6 pt-16 lg:px-20">
         <div className="flex flex-col gap-5 pb-10 text-sm text-white/45 sm:flex-row sm:items-center">
           <Wordmark className="text-lg text-white" />
           <span>A modern component library for React</span>
