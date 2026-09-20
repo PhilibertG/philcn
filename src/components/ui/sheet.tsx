@@ -169,6 +169,7 @@ const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(functio
         "transition ease-in-out",
         "data-[state=open]:animate-in data-[state=open]:duration-500",
         "data-[state=closed]:animate-out data-[state=closed]:duration-300",
+        "data-[state=closed]:fill-mode-forwards",
         SIDE_CLASSES[side],
         className,
       )}
