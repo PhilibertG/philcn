@@ -211,13 +211,12 @@ uniquement ceux-là. Toute autre différence est un bug.
   tout reste local et rien n'est publié.
 
 ## À faire ensuite
-1. **Le survol à juger à la main.** L'ouverture au survol de Menubar,
-   NavigationMenu et des sous-menus n'est pas constatée par moi : mon
-   navigateur d'inspection n'émet ni vrais survols ni événements de focus.
-2. **La feuille de route est terminée.** Les six phases sont livrées. La
-   suite, quand Phil voudra : publier sur npm (garde-fou, je demande avant),
-   trancher public ou privé, ou rattraper les composants shadcn sortis depuis
-   (Sidebar, Chart, Carousel, Resizable, Sonner, InputOTP, Pagination…).
+**La feuille de route des six phases est terminée**, et les manques de la
+Phase 5 sont soldés : les sous-menus sont livrés, le survol à la souris a été
+vérifié par Phil le 20/09/2026 — tout fonctionne. Ce qui reste, quand Phil
+voudra : publier sur npm (garde-fou, je demande avant), trancher public ou
+privé, ou rattraper les composants shadcn sortis depuis (Sidebar, Chart,
+Carousel, Resizable, Sonner, InputOTP, Pagination…).
 
 ## Feuille de route
 - **Phase 0 — Fondations** : outils de style maison, jetons de couleur
@@ -308,17 +307,10 @@ uniquement ceux-là. Toute autre différence est un bug.
   taille la corrige si le contenu change. Même principe pour la boîte partagée
   de NavigationMenu (`--philcn-navigation-menu-viewport-*`, avec les noms
   `--radix-*` en alias pour le code collé depuis shadcn).
-- **Manque de la Phase 5 — les sous-menus : RÉGLÉ le 19/09/2026.**
-  `DropdownMenu`, `ContextMenu` et `Menubar` n'avaient pas `Sub` /
-  `SubTrigger` / `SubContent` ; c'est écrit dans `src/lib/menu.tsx`, donc les
-  trois en profitent (détail plus bas).
-- **Manque de la Phase 5 — le survol à la souris : TOUJOURS OUVERT.**
-  L'ouverture au survol de Menubar, de NavigationMenu et des sous-menus, et la
-  fermeture de NavigationMenu quand le focus quitte la barre, sont écrites
-  mais jamais constatées par moi : mon navigateur d'inspection n'émet pas de
-  vrais événements de survol ni de focus, et sa fenêtre est souvent masquée.
-  C'est à Phil de juger, à la souris. Rien d'autre de la Phase 5 n'est en
-  attente.
+- **Les deux manques de la Phase 5 sont soldés.** Les sous-menus ont été
+  écrits le 19/09/2026 (détail plus bas), et le survol à la souris — barre de
+  menus, NavigationMenu, sous-menus — a été **vérifié par Phil le 20/09/2026**
+  et fonctionne.
 - **Sous-menus livrés** (19/09/2026) dans `src/lib/menu.tsx` : `Sub`,
   `SubTrigger`, `SubContent` pour DropdownMenu, ContextMenu et Menubar, sur
   plusieurs niveaux. Un menu imbriqué garde son propre état, mais choisir une
