@@ -72,13 +72,13 @@ function ContextMenu({ open, defaultOpen, onOpenChange, children }: ContextMenuP
     onChange: onOpenChange,
   });
   const [anchor, setAnchor] = React.useState<VirtualElement | null>(null);
-  const entryPoint = React.useRef<"first" | "last" | null>(null);
+  const entryPointRef = React.useRef<"first" | "last" | null>(null);
   const contentId = `${useId()}-content`;
 
   const openAt = React.useCallback(
     (x: number, y: number) => {
       setAnchor(pointAnchor(x, y));
-      entryPoint.current = null;
+      entryPointRef.current = null;
       setIsOpen(true);
     },
     [setIsOpen],
@@ -90,7 +90,7 @@ function ContextMenu({ open, defaultOpen, onOpenChange, children }: ContextMenuP
       setOpen: (next: boolean) => setIsOpen(next),
       anchor,
       contentId,
-      entryPoint,
+      entryPointRef,
       slot: "context-menu",
     }),
     [isOpen, setIsOpen, anchor, contentId],

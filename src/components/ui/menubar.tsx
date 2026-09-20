@@ -43,7 +43,7 @@ interface MenubarContextValue {
   openValue: string | null;
   setOpenValue: (value: string | null) => void;
   /** Which end of the list to focus when a menu opens from the keyboard. */
-  entryPoint: React.MutableRefObject<"first" | "last" | null>;
+  entryPointRef: React.MutableRefObject<"first" | "last" | null>;
   /** Every trigger, so the bar can walk from one menu to the next. */
   triggers: React.MutableRefObject<Map<string, HTMLElement>>;
   /** Opens the menu before or after the open one, in the order they appear. */
@@ -81,7 +81,7 @@ const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(function Menubar(
     onChange: onValueChange,
   });
 
-  const entryPoint = React.useRef<"first" | "last" | null>(null);
+  const entryPointRef = React.useRef<"first" | "last" | null>(null);
   const triggers = React.useRef(new Map<string, HTMLElement>());
 
   const context = React.useMemo<MenubarContextValue>(() => {
@@ -90,7 +90,7 @@ const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(function Menubar(
     return {
       openValue: openValue === undefined || openValue === "" ? null : openValue,
       setOpenValue: setOpen,
-      entryPoint,
+      entryPointRef,
       triggers,
       moveMenu: (step) => {
         // Read the triggers in the order they appear on screen, not the order
@@ -106,7 +106,7 @@ const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(function Menubar(
         const next = (current + step + entries.length) % entries.length;
         const target = entries[next];
         if (target === undefined) return;
-        entryPoint.current = null;
+        entryPointRef.current = null;
         setOpen(target[0]);
       },
     };
@@ -148,7 +148,7 @@ function MenubarMenu({ value, children }: MenubarMenuProps) {
       setOpen: (next: boolean) => menubar.setOpenValue(next ? menuValue : null),
       anchor,
       contentId: `${baseId}-content`,
-      entryPoint: menubar.entryPoint,
+      entryPointRef: menubar.entryPointRef,
       slot: "menubar",
     }),
     [menubar, menuValue, anchor, baseId],
@@ -187,7 +187,7 @@ const MenubarTrigger = React.forwardRef<HTMLButtonElement, MenubarTriggerProps>(
     ref,
   ) {
     const menubar = useMenubarContext("MenubarTrigger");
-    const { open, setOpen, contentId, entryPoint } = useMenuRoot("MenubarTrigger");
+    const { open, setOpen, contentId, entryPointRef } = useMenuRoot("MenubarTrigger");
     const menuValue = React.useContext(MenuValueContext);
     const setAnchor = React.useContext(AnchorContext);
 
@@ -229,7 +229,7 @@ const MenubarTrigger = React.forwardRef<HTMLButtonElement, MenubarTriggerProps>(
       "aria-controls": open ? contentId : undefined,
       disabled,
       onClick: composeEventHandlers(onClick, () => {
-        entryPoint.current = null;
+        entryPointRef.current = null;
         setOpen(!open);
       }),
       // Once one menu is open, the bar follows the pointer: moving across the
@@ -238,7 +238,7 @@ const MenubarTrigger = React.forwardRef<HTMLButtonElement, MenubarTriggerProps>(
         onPointerEnter as React.PointerEventHandler<HTMLButtonElement> | undefined,
         (event: React.PointerEvent<HTMLButtonElement>) => {
           if (disabled || menubar.openValue === null || open) return;
-          entryPoint.current = null;
+          entryPointRef.current = null;
           setOpen(true);
           event.currentTarget.focus();
         },
@@ -263,7 +263,7 @@ const MenubarTrigger = React.forwardRef<HTMLButtonElement, MenubarTriggerProps>(
           if (open) return;
           if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
           event.preventDefault();
-          entryPoint.current = event.key === "ArrowDown" ? "first" : "last";
+          entryPointRef.current = event.key === "ArrowDown" ? "first" : "last";
           setOpen(true);
         },
       ),

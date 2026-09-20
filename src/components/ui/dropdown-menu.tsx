@@ -46,7 +46,7 @@ function DropdownMenu({ open, defaultOpen, onOpenChange, children }: DropdownMen
     onChange: onOpenChange,
   });
   const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
-  const entryPoint = React.useRef<"first" | "last" | null>(null);
+  const entryPointRef = React.useRef<"first" | "last" | null>(null);
   const contentId = `${useId()}-content`;
 
   const value = React.useMemo<MenuRootValue & { setAnchor: typeof setAnchor }>(
@@ -56,7 +56,7 @@ function DropdownMenu({ open, defaultOpen, onOpenChange, children }: DropdownMen
       anchor,
       setAnchor,
       contentId,
-      entryPoint,
+      entryPointRef,
       slot: "dropdown-menu",
     }),
     [isOpen, setIsOpen, anchor, contentId],
@@ -80,7 +80,7 @@ export interface DropdownMenuTriggerProps extends React.ComponentPropsWithoutRef
 
 const DropdownMenuTrigger = React.forwardRef<HTMLButtonElement, DropdownMenuTriggerProps>(
   function DropdownMenuTrigger({ asChild = false, render, onClick, onKeyDown, ...props }, ref) {
-    const { open, setOpen, contentId, entryPoint } = useMenuRoot("DropdownMenuTrigger");
+    const { open, setOpen, contentId, entryPointRef } = useMenuRoot("DropdownMenuTrigger");
     const setAnchor = React.useContext(AnchorContext);
 
     const setRef = React.useMemo(
@@ -99,7 +99,7 @@ const DropdownMenuTrigger = React.forwardRef<HTMLButtonElement, DropdownMenuTrig
       "aria-expanded": open,
       "aria-controls": open ? contentId : undefined,
       onClick: composeEventHandlers(onClick, () => {
-        entryPoint.current = null;
+        entryPointRef.current = null;
         setOpen(!open);
       }),
       // Opening with an arrow lands on the near end of the list, the way a
@@ -108,7 +108,7 @@ const DropdownMenuTrigger = React.forwardRef<HTMLButtonElement, DropdownMenuTrig
         if (open) return;
         if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
         event.preventDefault();
-        entryPoint.current = event.key === "ArrowDown" ? "first" : "last";
+        entryPointRef.current = event.key === "ArrowDown" ? "first" : "last";
         setOpen(true);
       }),
       ...props,
