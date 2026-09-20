@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Roving focus — a group of controls that the Tab key treats as one stop.
  *

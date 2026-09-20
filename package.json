@@ -9,11 +9,27 @@
     "url": "git+https://github.com/PhilibertG/philcn.git"
   },
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"src/**/*.test.ts\" \"cli/**/*.test.mjs\"",
     "lint:commits": "node scripts/check-commits.mjs",
-    "check": "npm run typecheck && npm run test"
+    "check": "npm run typecheck && npm run build && npm run test",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "@floating-ui/react-dom": "^2.1.9",
@@ -39,6 +55,7 @@
   "files": [
     "cli",
     "!cli/**/*.test.mjs",
+    "dist",
     "src",
     "!src/**/*.test.ts",
     "README.md",
