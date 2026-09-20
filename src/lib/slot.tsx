@@ -42,9 +42,17 @@ const Slot = React.forwardRef<HTMLElement, SlotProps>(function Slot(
     merged["children"] = children;
   }
 
+  // A ref is attached only when there is one to forward. An element that
+  // carries a ref cannot be rendered inside a React Server Component, so
+  // attaching an empty one would break `asChild` on a Next.js App Router page
+  // that is not marked `"use client"`.
+  const hasRef =
+    (forwardedRef !== null && forwardedRef !== undefined) ||
+    (childRef !== null && childRef !== undefined);
+
   return React.cloneElement(element, {
     ...merged,
-    ref: composeRefs<HTMLElement>(forwardedRef, childRef),
+    ...(hasRef ? { ref: composeRefs<HTMLElement>(forwardedRef, childRef) } : {}),
   } as Partial<unknown> & React.Attributes);
 });
 
