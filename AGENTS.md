@@ -308,14 +308,17 @@ uniquement ceux-là. Toute autre différence est un bug.
   taille la corrige si le contenu change. Même principe pour la boîte partagée
   de NavigationMenu (`--philcn-navigation-menu-viewport-*`, avec les noms
   `--radix-*` en alias pour le code collé depuis shadcn).
-- **Manque connu, à traiter plus tard : les sous-menus.** `DropdownMenu`,
-  `ContextMenu` et `Menubar` n'ont pas `Sub` / `SubTrigger` / `SubContent`.
-  Un bloc shadcn qui ouvre un sous-menu ne marchera pas. Le manque date de la
-  Phase 4 ; l'ajouter dans `src/lib/menu.tsx` profiterait aux trois d'un coup.
-- **Non testé par moi en Phase 5** : l'ouverture au survol de la souris
-  (Menubar et NavigationMenu). Mon navigateur d'inspection n'émet pas de vrais
-  événements de survol ni de focus, et sa fenêtre est masquée. À juger à la
-  main.
+- **Manque de la Phase 5 — les sous-menus : RÉGLÉ le 19/09/2026.**
+  `DropdownMenu`, `ContextMenu` et `Menubar` n'avaient pas `Sub` /
+  `SubTrigger` / `SubContent` ; c'est écrit dans `src/lib/menu.tsx`, donc les
+  trois en profitent (détail plus bas).
+- **Manque de la Phase 5 — le survol à la souris : TOUJOURS OUVERT.**
+  L'ouverture au survol de Menubar, de NavigationMenu et des sous-menus, et la
+  fermeture de NavigationMenu quand le focus quitte la barre, sont écrites
+  mais jamais constatées par moi : mon navigateur d'inspection n'émet pas de
+  vrais événements de survol ni de focus, et sa fenêtre est souvent masquée.
+  C'est à Phil de juger, à la souris. Rien d'autre de la Phase 5 n'est en
+  attente.
 - **Sous-menus livrés** (19/09/2026) dans `src/lib/menu.tsx` : `Sub`,
   `SubTrigger`, `SubContent` pour DropdownMenu, ContextMenu et Menubar, sur
   plusieurs niveaux. Un menu imbriqué garde son propre état, mais choisir une
