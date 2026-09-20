@@ -16,7 +16,7 @@ import { Slot } from "../../lib/slot.tsx";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
 import { useId } from "../../lib/use-id.ts";
 import { useIsomorphicLayoutEffect } from "../../lib/use-isomorphic-layout-effect.ts";
-import { variants } from "../../lib/variants.ts";
+import { cva } from "class-variance-authority";
 
 interface NavigationMenuContextValue {
   /** The item whose panel is open, or `null`. */
@@ -239,7 +239,7 @@ const NavigationMenuItem = React.forwardRef<HTMLLIElement, NavigationMenuItemPro
   },
 );
 
-const navigationMenuTriggerStyle = variants([
+const navigationMenuTriggerStyle = cva([
   "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2",
   "bg-background text-sm font-medium",
   // deliberate divergence from shadcn: a clickable control shows a pointer

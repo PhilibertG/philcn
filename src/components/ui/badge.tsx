@@ -2,9 +2,9 @@ import * as React from "react";
 
 import { cn } from "../../lib/cn.ts";
 import { Slot } from "../../lib/slot.tsx";
-import { variants, type VariantProps } from "../../lib/variants.ts";
+import { cva, type VariantProps } from "class-variance-authority";
 
-const badgeVariants = variants(
+const badgeVariants = cva(
   [
     "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden",
     "whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium",

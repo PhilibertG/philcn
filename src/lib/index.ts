@@ -98,12 +98,3 @@ export {
 export { useId } from "./use-id.ts";
 export { useScrollLock } from "./use-scroll-lock.ts";
 export { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect.ts";
-export {
-  variants,
-  type CompoundSelection,
-  type VariantConfig,
-  type VariantParams,
-  type VariantProps,
-  type VariantSelection,
-  type VariantShape,
-} from "./variants.ts";

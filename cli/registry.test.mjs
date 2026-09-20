@@ -68,8 +68,13 @@ describe("buildRegistry", () => {
   });
 
   it("names the packages the project will need", () => {
-    // Every component joins class names, so every component needs those two.
-    assert.deepEqual(registry["button"].dependencies, ["clsx", "tailwind-merge"]);
+    // Every component joins class names; a component with declensions also
+    // needs the one that builds them.
+    assert.deepEqual(registry["button"].dependencies, [
+      "class-variance-authority",
+      "clsx",
+      "tailwind-merge",
+    ]);
     // Only the ones that float need the positioning engine on top.
     assert.deepEqual(registry["dropdown-menu"].dependencies, [
       "@floating-ui/react-dom",

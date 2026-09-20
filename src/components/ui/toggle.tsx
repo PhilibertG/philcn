@@ -5,9 +5,9 @@ import * as React from "react";
 import { cn } from "../../lib/cn.ts";
 import { Slot } from "../../lib/slot.tsx";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
-import { variants, type VariantProps } from "../../lib/variants.ts";
+import { cva, type VariantProps } from "class-variance-authority";
 
-const toggleVariants = variants(
+const toggleVariants = cva(
   [
     // layout
     "inline-flex items-center justify-center gap-2 whitespace-nowrap",
