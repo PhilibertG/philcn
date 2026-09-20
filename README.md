@@ -12,8 +12,7 @@ files into your project, where they become yours to edit.
 
 ## Usage
 
-Set the project up once, then add what you need. Use whichever package manager
-the project already uses:
+Set the project up once:
 
 ```bash
 bunx philcn init          # bun
@@ -22,17 +21,39 @@ yarn dlx philcn init      # yarn
 npx philcn init           # npm
 ```
 
-`init` writes a `components.json` and drops the theme stylesheet into the
-project. Import that stylesheet once, then:
+`init` writes a `components.json`, drops the theme stylesheet into the project
+and creates `lib/utils.ts` — the same file shadcn uses, holding `cn`. Import
+the stylesheet once, then add what you need:
 
 ```bash
 npx philcn list                    # everything on offer
-npx philcn add button card         # copy those in, with whatever they need
+npx philcn add button card         # copy those in
 ```
 
-Each component lands in your own source tree with its imports rewritten to
-your aliases. It is your file from then on. The command tells you, in your
-package manager's own wording, if a component needs a package installed.
+Each component lands in your own source tree as a file you own, with its
+imports rewritten to your aliases. The shared behaviour behind it — focus
+traps, portals, keyboard navigation — is imported from the `philcn` package
+rather than copied, the same way a shadcn component imports Radix. So a project
+using philcn looks like this, and nothing else:
+
+```
+components/ui/button.tsx
+components/ui/dialog.tsx
+lib/utils.ts
+```
+
+The command tells you which packages to install, in your own package manager's
+wording.
+
+### Carrying all of the code
+
+If a project has to hold every line it runs — a school submission, an audit —
+`--standalone` copies the shared behaviour as files too, so nothing is imported
+from `philcn` at runtime:
+
+```bash
+npx philcn add dialog --standalone
+```
 
 ## Status
 

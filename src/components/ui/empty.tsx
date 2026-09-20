@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "../../lib/cn.ts";
-import { variants, type VariantProps } from "../../lib/variants.ts";
+import { cva, type VariantProps } from "class-variance-authority";
 
 type DivProps = React.ComponentPropsWithoutRef<"div">;
 
@@ -37,7 +37,7 @@ const EmptyHeader = React.forwardRef<HTMLDivElement, DivProps>(function EmptyHea
   );
 });
 
-const emptyMediaVariants = variants(
+const emptyMediaVariants = cva(
   "flex shrink-0 items-center justify-center mb-2 [&_svg:not([class*='size-'])]:size-6",
   {
     variants: {

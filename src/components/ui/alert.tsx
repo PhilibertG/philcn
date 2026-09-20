@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import { cn } from "../../lib/cn.ts";
-import { variants, type VariantProps } from "../../lib/variants.ts";
+import { cva, type VariantProps } from "class-variance-authority";
 
-const alertVariants = variants(
+const alertVariants = cva(
   [
     "relative grid w-full items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm",
     // an icon child turns the box into two columns

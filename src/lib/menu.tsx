@@ -1,3 +1,5 @@
+"use client";
+
 import type { VirtualElement } from "@floating-ui/react-dom";
 import * as React from "react";
 

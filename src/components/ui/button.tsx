@@ -2,9 +2,9 @@ import * as React from "react";
 
 import { cn } from "../../lib/cn.ts";
 import { Slot } from "../../lib/slot.tsx";
-import { variants, type VariantProps } from "../../lib/variants.ts";
+import { cva, type VariantProps } from "class-variance-authority";
 
-const buttonVariants = variants(
+const buttonVariants = cva(
   [
     // layout
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",

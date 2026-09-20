@@ -18,19 +18,26 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { addCommand, detect, runCommand } from "./package-manager.mjs";
-import { aliasesFrom, DEFAULT_ALIASES, rewriteFile, targetFor } from "./paths.mjs";
+import { aliasesFrom, DEFAULT_ALIASES, PACKAGE, rewriteFile, targetFor } from "./paths.mjs";
 import { buildRegistry } from "./registry.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SOURCE_ROOT = resolve(HERE, "..");
 
 function parseArgs(argv) {
-  const flags = { overwrite: false, dryRun: false, yes: false, cwd: process.cwd() };
+  const flags = {
+    overwrite: false,
+    dryRun: false,
+    yes: false,
+    standalone: false,
+    cwd: process.cwd(),
+  };
   const rest = [];
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--overwrite") flags.overwrite = true;
+    else if (arg === "--standalone") flags.standalone = true;
     else if (arg === "--dry-run") flags.dryRun = true;
     else if (arg === "--yes" || arg === "-y") flags.yes = true;
     else if (arg === "--cwd") {
@@ -97,8 +104,14 @@ function fail(message) {
   process.exit(1);
 }
 
-/** Every file a set of components needs, with nothing listed twice. */
-function filesFor(registry, names) {
+/**
+ * Every file a set of components needs, with nothing listed twice.
+ *
+ * Handed over the usual way, only the components themselves are written and
+ * the shared behaviour is a package the project installs. Standalone, the
+ * bricks come along as files too.
+ */
+function filesFor(registry, names, { standalone = false } = {}) {
   const files = new Set();
   const packages = new Set();
   const missing = [];
@@ -109,9 +122,17 @@ function filesFor(registry, names) {
       missing.push(name);
       continue;
     }
-    for (const file of entry.files) files.add(file);
+    for (const file of entry.files) {
+      // `cn` is written once by `init`, into the project's own utils file.
+      if (file === "src/lib/cn.ts") continue;
+      if (standalone || file.startsWith("src/components/ui/")) files.add(file);
+    }
     for (const dependency of entry.dependencies) packages.add(dependency);
   }
+
+  // The bricks have to come from somewhere: either as files, or as a package.
+  if (!standalone && files.size > 0) packages.add(PACKAGE);
+
   return { files: [...files].sort(), packages: [...packages].sort(), missing };
 }
 
@@ -131,7 +152,9 @@ function commandList(registry) {
 function commandAdd(registry, names, flags) {
   if (names.length === 0) fail("say which components to add, or run `philcn list`.");
 
-  const { files, packages, missing } = filesFor(registry, names);
+  const { files, packages, missing } = filesFor(registry, names, {
+    standalone: flags.standalone,
+  });
   if (missing.length > 0) {
     fail(`unknown component: ${missing.join(", ")}. Run \`philcn list\` to see them all.`);
   }
@@ -153,7 +176,7 @@ function commandAdd(registry, names, flags) {
     }
     if (!flags.dryRun) {
       mkdirSync(dirname(target), { recursive: true });
-      writeFileSync(target, rewriteFile(file, source, aliases));
+      writeFileSync(target, rewriteFile(file, source, aliases, { standalone: flags.standalone }));
     }
     written.push(target);
   }
@@ -208,6 +231,20 @@ function commandInit(flags) {
     say(`${flags.dryRun ? "Would write" : "Written"}: ${css.replace(`${flags.cwd}/`, "")}`);
   }
 
+  // Every component reads `cn` from here, and so does every block pasted from
+  // shadcn. A project that already has the file keeps its own.
+  const resolveAlias = aliasResolver(flags.cwd);
+  const utils = join(flags.cwd, `${resolveAlias(aliasesFrom(config).utils)}.ts`);
+  if (existsSync(utils)) {
+    say(`Left alone, already there: ${utils.replace(`${flags.cwd}/`, "")}`);
+  } else {
+    if (!flags.dryRun) {
+      mkdirSync(dirname(utils), { recursive: true });
+      writeFileSync(utils, readFileSync(join(SOURCE_ROOT, "src/lib/cn.ts"), "utf8"));
+    }
+    say(`${flags.dryRun ? "Would write" : "Written"}: ${utils.replace(`${flags.cwd}/`, "")}`);
+  }
+
   say();
   say("Import that stylesheet once, at the top of your app.");
   say(`Then: ${runCommand(managerIn(flags.cwd), "philcn add button")}`);
@@ -224,6 +261,8 @@ function main(argv) {
     say("  add <name…>          copy components into this project");
     say("  init                 write components.json and the theme");
     say();
+    say("  --standalone         copy the shared behaviour too, rather than");
+    say("                       importing it from the philcn package");
     say("  --cwd <dir>  --overwrite  --dry-run");
     return;
   }

@@ -10,7 +10,7 @@ import {
   useRovingFocusItem,
 } from "../../lib/roving-focus.tsx";
 import { useControllableState } from "../../lib/use-controllable-state.ts";
-import { type VariantProps } from "../../lib/variants.ts";
+import { type VariantProps } from "class-variance-authority";
 import { toggleVariants } from "./toggle.tsx";
 
 type ToggleVariants = VariantProps<typeof toggleVariants>;

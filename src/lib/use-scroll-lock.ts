@@ -1,3 +1,5 @@
+"use client";
+
 import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect.ts";
 
 /** How many layers currently want the page frozen. */
