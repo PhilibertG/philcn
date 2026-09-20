@@ -21,12 +21,6 @@ calculator.
 Released versions and their changelog live on the
 [releases page](https://github.com/PhilibertG/philcn/releases).
 
-## How it is built
-
-The reasoning behind the library — what it depends on and why, what it
-deliberately does differently, and how the shared behaviour is factored — is
-written down in [docs/DECISIONS.md](docs/DECISIONS.md).
-
 ## Releases
 
 Versions are cut by a robot, not by hand. Every commit carries a conventional
