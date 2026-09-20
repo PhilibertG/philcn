@@ -1,0 +1,90 @@
+@import "../../src/styles/philcn.css";
+
+/* philcn's components live next door, outside this app's folder, so Tailwind
+   is told where to look for the classes they use. */
+@source "../";
+@source "../../src";
+
+/**
+ * The site's own identity, kept apart from philcn's design tokens on purpose.
+ * The shell — hero, navigation, section headings — is dressed in these. The
+ * component demos sit on philcn's real tokens, so what you see in a demo is
+ * exactly what you get in your project.
+ */
+:root {
+  --site-bg: oklch(0.145 0.012 55);
+  --site-bg-raised: oklch(0.185 0.012 58);
+  --site-fg: oklch(0.955 0.012 85);
+  --site-dim: oklch(0.72 0.016 75);
+  --site-faint: oklch(0.55 0.014 70);
+  --site-line: oklch(0.27 0.012 60);
+  --site-accent: oklch(0.7 0.19 33);
+  --site-accent-soft: oklch(0.7 0.19 33 / 0.14);
+}
+
+@theme inline {
+  --color-site-bg: var(--site-bg);
+  --color-site-bg-raised: var(--site-bg-raised);
+  --color-site-fg: var(--site-fg);
+  --color-site-dim: var(--site-dim);
+  --color-site-faint: var(--site-faint);
+  --color-site-line: var(--site-line);
+  --color-site-accent: var(--site-accent);
+  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--site-bg);
+  color: var(--site-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A faint grid behind the first screen, so the page has depth without an image. */
+.site-grid {
+  background-image:
+    linear-gradient(to right, var(--site-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--site-line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 20%, transparent 75%);
+}
+
+@keyframes site-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.site-rise {
+  animation: site-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-rise {
+    animation: none;
+  }
+}
+
+/* Code blocks scroll sideways rather than wrap; the bar stays out of the way. */
+.site-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--site-line) transparent;
+}
+.site-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.site-scroll::-webkit-scrollbar-thumb {
+  background: var(--site-line);
+  border-radius: 999px;
+}
+.site-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
