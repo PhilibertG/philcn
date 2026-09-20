@@ -18,7 +18,14 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { addCommand, detect, runCommand } from "./package-manager.mjs";
-import { aliasesFrom, DEFAULT_ALIASES, PACKAGE, rewriteFile, targetFor } from "./paths.mjs";
+import {
+  aliasesFrom,
+  DEFAULT_ALIASES,
+  PACKAGE,
+  rewriteFile,
+  targetFor,
+  withPackageSource,
+} from "./paths.mjs";
 import { buildRegistry } from "./registry.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -226,7 +233,8 @@ function commandInit(flags) {
   if (!existsSync(css)) {
     if (!flags.dryRun) {
       mkdirSync(dirname(css), { recursive: true });
-      writeFileSync(css, readFileSync(join(SOURCE_ROOT, "src/styles/philcn.css"), "utf8"));
+      const theme = readFileSync(join(SOURCE_ROOT, "src/styles/philcn.css"), "utf8");
+      writeFileSync(css, withPackageSource(theme, { standalone: flags.standalone }));
     }
     say(`${flags.dryRun ? "Would write" : "Written"}: ${css.replace(`${flags.cwd}/`, "")}`);
   }

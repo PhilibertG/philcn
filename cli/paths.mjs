@@ -105,3 +105,30 @@ export function rewriteFile(file, source, aliases, { standalone = false } = {}) 
   const self = file.startsWith("src/lib/") ? aliases.lib : aliases.ui;
   return rewriteStandalone(source, { ...aliases, self });
 }
+
+/**
+ * Points Tailwind at philcn's compiled code.
+ *
+ * The shared behaviour — menus, overlays, floating panels — is imported from
+ * the package rather than copied in, and some of it carries Tailwind classes.
+ * Tailwind never looks inside node_modules on its own, so without this import
+ * those classes are missing from the build and the components render with
+ * nothing behind their class names.
+ *
+ * A project installed with `--standalone` keeps the shared files in its own
+ * folders, where Tailwind already sees them, so it is left out there.
+ */
+export function withPackageSource(theme, { standalone = false } = {}) {
+  if (standalone) return theme;
+
+  const line = `@import "${PACKAGE}/source.css";`;
+  if (theme.includes(line)) return theme;
+
+  // Straight after the Tailwind import, so the two read as one thought.
+  const lines = theme.split("\n");
+  const at = lines.findIndex((entry) => entry.trim().startsWith('@import "tailwindcss"'));
+  if (at === -1) return `${line}\n${theme}`;
+
+  lines.splice(at + 1, 0, line);
+  return lines.join("\n");
+}

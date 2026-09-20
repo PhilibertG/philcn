@@ -1,0 +1,14 @@
+/**
+ * Tells Tailwind where philcn's compiled code lives.
+ *
+ * Since 0.3.0 the shared behaviour — menus, overlays, floating panels — is
+ * imported from this package rather than copied into the project. Some of it
+ * carries Tailwind classes, and Tailwind never looks inside node_modules on
+ * its own, so without this line those classes are missing from the build and
+ * the components render unstyled.
+ *
+ * `philcn init` adds the matching import to the stylesheet it writes. A
+ * project installed with `--standalone` does not need it: there the shared
+ * files sit in the project, where Tailwind already sees them.
+ */
+@source "../../dist";
