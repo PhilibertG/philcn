@@ -338,7 +338,15 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calend
     <div
       ref={ref}
       data-slot="calendar"
-      className={cn("w-fit bg-background p-3 [--cell-size:2rem]", className)}
+      className={cn(
+        "w-fit bg-background p-3 [--cell-size:2rem]",
+        // Dropped into a popover or a card, the calendar drops its own
+        // background: its square fill would otherwise paint over the rounded
+        // corners of whatever is holding it.
+        "[[data-slot=popover-content]_&]:bg-transparent",
+        "[[data-slot=card-content]_&]:bg-transparent",
+        className,
+      )}
       {...(rest as React.ComponentPropsWithoutRef<"div">)}
     >
       <div className={cn("flex flex-col gap-4 sm:flex-row", classNames?.months)}>
