@@ -13,6 +13,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # Passed down to the deployment: it is what lets npm publish without a token.
+  id-token: write
 
 # One release at a time. Two runs writing the same pull request would fight.
 concurrency:

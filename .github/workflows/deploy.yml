@@ -19,6 +19,9 @@ on:
 
 permissions:
   contents: read
+  # Lets the runner prove to npm that this publish really comes from this
+  # repository and this workflow. That proof replaces a token entirely.
+  id-token: write
 
 jobs:
   deploy:
@@ -31,8 +34,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Publishing without a token needs npm 11.5.1 or later, which is
+          # what Node 24 ships with.
+          node-version: 24
           cache: npm
+          registry-url: https://registry.npmjs.org
 
       - run: npm ci
 
@@ -50,7 +56,14 @@ jobs:
       - name: No target set, nothing delivered
         if: steps.target.outputs.name == 'none'
         run: |
-          echo "::notice title=Nothing to deploy::Version ${{ inputs.tag }} is tagged and its release notes are published, but no delivery target is configured. Set the repository variable DEPLOY_TARGET to 'ssh' and add the DEPLOY_* secrets to turn this on."
+          echo "::notice title=Nothing to deploy::Version ${{ inputs.tag }} is tagged and its release notes are published, but no delivery target is configured. Set the repository variable DEPLOY_TARGET to 'npm' or 'ssh' to turn this on."
+
+      # No token anywhere: npm checks the runner's own identity against the
+      # trusted publisher configured on the package, and records where the
+      # version was built.
+      - name: Publish to npm
+        if: steps.target.outputs.name == 'npm'
+        run: npm publish --access public --provenance
 
       - name: Deploy over SSH
         if: steps.target.outputs.name == 'ssh'

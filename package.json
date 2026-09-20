@@ -36,7 +36,9 @@
   },
   "files": [
     "cli",
+    "!cli/**/*.test.mjs",
     "src",
+    "!src/**/*.test.ts",
     "README.md",
     "LICENSE"
   ],

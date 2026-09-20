@@ -17,6 +17,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { addCommand, detect, runCommand } from "./package-manager.mjs";
 import { aliasesFrom, DEFAULT_ALIASES, rewriteFile, targetFor } from "./paths.mjs";
 import { buildRegistry } from "./registry.mjs";
 
@@ -79,6 +80,14 @@ process.stdout.on("error", (error) => {
   throw error;
 });
 
+/** The package manager this project uses, so every message names it right. */
+function managerIn(cwd) {
+  return detect({
+    agent: process.env["npm_config_user_agent"],
+    exists: (file) => existsSync(join(cwd, file)),
+  });
+}
+
 function say(message = "") {
   process.stdout.write(`${message}\n`);
 }
@@ -116,7 +125,7 @@ function commandList(registry) {
     say(`  ${name}${needs}`);
   }
   say();
-  say("philcn add <name…> to copy one in.");
+  say(`${runCommand(managerIn(process.cwd()), "philcn add <name…>")} to copy one in.`);
 }
 
 function commandAdd(registry, names, flags) {
@@ -160,7 +169,7 @@ function commandAdd(registry, names, flags) {
 
   if (packages.length > 0) {
     say();
-    say(`These components need: npm install ${packages.join(" ")}`);
+    say(`These components need: ${addCommand(managerIn(flags.cwd), packages)}`);
   }
 }
 
@@ -195,7 +204,7 @@ function commandInit(flags) {
 
   say();
   say("Import that stylesheet once, at the top of your app.");
-  say("Then: philcn add button");
+  say(`Then: ${runCommand(managerIn(flags.cwd), "philcn add button")}`);
 }
 
 function main(argv) {
