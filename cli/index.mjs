@@ -179,11 +179,18 @@ function commandInit(flags) {
     fail("components.json is already there. Use --overwrite to replace it.");
   }
 
+  // The stylesheet goes where the project keeps its source, and the config has
+  // to name that same place: a path written down that points nowhere sends the
+  // reader looking for a file that is not there.
+  const stylesheet = existsSync(join(flags.cwd, "src"))
+    ? join("src", "styles", "philcn.css")
+    : join("styles", "philcn.css");
+
   const config = {
     $schema: "https://philcn.dev/schema.json",
     style: "default",
     tsx: true,
-    tailwind: { css: "src/styles/philcn.css", baseColor: "neutral" },
+    tailwind: { css: stylesheet, baseColor: "neutral" },
     // Same shape as shadcn's file, plus one key of our own: `philcn` is the
     // folder the shared bricks go into, kept apart from the project's own lib.
     aliases: { components: "@/components", ui: "@/components/ui", lib: "@/lib", philcn: DEFAULT_ALIASES.lib },
@@ -192,8 +199,7 @@ function commandInit(flags) {
   if (!flags.dryRun) writeFileSync(target, `${JSON.stringify(config, null, 2)}\n`);
   say(`${flags.dryRun ? "Would write" : "Written"}: components.json`);
 
-  const resolveAlias = aliasResolver(flags.cwd);
-  const css = join(flags.cwd, targetFor("src/styles/philcn.css", aliasesFrom(config), resolveAlias));
+  const css = join(flags.cwd, stylesheet);
   if (!existsSync(css)) {
     if (!flags.dryRun) {
       mkdirSync(dirname(css), { recursive: true });

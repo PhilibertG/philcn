@@ -34,10 +34,6 @@ describe("targetFor", () => {
   it("sends a brick to the philcn folder", () => {
     assert.equal(targetFor("src/lib/cn.ts", aliases, resolveAlias), "src/lib/philcn/cn.ts");
   });
-
-  it("keeps the stylesheet where it is", () => {
-    assert.equal(targetFor("src/styles/philcn.css", aliases, resolveAlias), "styles/philcn.css");
-  });
 });
 
 describe("rewriteFile", () => {

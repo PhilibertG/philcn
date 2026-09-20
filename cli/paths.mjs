@@ -31,9 +31,6 @@ export function targetFor(file, aliases, resolveAlias) {
     const name = file.slice("src/lib/".length);
     return `${resolveAlias(aliases.lib)}/${name}`;
   }
-  if (file.startsWith("src/styles/")) {
-    return file.slice("src/".length);
-  }
   return file;
 }
 
