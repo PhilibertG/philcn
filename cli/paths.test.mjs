@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 
 import { aliasesFrom, DEFAULT_ALIASES, rewriteFile, targetFor } from "./paths.mjs";
 
-const aliases = { ui: "@/components/ui", lib: "@/lib/philcn" };
+const aliases = { ui: "@/components/ui", lib: "@/lib/philcn", utils: "@/lib/utils" };
 const resolveAlias = (alias) => alias.replace(/^@\//, "src/");
 
 describe("aliasesFrom", () => {
@@ -14,12 +14,20 @@ describe("aliasesFrom", () => {
 
   it("reads a components.json written by philcn", () => {
     const config = { aliases: { ui: "@/ui", lib: "@/lib", philcn: "@/lib/philcn" } };
-    assert.deepEqual(aliasesFrom(config), { ui: "@/ui", lib: "@/lib/philcn" });
+    assert.deepEqual(aliasesFrom(config), {
+      ui: "@/ui",
+      lib: "@/lib/philcn",
+      utils: "@/lib/utils",
+    });
   });
 
-  it("puts the bricks in their own folder under a shadcn lib alias", () => {
-    const config = { aliases: { components: "@/components", lib: "@/lib" } };
-    assert.deepEqual(aliasesFrom(config), { ui: "@/components/ui", lib: "@/lib/philcn" });
+  it("follows a shadcn components.json", () => {
+    const config = { aliases: { components: "@/components", lib: "@/lib", utils: "@/lib/utils" } };
+    assert.deepEqual(aliasesFrom(config), {
+      ui: "@/components/ui",
+      lib: "@/lib/philcn",
+      utils: "@/lib/utils",
+    });
   });
 });
 
@@ -32,45 +40,67 @@ describe("targetFor", () => {
   });
 
   it("sends a brick to the philcn folder", () => {
-    assert.equal(targetFor("src/lib/cn.ts", aliases, resolveAlias), "src/lib/philcn/cn.ts");
+    assert.equal(targetFor("src/lib/slot.tsx", aliases, resolveAlias), "src/lib/philcn/slot.tsx");
   });
 });
 
-describe("rewriteFile", () => {
-  it("turns a component's imports into aliases and drops the extension", () => {
-    const source = [
-      'import * as React from "react";',
-      'import { cn } from "../../lib/cn.ts";',
-      'import { Button } from "./button.tsx";',
-    ].join("\n");
+describe("rewriteFile, handing the component over on its own", () => {
+  const source = [
+    'import * as React from "react";',
+    'import { cn } from "../../lib/cn.ts";',
+    'import { Slot } from "../../lib/slot.tsx";',
+    'import { Button } from "./button.tsx";',
+  ].join("\n");
+  const written = rewriteFile("src/components/ui/x.tsx", source, aliases);
 
+  it("reads cn from the project's own utils, where shadcn puts it", () => {
+    assert.match(written, /import \{ cn \} from "@\/lib\/utils";/);
+  });
+
+  it("takes the shared behaviour from the package", () => {
+    assert.match(written, /import \{ Slot \} from "philcn\/slot";/);
+  });
+
+  it("keeps a sibling component in the ui folder", () => {
+    assert.match(written, /import \{ Button \} from "@\/components\/ui\/button";/);
+  });
+
+  it("leaves packages alone", () => {
+    assert.match(written, /import \* as React from "react";/);
+  });
+});
+
+describe("rewriteFile, copying everything", () => {
+  const options = { standalone: true };
+
+  it("points a component at the copied bricks", () => {
+    const source = 'import { Slot } from "../../lib/slot.tsx";';
     assert.equal(
-      rewriteFile("src/components/ui/alert-dialog.tsx", source, aliases),
-      [
-        'import * as React from "react";',
-        'import { cn } from "@/lib/philcn/cn";',
-        'import { Button } from "@/components/ui/button";',
-      ].join("\n"),
+      rewriteFile("src/components/ui/button.tsx", source, aliases, options),
+      'import { Slot } from "@/lib/philcn/slot";',
     );
   });
 
   it("keeps a brick's neighbours in the brick folder", () => {
-    const source = 'import { cn } from "./cn.ts";\nimport { Floating } from "./floating.tsx";';
+    const source = 'import { Floating } from "./floating.tsx";';
     assert.equal(
-      rewriteFile("src/lib/menu.tsx", source, aliases),
-      'import { cn } from "@/lib/philcn/cn";\nimport { Floating } from "@/lib/philcn/floating";',
+      rewriteFile("src/lib/menu.tsx", source, aliases, options),
+      'import { Floating } from "@/lib/philcn/floating";',
     );
   });
 
-  it("leaves packages alone", () => {
-    const source = 'import { useFloating } from "@floating-ui/react-dom";';
-    assert.equal(rewriteFile("src/lib/floating.tsx", source, aliases), source);
+  it("still reads cn from the utils file, so it is never copied twice", () => {
+    const source = 'import { cn } from "./cn.ts";';
+    assert.equal(
+      rewriteFile("src/lib/menu.tsx", source, aliases, options),
+      'import { cn } from "@/lib/utils";',
+    );
   });
 
   it("rewrites a type-only import too", () => {
     const source = 'import type { Side } from "../../lib/anchored.ts";';
     assert.equal(
-      rewriteFile("src/components/ui/popover.tsx", source, aliases),
+      rewriteFile("src/components/ui/popover.tsx", source, aliases, options),
       'import type { Side } from "@/lib/philcn/anchored";',
     );
   });
