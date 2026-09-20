@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/PhilibertG/philcn/compare/v0.2.0...v0.2.1) (2026-09-20)
+
+
+### Bug fixes
+
+* **cli:** point components.json at the stylesheet it actually wrote ([a7411fe](https://github.com/PhilibertG/philcn/commit/a7411fee6bc4a2f690a7b94bf564efeb879982b8))
+
 ## [0.2.0](https://github.com/PhilibertG/philcn/compare/v0.1.0...v0.2.0) (2026-09-20)
 
 
