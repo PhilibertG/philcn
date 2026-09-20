@@ -1,7 +1,7 @@
 # Mise en ligne — comment ça marche
 
-Ce document est pour Phil. Il décrit la chaîne qui va d'un commit à une
-version publiée, et la seule règle d'usage à retenir.
+La chaîne qui va d'un commit à une version publiée, et la seule règle d'usage
+à retenir.
 
 ## La règle
 
@@ -17,11 +17,11 @@ nouveauté, `fix:` pour une correction, `docs:`, `refactor:`… C'est cette
 
 **2. La vérification automatique.** Sur chaque pull request, GitHub relit tous
 les commits et refuse ceux qui n'ont pas la bonne forme. Il refuse aussi tout
-commit portant une co-signature ou la mention d'un outil d'IA — c'est la
-preuve d'authorship qui est protégée là. Au même moment, le code est compilé
-et les tests sont joués.
+commit qui crédite quelqu'un d'autre que son auteur : ce dépôt a un seul
+auteur, et l'historique doit le dire sans ambiguïté. Au même moment, le code
+est compilé et les tests sont joués.
 
-Pour faire cette vérification sur ma machine avant de pousser :
+Pour faire cette vérification en local avant de pousser :
 
 ```bash
 node scripts/check-commits.mjs origin/main..HEAD
