@@ -23,7 +23,7 @@ export interface MenuRootValue {
   anchor: HTMLElement | VirtualElement | null;
   contentId: string;
   /** Which end to focus when the menu is opened from the keyboard. */
-  entryPoint: React.MutableRefObject<"first" | "last" | null>;
+  entryPointRef: React.MutableRefObject<"first" | "last" | null>;
   /** Names the pieces in the markup: "dropdown-menu", "context-menu"… */
   slot: string;
   /**
@@ -69,7 +69,7 @@ const MenuListInner = React.forwardRef<HTMLDivElement, MenuListProps>(function M
   { className, align = "start", sideOffset = 4, loop = true, onKeyDown, ...props },
   ref,
 ) {
-  const { open, setOpen, anchor, contentId, entryPoint, slot } = useMenuRoot("MenuContent");
+  const { open, setOpen, anchor, contentId, entryPointRef, slot } = useMenuRoot("MenuContent");
   const navigation = useListNavigation({ loop, orientation: "vertical" });
   const { focusFirst, focusLast } = navigation;
 
@@ -90,8 +90,8 @@ const MenuListInner = React.forwardRef<HTMLDivElement, MenuListProps>(function M
       // with the mouse: leave the focus on the box, so the first arrow press
       // goes to the first entry rather than the second.
       onMountAutoFocus={(event) => {
-        const from = entryPoint.current;
-        entryPoint.current = null;
+        const from = entryPointRef.current;
+        entryPointRef.current = null;
         if (from === null) return;
         event.preventDefault();
         if (from === "first") focusFirst();
@@ -432,7 +432,7 @@ interface SubValue {
   keepOpen: () => void;
   trigger: HTMLElement | null;
   setTrigger: (node: HTMLElement | null) => void;
-  entryPoint: React.MutableRefObject<"first" | "last" | null>;
+  entryPointRef: React.MutableRefObject<"first" | "last" | null>;
 }
 
 const SubContext = React.createContext<SubValue | null>(null);
@@ -458,7 +458,7 @@ export function MenuSub({ open, defaultOpen, onOpenChange, children }: MenuSubPr
     onChange: onOpenChange,
   });
   const [trigger, setTrigger] = React.useState<HTMLElement | null>(null);
-  const entryPoint = React.useRef<"first" | "last" | null>(null);
+  const entryPointRef = React.useRef<"first" | "last" | null>(null);
   const timer = React.useRef<number | undefined>(undefined);
   const contentId = `${useId()}-subcontent`;
 
@@ -488,7 +488,7 @@ export function MenuSub({ open, defaultOpen, onOpenChange, children }: MenuSubPr
       keepOpen: () => window.clearTimeout(timer.current),
       trigger,
       setTrigger,
-      entryPoint,
+      entryPointRef,
     }),
     [isOpen, setIsOpen, trigger],
   );
@@ -499,7 +499,7 @@ export function MenuSub({ open, defaultOpen, onOpenChange, children }: MenuSubPr
       setOpen: sub.setOpen,
       anchor: trigger,
       contentId,
-      entryPoint,
+      entryPointRef,
       slot: parent.slot,
       closeAll: () => {
         sub.setOpen(false);
@@ -565,7 +565,7 @@ export const MenuSubTrigger = React.forwardRef<HTMLDivElement, MenuSubTriggerPro
 
     const openWith = (from: "first" | "last" | null) => {
       if (disabled) return;
-      sub.entryPoint.current = from;
+      sub.entryPointRef.current = from;
       sub.setOpen(true);
     };
 
@@ -594,7 +594,7 @@ export const MenuSubTrigger = React.forwardRef<HTMLDivElement, MenuSubTriggerPro
           (event: React.PointerEvent<HTMLDivElement>) => {
             if (disabled) return;
             event.currentTarget.focus();
-            sub.entryPoint.current = null;
+            sub.entryPointRef.current = null;
             sub.openSoon();
           },
         )}
