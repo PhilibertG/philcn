@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.1](https://github.com/PhilibertG/philcn/compare/v0.3.0...v0.3.1) (2026-09-20)
+
+
+### Bug fixes
+
+* **avatar:** stop writing state from inside an effect ([7ab2517](https://github.com/PhilibertG/philcn/commit/7ab251795e8ea0591385cb5146685f047a689100))
+* **cli:** let Tailwind see the classes the package carries ([c513ca0](https://github.com/PhilibertG/philcn/commit/c513ca07cdf4905766e577f345e7b90dff9aa1a6)), closes [#8](https://github.com/PhilibertG/philcn/issues/8)
+* let Tailwind see the classes the installed package carries ([cc5538f](https://github.com/PhilibertG/philcn/commit/cc5538ff2035485829bcc9bef3bc4b8d39c5a691))
+* run inside React Server Components and React 19 lint rules ([300b143](https://github.com/PhilibertG/philcn/commit/300b1431b2c4940eec25da872003525aab9f5739))
+* **slot:** render asChild inside a React Server Component ([889467c](https://github.com/PhilibertG/philcn/commit/889467c44c5c7ceae53fb85fd1b1f2664955d813))
+
+
+### Rewrites
+
+* **menu:** name the keyboard entry point as a ref ([fe9d930](https://github.com/PhilibertG/philcn/commit/fe9d930c4108810f854ce6517e3ad294f3327173))
+
 ## [0.3.0](https://github.com/PhilibertG/philcn/compare/v0.2.1...v0.3.0) (2026-09-20)
 
 
