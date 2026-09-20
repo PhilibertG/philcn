@@ -440,12 +440,12 @@ const NavigationMenuContent = React.forwardRef<HTMLDivElement, NavigationMenuCon
           className={cn(
             "left-0 top-0 w-full p-2 pr-2.5 md:absolute md:w-auto",
             "data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in",
-            "data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out data-[motion^=to-]:fill-mode-forwards",
+            "data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out",
             "data-[motion=from-start]:slide-in-from-left-52",
             "data-[motion=from-end]:slide-in-from-right-52",
             "data-[motion=to-start]:slide-out-to-left-52",
             "data-[motion=to-end]:slide-out-to-right-52",
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:fill-mode-forwards",
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
             // shown in place rather than in the shared box below the bar
             "group-data-[viewport=false]/navigation-menu:top-full",
             "group-data-[viewport=false]/navigation-menu:mt-1.5",
@@ -525,7 +525,7 @@ const NavigationMenuViewport = React.forwardRef<HTMLDivElement, React.ComponentP
               "h-[var(--philcn-navigation-menu-viewport-height)] origin-top text-popover-foreground",
               "md:w-[var(--philcn-navigation-menu-viewport-width)]",
               "data-[state=open]:animate-in data-[state=open]:zoom-in-90",
-              "data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=closed]:fill-mode-forwards",
+              "data-[state=closed]:animate-out data-[state=closed]:zoom-out-95",
               className,
             )}
             style={{
@@ -624,7 +624,7 @@ const NavigationMenuIndicator = React.forwardRef<
         className={cn(
           "top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden",
           "data-[state=open]:animate-in data-[state=open]:fade-in",
-          "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:fill-mode-forwards",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out",
           className,
         )}
         style={{

@@ -261,7 +261,6 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(funct
         "transition-[translate] duration-[250ms] ease-[cubic-bezier(0.32,0.72,0,1)]",
         "data-[state=open]:animate-in data-[state=open]:duration-500",
         "data-[state=closed]:animate-out data-[state=closed]:duration-300",
-        "data-[state=closed]:fill-mode-forwards",
         // The browser must not steal the gesture for its own scrolling.
         draggable && (axisOf(direction) === "y" ? "touch-pan-x" : "touch-pan-y"),
         DIRECTION_CLASSES[direction],
