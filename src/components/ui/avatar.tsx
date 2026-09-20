@@ -142,7 +142,7 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ComponentPropsWitho
         ref={ref}
         src={url}
         data-slot="avatar-image"
-        className={cn("aspect-square size-full object-cover animate-fade-in", className)}
+        className={cn("aspect-square size-full object-cover animate-in fade-in-0 duration-200", className)}
         onLoad={onLoad}
         onError={onError}
         {...props}

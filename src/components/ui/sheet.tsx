@@ -115,19 +115,19 @@ const SheetClose = React.forwardRef<HTMLButtonElement, SheetCloseProps>(function
 const SIDE_CLASSES = {
   right: [
     "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
-    "data-[state=open]:animate-slide-in-right data-[state=closed]:animate-slide-out-right",
+    "data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
   ],
   left: [
     "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
-    "data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left",
+    "data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
   ],
   top: [
     "inset-x-0 top-0 h-auto border-b",
-    "data-[state=open]:animate-slide-in-top data-[state=closed]:animate-slide-out-top",
+    "data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
   ],
   bottom: [
     "inset-x-0 bottom-0 h-auto border-t",
-    "data-[state=open]:animate-slide-in-bottom data-[state=closed]:animate-slide-out-bottom",
+    "data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
   ],
 } as const;
 
@@ -166,10 +166,10 @@ const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(functio
       data-side={side}
       className={cn(
         "flex flex-col gap-4 overflow-y-auto bg-background shadow-lg",
+        "transition ease-in-out",
+        "data-[state=open]:animate-in data-[state=open]:duration-500",
+        "data-[state=closed]:animate-out data-[state=closed]:duration-300",
         SIDE_CLASSES[side],
-        // A sheet is anchored to an edge; shrinking it when covered would pull
-        // it away from that edge. It only fades.
-        "data-[covered=true]:scale-100",
         className,
       )}
       {...props}
