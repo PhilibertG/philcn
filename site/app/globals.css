@@ -1,0 +1,108 @@
+@import "../../src/styles/philcn.css";
+
+/* philcn's components live one folder up, outside this app, so Tailwind is
+   told where to look for the classes they use. */
+@source "../";
+@source "../../src";
+
+/**
+ * The brand palette, from the brand book. It dresses the site — the shell, the
+ * hero, the headings. Inside a component demo philcn's own tokens take over,
+ * so a component is never flattered by colours it would not have in a real
+ * project.
+ */
+:root {
+  --brand-canvas: #f7f8fc;
+  --brand-surface: #ffffff;
+  --brand-primary: #5271ff;
+  --brand-soft: #dde5ff;
+  --brand-accent: #b7a7ff;
+  --brand-ink: #111216;
+  --brand-ink-soft: #5a6076;
+  --brand-line: #e3e8f5;
+}
+
+@theme inline {
+  --color-brand-canvas: var(--brand-canvas);
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-ink-soft: var(--brand-ink-soft);
+  --color-brand-line: var(--brand-line);
+  --font-sans: "General Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
+}
+
+/* The page itself is ink. Everything readable sits in a rounded card on top
+   of it, with a margin all round — that gap is the whole look. */
+body {
+  background-color: var(--brand-ink);
+  color: var(--brand-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Frosted panels: the pieces floating over the shader. */
+.glass {
+  background: color-mix(in srgb, #ffffff 58%, transparent);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid color-mix(in srgb, #ffffff 85%, transparent);
+  box-shadow:
+    0 1px 1px color-mix(in srgb, var(--brand-primary) 10%, transparent),
+    0 20px 44px -18px color-mix(in srgb, var(--brand-primary) 32%, transparent),
+    0 44px 96px -44px color-mix(in srgb, #0b1030 38%, transparent);
+}
+
+/* The hairlines that point at a piece and name it. */
+.leader {
+  background: linear-gradient(to var(--leader-to, right), var(--brand-primary), transparent);
+}
+
+@keyframes brand-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes brand-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--tilt, 0deg));
+  }
+}
+
+.rise {
+  animation: brand-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.float {
+  animation: brand-float var(--float-duration, 10s) ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .float {
+    animation: none;
+  }
+}
+
+/* The wordmark bleeding off the bottom of the page: present, never read. */
+.bleed-mark {
+  font-size: clamp(7rem, 22vw, 19rem);
+  line-height: 0.76;
+  letter-spacing: -0.06em;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--brand-surface) 7%, transparent);
+  user-select: none;
+}
