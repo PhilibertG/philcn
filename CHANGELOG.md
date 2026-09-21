@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.1](https://github.com/PhilibertG/philcn/compare/v0.4.0...v0.4.1) (2026-09-21)
+
+
+### Documentation
+
+* **site:** centred content, a navigation that lands on a spring, smooth scrolling ([26acfa2](https://github.com/PhilibertG/philcn/commit/26acfa279a5bef2b6e262088f76a12f3972324ec))
+* **site:** concentric navigation corners and squircle cards ([1f0fcd2](https://github.com/PhilibertG/philcn/commit/1f0fcd248d88ed041d4cd054b8f22d18cbd00054))
+* **site:** give the full-width bar its own fill, and a real bounce ([357aa7c](https://github.com/PhilibertG/philcn/commit/357aa7c56827e7e939d04eb1c609cef05a2b4410))
+* **site:** nest the navigation's corners, and draw the cards as squircles ([54e80fc](https://github.com/PhilibertG/philcn/commit/54e80fc9a30f80832b7197747b88ec49b31fdad4))
+* **site:** set the resting bar into the hero card, not against its edge ([38bd9e7](https://github.com/PhilibertG/philcn/commit/38bd9e771777e22da3aeb3f6b6e5f68f358d787e))
+* **site:** smooth scrolling, a darker top, and a spring for the navigation ([2904836](https://github.com/PhilibertG/philcn/commit/2904836fe48a1ea8483f6a9817000fd8588f9d39))
+
 ## [0.4.0](https://github.com/PhilibertG/philcn/compare/v0.3.1...v0.4.0) (2026-09-21)
 
 
