@@ -15,7 +15,8 @@ import * as React from "react";
  * The change marks that the hero is behind you without taking any room.
  *
  * The timing lives in globals.css, under .nav-bar: going in and coming out
- * run on different curves, which utility classes cannot express.
+ * run on different curves, which utility classes cannot express. So do the
+ * radii of the button inside, which follow the bar's to stay concentric.
  *
  * The capsule's radius is a real length, not rounded-full: that one resolves
  * to millions of pixels, and a transition from zero would snap fully round on
@@ -37,7 +38,7 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
       data-scrolled={scrolled}
       className="nav-shell group/header fixed inset-x-0 top-6 z-50 px-6 data-[scrolled=true]:top-3 sm:top-8 sm:px-8 sm:data-[scrolled=true]:top-3"
     >
-      <div className="nav-bar mx-auto flex max-w-full items-center gap-10 rounded-[16px] border border-white/10 bg-[#0A0B0F]/70 py-2 pr-2 pl-7 group-data-[scrolled=true]/header:max-w-content group-data-[scrolled=true]/header:rounded-[28px] group-data-[scrolled=true]/header:border-white/10 group-data-[scrolled=true]/header:bg-[#0A0B0F]/85 group-data-[scrolled=true]/header:py-1.5 group-data-[scrolled=true]/header:shadow-[0_12px_40px_-12px_rgba(0,0,0,.7)] backdrop-blur-xl lg:pl-10">
+      <div className="nav-bar mx-auto flex max-w-full items-center gap-10 rounded-[16px] border border-white/10 bg-[#0A0B0F]/70 py-1.5 pr-1.5 pl-7 group-data-[scrolled=true]/header:max-w-content group-data-[scrolled=true]/header:rounded-[31px] group-data-[scrolled=true]/header:border-white/10 group-data-[scrolled=true]/header:bg-[#0A0B0F]/85 group-data-[scrolled=true]/header:shadow-[0_12px_40px_-12px_rgba(0,0,0,.7)] backdrop-blur-xl lg:pl-10">
         {children}
       </div>
     </header>

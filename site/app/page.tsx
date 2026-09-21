@@ -69,7 +69,7 @@ export default function Home() {
       <SiteHeader />
 
       {/* ====================== hero card, on ink ====================== */}
-      <section className="relative overflow-hidden rounded-[28px] bg-[#0A0B0F] sm:rounded-[36px]">
+      <section className="squircle relative overflow-hidden rounded-[28px] bg-[#0A0B0F] sm:rounded-[36px]">
         <ShaderCanvas
           fragment={beams.fragment}
           fallback={beams.fallback}
@@ -148,7 +148,7 @@ export default function Home() {
       {/* ================= library card, in the light ================= */}
       <section
         id="library"
-        className="mt-2 scroll-mt-24 rounded-[28px] bg-brand-surface px-6 py-16 sm:mt-3 sm:rounded-[36px] sm:py-20 sm:px-10 lg:px-16"
+        className="squircle mt-2 scroll-mt-24 rounded-[28px] bg-brand-surface px-6 py-16 sm:mt-3 sm:rounded-[36px] sm:py-20 sm:px-10 lg:px-16"
       >
         {/* Content keeps a fixed measure and sits in the middle of the card:
             the wider the screen, the wider the margins, never the lines. */}
@@ -222,7 +222,7 @@ export default function Home() {
       {/* ========================== values card ========================== */}
       <section
         id="why"
-        className="mt-2 scroll-mt-24 rounded-[28px] bg-[#16171d] px-6 py-16 text-white sm:mt-3 sm:rounded-[36px] sm:py-20 sm:px-10 lg:px-16"
+        className="squircle mt-2 scroll-mt-24 rounded-[28px] bg-[#16171d] px-6 py-16 text-white sm:mt-3 sm:rounded-[36px] sm:py-20 sm:px-10 lg:px-16"
       >
         {/* Content keeps a fixed measure and sits in the middle of the card:
             the wider the screen, the wider the margins, never the lines. */}
@@ -237,7 +237,7 @@ export default function Home() {
           <div className="mt-12 grid gap-x-12 gap-y-9 sm:grid-cols-2">
             {values.map(({ icon: Icon, title, body }) => (
               <article key={title} className="flex gap-4">
-                <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl bg-white/10 text-brand-accent">
+                <span className="mt-0.5 squircle grid size-10 shrink-0 place-items-center rounded-xl bg-white/10 text-brand-accent">
                   <Icon className="size-5" />
                 </span>
                 <div>
@@ -280,7 +280,7 @@ function ShowcaseTile({
   children: React.ReactNode;
 }) {
   return (
-    <figure className="overflow-hidden rounded-2xl border border-brand-line bg-brand-canvas">
+    <figure className="squircle overflow-hidden rounded-2xl border border-brand-line bg-brand-canvas">
       <figcaption className="flex items-baseline gap-3 border-b border-brand-line/80 px-5 py-3">
         <span className="text-sm font-medium">{title}</span>
         <span className="ml-auto font-mono text-[11px] text-brand-ink-soft">{caption}</span>
