@@ -152,19 +152,19 @@ const DrawerClose = React.forwardRef<HTMLButtonElement, DrawerCloseProps>(functi
 const DIRECTION_CLASSES: Record<DragDirection, readonly string[]> = {
   bottom: [
     "inset-x-0 bottom-0 mt-24 max-h-[80vh] rounded-t-lg border-t",
-    "data-[state=open]:animate-slide-in-bottom data-[state=closed]:animate-slide-out-bottom",
+    "data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
   ],
   top: [
     "inset-x-0 top-0 mb-24 max-h-[80vh] rounded-b-lg border-b",
-    "data-[state=open]:animate-slide-in-top data-[state=closed]:animate-slide-out-top",
+    "data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
   ],
   right: [
     "inset-y-0 right-0 w-3/4 border-l sm:max-w-sm",
-    "data-[state=open]:animate-slide-in-right data-[state=closed]:animate-slide-out-right",
+    "data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
   ],
   left: [
     "inset-y-0 left-0 w-3/4 border-r sm:max-w-sm",
-    "data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left",
+    "data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
   ],
 };
 
@@ -256,14 +256,15 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(funct
       className={cn(
         "flex h-auto flex-col bg-background",
         // The panel follows the finger with no transition; once let go, this
-        // carries it home or out of view.
-        "transition-[translate] duration-[250ms] ease-drawer",
+        // carries it home or out of view. The curve is written out rather than
+        // named: it belongs to the gesture, not to the theme.
+        "transition-[translate] duration-[250ms] ease-[cubic-bezier(0.32,0.72,0,1)]",
+        "data-[state=open]:animate-in data-[state=open]:duration-500",
+        "data-[state=closed]:animate-out data-[state=closed]:duration-300",
+        "data-[state=closed]:fill-mode-forwards",
         // The browser must not steal the gesture for its own scrolling.
         draggable && (axisOf(direction) === "y" ? "touch-pan-x" : "touch-pan-y"),
         DIRECTION_CLASSES[direction],
-        // A drawer is anchored to an edge; shrinking it when covered would
-        // pull it away from that edge. It only fades.
-        "data-[covered=true]:scale-100",
         className,
       )}
       {...props}

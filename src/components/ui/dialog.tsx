@@ -173,7 +173,10 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(funct
         // Long content scrolls inside the dialog rather than running off the
         // screen where it cannot be reached.
         "max-h-[calc(100dvh-2rem)] overflow-y-auto",
-        "data-[state=open]:animate-content-in data-[state=closed]:animate-content-out",
+        "duration-200",
+        "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+        "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+        "data-[state=closed]:fill-mode-forwards",
         className,
       )}
       {...props}

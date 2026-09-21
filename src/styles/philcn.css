@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 /* Enables `dark:` utilities when a `.dark` class is present on an ancestor. */
 @custom-variant dark (&:is(.dark *));
@@ -117,156 +118,13 @@
 
 
 /* ---------------------------------------------------------------------------
- * Overlay animations
+ * Motion
  *
- * shadcn pulls these from the tw-animate-css plugin. They are defined here
- * instead, so philcn needs no extra package and the timings stay editable.
- * Each one becomes a Tailwind utility: --animate-overlay-in -> animate-overlay-in
+ * The animations themselves come from tw-animate-css, imported above — the
+ * same package shadcn uses, so a block pasted from their site animates here
+ * exactly as it does there. What follows is only what that package cannot
+ * know about: the few places philcn drives motion itself.
  * ------------------------------------------------------------------------ */
-
-/* Easing tokens. Not `inline`, so they reach :root and the animation tokens
-   below can reference them. The built-in ease-out is too weak for motion that
-   is meant to be noticed. */
-@theme {
-  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-@theme inline {
-  /* Entering and leaving both use ease-out: ease-in starts slow, right when
-     the eye is watching.
-
-     The fill mode is not decoration. Without `forwards` on an exit, the
-     element snaps back to its base style the instant the animation ends and
-     stays fully visible until React unmounts it — a flash of the dialog
-     reappearing just after it closed. `both` on an entrance holds the start
-     frame until the animation begins, avoiding the mirror-image flash. */
-  --animate-fade-in: philcn-fade-in 200ms var(--ease-out-strong) backwards;
-  --animate-overlay-in: philcn-fade-in 150ms var(--ease-out-strong) backwards;
-  --animate-overlay-out: philcn-fade-out 150ms var(--ease-out-strong) forwards;
-  --animate-content-in: philcn-content-in 200ms var(--ease-out-strong) backwards;
-  --animate-content-out: philcn-content-out 150ms var(--ease-out-strong) forwards;
-  --animate-floating-in: philcn-floating-in 150ms var(--ease-out-strong) backwards;
-  --animate-floating-out: philcn-floating-out 120ms var(--ease-out-strong) forwards;
-  /* The accordion grows to a height that is only known once its content is in
-     the page. The component measures it and writes it as
-     --philcn-accordion-height on the panel; without that the keyframes would
-     have nothing to grow towards. */
-  --animate-accordion-down: philcn-accordion-down 200ms var(--ease-out-strong) backwards;
-  --animate-accordion-up: philcn-accordion-up 200ms var(--ease-out-strong) forwards;
-  /* A navigation panel slides in from the side the previous one was on, so
-     the movement follows the eye along the bar. */
-  --animate-nav-from-start: philcn-nav-from-start 150ms var(--ease-out-strong) backwards;
-  --animate-nav-from-end: philcn-nav-from-end 150ms var(--ease-out-strong) backwards;
-  --animate-nav-out: philcn-fade-out 150ms var(--ease-out-strong) forwards;
-  --animate-viewport-in: philcn-viewport-in 150ms var(--ease-out-strong) backwards;
-  --animate-viewport-out: philcn-viewport-out 150ms var(--ease-out-strong) forwards;
-  --animate-slide-in-top: philcn-slide-in-top 300ms var(--ease-drawer) backwards;
-  --animate-slide-out-top: philcn-slide-out-top 250ms var(--ease-drawer) forwards;
-  --animate-slide-in-bottom: philcn-slide-in-bottom 300ms var(--ease-drawer) backwards;
-  --animate-slide-out-bottom: philcn-slide-out-bottom 250ms var(--ease-drawer) forwards;
-  --animate-slide-in-left: philcn-slide-in-left 300ms var(--ease-drawer) backwards;
-  --animate-slide-out-left: philcn-slide-out-left 250ms var(--ease-drawer) forwards;
-  --animate-slide-in-right: philcn-slide-in-right 300ms var(--ease-drawer) backwards;
-  --animate-slide-out-right: philcn-slide-out-right 250ms var(--ease-drawer) forwards;
-}
-
-@keyframes philcn-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes philcn-fade-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-/* Tailwind v4 centres the dialog through the standalone `translate` property,
-   not `transform`. These keyframes must therefore touch `scale` only: writing
-   the centring translate here as well would apply it twice and shift the
-   dialog by a further -50%/-50% for the length of the animation. */
-@keyframes philcn-content-in {
-  from { opacity: 0; scale: 0.95; }
-  to { opacity: 1; scale: 1; }
-}
-@keyframes philcn-content-out {
-  from { opacity: 1; scale: 1; }
-  to { opacity: 0; scale: 0.95; }
-}
-
-/* A floating panel is placed by the positioning engine, which owns the
-   `transform` property. These keyframes therefore touch `scale` only —
-   animating `transform` here would throw the panel back to the top-left
-   corner for the length of the animation. */
-@keyframes philcn-floating-in {
-  from { opacity: 0; scale: 0.95; }
-  to { opacity: 1; scale: 1; }
-}
-@keyframes philcn-floating-out {
-  from { opacity: 1; scale: 1; }
-  to { opacity: 0; scale: 0.95; }
-}
-
-@keyframes philcn-accordion-down {
-  from { height: 0; }
-  to { height: var(--philcn-accordion-height, auto); }
-}
-@keyframes philcn-accordion-up {
-  from { height: var(--philcn-accordion-height, auto); }
-  to { height: 0; }
-}
-
-/* Tailwind v4 has `translate` and `scale` as standalone properties. These
-   keyframes touch those rather than `transform`, so a panel that is placed by
-   a utility class is not thrown back to the corner while it animates. */
-@keyframes philcn-nav-from-start {
-  from { opacity: 0; translate: -13rem 0; }
-  to { opacity: 1; translate: 0 0; }
-}
-@keyframes philcn-nav-from-end {
-  from { opacity: 0; translate: 13rem 0; }
-  to { opacity: 1; translate: 0 0; }
-}
-@keyframes philcn-viewport-in {
-  from { opacity: 0; scale: 0.9; }
-  to { opacity: 1; scale: 1; }
-}
-@keyframes philcn-viewport-out {
-  from { opacity: 1; scale: 1; }
-  to { opacity: 0; scale: 0.95; }
-}
-
-@keyframes philcn-slide-in-top {
-  from { translate: 0 -100%; }
-  to { translate: 0 0; }
-}
-@keyframes philcn-slide-out-top {
-  from { translate: 0 0; }
-  to { translate: 0 -100%; }
-}
-@keyframes philcn-slide-in-bottom {
-  from { translate: 0 100%; }
-  to { translate: 0 0; }
-}
-@keyframes philcn-slide-out-bottom {
-  from { translate: 0 0; }
-  to { translate: 0 100%; }
-}
-@keyframes philcn-slide-in-left {
-  from { translate: -100% 0; }
-  to { translate: 0 0; }
-}
-@keyframes philcn-slide-out-left {
-  from { translate: 0 0; }
-  to { translate: -100% 0; }
-}
-@keyframes philcn-slide-in-right {
-  from { translate: 100% 0; }
-  to { translate: 0 0; }
-}
-@keyframes philcn-slide-out-right {
-  from { translate: 0 0; }
-  to { translate: 100% 0; }
-}
 
 /* A panel kept in the page while closed holds no height. The closing
    animation overrides this while it runs, and leaves it at zero afterwards. */
@@ -288,37 +146,28 @@
 }
 
 /* Reduced motion means less movement, not none. The fade stays — it explains
-   that something appeared — while every translate and scale is dropped.
-   Presence still reads a real duration, so unmounting keeps working. */
+   that something appeared — while every slide, zoom and spin is flattened.
+   These are tw-animate-css's own variables, so this covers every component at
+   once, including any a project animates itself. An animation still runs, and
+   still reports a real duration, so Presence keeps unmounting on time. */
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="dialog-overlay"],
-  [data-slot="dialog-content"],
-  [data-slot="sheet-content"],
-  [data-slot="popover-content"],
-  [data-slot="tooltip-content"],
-  [data-slot="hover-card-content"],
-  [data-slot="navigation-menu-content"],
-  [data-slot="navigation-menu-viewport"] {
-    animation-name: philcn-fade-in;
-    animation-duration: 120ms;
-    animation-timing-function: var(--ease-out-strong);
-    animation-fill-mode: backwards;
+  *,
+  *::before,
+  *::after {
+    --tw-enter-translate-x: 0;
+    --tw-enter-translate-y: 0;
+    --tw-enter-scale: 1;
+    --tw-enter-rotate: 0;
+    --tw-enter-blur: 0;
+    --tw-exit-translate-x: 0;
+    --tw-exit-translate-y: 0;
+    --tw-exit-scale: 1;
+    --tw-exit-rotate: 0;
+    --tw-exit-blur: 0;
   }
 
-  [data-slot="dialog-overlay"][data-state="closed"],
-  [data-slot="dialog-content"][data-state="closed"],
-  [data-slot="sheet-content"][data-state="closed"],
-  [data-slot="popover-content"][data-state="closed"],
-  [data-slot="tooltip-content"][data-state="closed"],
-  [data-slot="hover-card-content"][data-state="closed"],
-  [data-slot="navigation-menu-content"][data-state="closed"],
-  [data-slot="navigation-menu-viewport"][data-state="closed"] {
-    animation-name: philcn-fade-out;
-    animation-fill-mode: forwards;
-  }
-
-  /* A panel that unfolds is movement, and there is no fade that would say the
-     same thing. It opens and closes at once instead. */
+  /* A panel that unfolds is movement, and no fade says the same thing. It
+     opens and closes at once instead. */
   [data-slot="accordion-content"] {
     animation-name: none;
   }

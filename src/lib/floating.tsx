@@ -138,6 +138,11 @@ const FloatingImpl = React.forwardRef<HTMLDivElement, ImplProps>(function Floati
 
   const { refs, floatingStyles, placement } = useFloating({
     placement: toPlacement(side, align),
+    // Place with `top` and `left` rather than `transform`. The open and close
+    // animations drive `transform` themselves — they come from tw-animate-css,
+    // the same ones shadcn uses — and a panel positioned by `transform` would
+    // be thrown back into the corner for as long as one ran.
+    transform: false,
     // Keeps the panel glued to its anchor while the page scrolls or resizes.
     whileElementsMounted: autoUpdate,
     middleware,

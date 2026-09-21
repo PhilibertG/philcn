@@ -87,10 +87,9 @@ const OverlaySurface = React.forwardRef<HTMLDivElement, SurfaceProps>(function O
         data-covered={covered ? "true" : undefined}
         className={cn(
           "fixed inset-0 z-50 bg-black/50",
-          "data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out",
-          // A surface opened on top covers this one: step aside rather than
-          // stacking two dimmed backdrops.
-          "transition-opacity duration-200 ease-out-strong data-[covered=true]:opacity-0",
+          "data-[state=open]:animate-in data-[state=open]:fade-in-0",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
+          "data-[state=closed]:fill-mode-forwards",
           overlayClassName,
           backdropClassName,
         )}
@@ -105,17 +104,11 @@ const OverlaySurface = React.forwardRef<HTMLDivElement, SurfaceProps>(function O
         data-state={state}
         data-covered={covered ? "true" : undefined}
         // A covered surface is out of reach: no focus trap, and hidden from
-        // assistive technology until it comes back to the front.
+        // assistive technology until it comes back to the front. It is no
+        // longer moved or faded — stacked surfaces stack, the way shadcn's do.
         trapped={isTopmost}
         inert={covered}
-        className={cn(
-          "pointer-events-auto fixed z-50",
-          // Recede when another surface opens on top, come back when it closes.
-          "transition-[opacity,scale] duration-200 ease-out-strong",
-          "data-[covered=true]:scale-95 data-[covered=true]:opacity-0",
-          "data-[covered=true]:pointer-events-none",
-          className,
-        )}
+        className={cn("pointer-events-auto fixed z-50", className)}
         {...props}
       >
         {children}

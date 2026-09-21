@@ -315,10 +315,12 @@ const AccordionContent = React.forwardRef<HTMLDivElement, AccordionContentProps>
       if (panel === null || content === null) return;
 
       const measure = () => {
-        panel.style.setProperty(
-          "--philcn-accordion-height",
-          `${content.getBoundingClientRect().height}px`,
-        );
+        const height = `${content.getBoundingClientRect().height}px`;
+        panel.style.setProperty("--philcn-accordion-height", height);
+        // tw-animate-css grows the panel towards Radix's variable, and a block
+        // pasted from shadcn expects that name. Both are written, so either
+        // spelling finds a height.
+        panel.style.setProperty("--radix-accordion-content-height", height);
       };
       measure();
 
