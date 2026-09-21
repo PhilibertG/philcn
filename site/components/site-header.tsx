@@ -1,3 +1,4 @@
+import { HeaderShell } from "./header-shell";
 import { GitHubIcon } from "./icons";
 
 const links = [
@@ -58,35 +59,33 @@ export function PillLink({
  */
 export function SiteHeader() {
   return (
-    <header className="fixed inset-x-2 top-2 z-50 sm:inset-x-3 sm:top-3">
-      <div className="flex items-center gap-10 rounded-[20px] border border-white/10 bg-[#0A0B0F]/72 px-6 py-3 backdrop-blur-xl lg:px-20">
-        <a href="#top" className="shrink-0">
-          <Wordmark className="text-[22px] text-white" />
-        </a>
+    <HeaderShell>
+      <a href="#top" className="shrink-0">
+        <Wordmark className="text-[22px] text-white" />
+      </a>
 
-        <nav className="hidden items-center gap-8 text-[15px] text-white/55 lg:flex">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="transition-colors duration-200 hover:text-white"
-            >
-              {link.label}
-            </a>
-          ))}
+      <nav className="hidden items-center gap-8 text-[15px] text-white/55 lg:flex">
+        {links.map((link) => (
           <a
-            href="https://github.com/PhilibertG/philcn"
-            className="flex items-center gap-2 transition-colors duration-200 hover:text-white"
+            key={link.label}
+            href={link.href}
+            className="transition-colors duration-200 hover:text-white"
           >
-            <GitHubIcon className="size-[17px]" />
-            GitHub
+            {link.label}
           </a>
-        </nav>
+        ))}
+        <a
+          href="https://github.com/PhilibertG/philcn"
+          className="flex items-center gap-2 transition-colors duration-200 hover:text-white"
+        >
+          <GitHubIcon className="size-[17px]" />
+          GitHub
+        </a>
+      </nav>
 
-        <div className="ml-auto">
-          <PillLink href="#library">Get started</PillLink>
-        </div>
+      <div className="ml-auto">
+        <PillLink href="#library">Get started</PillLink>
       </div>
-    </header>
+    </HeaderShell>
   );
 }
