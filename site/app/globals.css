@@ -117,19 +117,21 @@ body {
  * they do not share a curve. The transition that runs is the one written on
  * the state being entered:
  *
- * - Into the capsule, the shape moves on a spring. It narrows, goes about 2%
- *   past the content width and settles back, the way something with a little
- *   weight lands. The fill, border and shadow follow a beat later, so the bar
- *   changes shape first and material second.
+ * - Into the capsule, the shape moves on a spring. It narrows, overshoots the
+ *   content width, swings back once and settles: a real bounce, the way
+ *   something with some weight lands. The fill, border and shadow follow a
+ *   beat later, so the bar changes shape first and material second.
  * - Back out, everything eases open at once and faster, with no overshoot:
  *   returning to the top should feel like letting go, not like an event.
  * ------------------------------------------------------------------------ */
 :root {
-  /* A damped spring sampled into linear(): peaks at 1.02, settles by the end. */
+  /* A damped spring sampled into linear(): goes about 12% past its target,
+     swings back 1.6% under it, then settles. */
   --ease-spring: linear(
-    0, 0.045, 0.152, 0.287, 0.427, 0.559, 0.675, 0.772, 0.849, 0.908, 0.95,
-    0.98, 1, 1.012, 1.018, 1.02, 1.019, 1.018, 1.015, 1.012, 1.01, 1.007,
-    1.005, 1.003, 1.002, 1.001, 1.001, 1
+    0, 0.028, 0.103, 0.208, 0.331, 0.461, 0.589, 0.708, 0.815, 0.906, 0.98,
+    1.038, 1.079, 1.107, 1.122, 1.126, 1.123, 1.114, 1.101, 1.085, 1.069,
+    1.053, 1.038, 1.024, 1.012, 1.003, 0.996, 0.99, 0.987, 0.985, 0.984, 0.984,
+    0.986, 0.987, 0.989, 0.991, 0.993, 0.995, 0.997, 0.998, 1
   );
   --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -139,7 +141,7 @@ body {
 }
 
 .nav-shell[data-scrolled="true"] {
-  transition: top 760ms var(--ease-spring);
+  transition: top 900ms var(--ease-spring);
 }
 
 .nav-bar {
@@ -155,8 +157,8 @@ body {
 
 .nav-shell[data-scrolled="true"] .nav-bar {
   transition:
-    max-width 820ms var(--ease-spring),
-    border-radius 620ms var(--ease-spring),
+    max-width 980ms var(--ease-spring),
+    border-radius 760ms var(--ease-spring),
     padding 620ms var(--ease-settle),
     background-color 380ms 80ms ease-out,
     border-color 380ms 80ms ease-out,

@@ -76,18 +76,6 @@ export default function Home() {
           className="pointer-events-none absolute inset-0 h-full w-full"
         />
 
-        {/* The top of the card is darkened so the navigation, which has no
-            fill of its own until the page scrolls, stays readable over the
-            brightest beams. */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-48"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(10,11,15,.88) 0%, rgba(10,11,15,.55) 45%, transparent 100%)",
-          }}
-          aria-hidden
-        />
-
         {/* The beams run bright; this keeps the words on top of them
             readable without dimming the whole card. */}
         <div
