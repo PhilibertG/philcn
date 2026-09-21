@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
+import "lenis/dist/lenis.css";
 import "./globals.css";
+
+import { SmoothScroll } from "@/components/smooth-scroll";
 
 export const metadata: Metadata = {
   title: "philcn — beautiful components for React",
@@ -18,7 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   );
 }

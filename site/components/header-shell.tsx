@@ -10,6 +10,9 @@ import * as React from "react";
  * width of the content, closer to the top edge, darker and lifted by a shadow.
  * The change marks that the hero is behind you without taking any room.
  *
+ * The timing lives in globals.css, under .nav-bar: going in and coming out
+ * run on different curves, which utility classes cannot express.
+ *
  * The capsule's radius is a real length, not rounded-full: that one resolves
  * to millions of pixels, and a transition from zero would snap fully round on
  * its first frame instead of forming. The rest of the header stays a server component;
@@ -28,9 +31,9 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
   return (
     <header
       data-scrolled={scrolled}
-      className="group/header fixed inset-x-0 top-5 z-50 px-3 transition-[top] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] data-[scrolled=true]:top-3 motion-reduce:transition-none sm:top-6 sm:px-4"
+      className="nav-shell group/header fixed inset-x-0 top-5 z-50 px-3 data-[scrolled=true]:top-3 sm:top-6 sm:px-4"
     >
-      <div className="mx-auto flex max-w-full items-center gap-10 rounded-none border border-transparent bg-transparent py-2 pr-2 pl-7 transition-[max-width,border-radius,background-color,border-color,box-shadow,padding,backdrop-filter] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[scrolled=true]/header:max-w-content group-data-[scrolled=true]/header:rounded-[28px] group-data-[scrolled=true]/header:border-white/10 group-data-[scrolled=true]/header:bg-[#0A0B0F]/85 group-data-[scrolled=true]/header:py-1.5 group-data-[scrolled=true]/header:shadow-[0_12px_40px_-12px_rgba(0,0,0,.7)] group-data-[scrolled=true]/header:backdrop-blur-xl motion-reduce:transition-none lg:pl-10">
+      <div className="nav-bar mx-auto flex max-w-full items-center gap-10 rounded-none border border-transparent bg-transparent py-2 pr-2 pl-7 group-data-[scrolled=true]/header:max-w-content group-data-[scrolled=true]/header:rounded-[28px] group-data-[scrolled=true]/header:border-white/10 group-data-[scrolled=true]/header:bg-[#0A0B0F]/85 group-data-[scrolled=true]/header:py-1.5 group-data-[scrolled=true]/header:shadow-[0_12px_40px_-12px_rgba(0,0,0,.7)] group-data-[scrolled=true]/header:backdrop-blur-xl lg:pl-10">
         {children}
       </div>
     </header>

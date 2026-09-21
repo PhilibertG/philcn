@@ -109,3 +109,66 @@ body {
   color: color-mix(in srgb, var(--brand-surface) 7%, transparent);
   user-select: none;
 }
+
+/* ---------------------------------------------------------------------------
+ * The navigation's motion
+ *
+ * Going into the capsule and coming back out are not the same gesture, so
+ * they do not share a curve. The transition that runs is the one written on
+ * the state being entered:
+ *
+ * - Into the capsule, the shape moves on a spring. It narrows, goes about 2%
+ *   past the content width and settles back, the way something with a little
+ *   weight lands. The fill, border and shadow follow a beat later, so the bar
+ *   changes shape first and material second.
+ * - Back out, everything eases open at once and faster, with no overshoot:
+ *   returning to the top should feel like letting go, not like an event.
+ * ------------------------------------------------------------------------ */
+:root {
+  /* A damped spring sampled into linear(): peaks at 1.02, settles by the end. */
+  --ease-spring: linear(
+    0, 0.045, 0.152, 0.287, 0.427, 0.559, 0.675, 0.772, 0.849, 0.908, 0.95,
+    0.98, 1, 1.012, 1.018, 1.02, 1.019, 1.018, 1.015, 1.012, 1.01, 1.007,
+    1.005, 1.003, 1.002, 1.001, 1.001, 1
+  );
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-shell {
+  transition: top 460ms var(--ease-settle);
+}
+
+.nav-shell[data-scrolled="true"] {
+  transition: top 760ms var(--ease-spring);
+}
+
+.nav-bar {
+  transition:
+    max-width 460ms var(--ease-settle),
+    border-radius 460ms var(--ease-settle),
+    padding 460ms var(--ease-settle),
+    background-color 280ms ease-out,
+    border-color 280ms ease-out,
+    box-shadow 280ms ease-out,
+    backdrop-filter 280ms ease-out;
+}
+
+.nav-shell[data-scrolled="true"] .nav-bar {
+  transition:
+    max-width 820ms var(--ease-spring),
+    border-radius 620ms var(--ease-spring),
+    padding 620ms var(--ease-settle),
+    background-color 380ms 80ms ease-out,
+    border-color 380ms 80ms ease-out,
+    box-shadow 560ms 140ms ease-out,
+    backdrop-filter 380ms 40ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-shell,
+  .nav-shell[data-scrolled="true"],
+  .nav-bar,
+  .nav-shell[data-scrolled="true"] .nav-bar {
+    transition: none;
+  }
+}
