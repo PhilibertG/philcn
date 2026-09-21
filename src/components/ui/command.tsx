@@ -370,7 +370,7 @@ function CommandGroup({ className, heading, children, ...props }: CommandGroupPr
         role="group"
         {...(heading === undefined ? {} : { "aria-labelledby": headingId })}
         hidden={!hasMatches}
-        className={cn("flex flex-col overflow-hidden p-1 text-foreground", className)}
+        className={cn("flex shrink-0 flex-col overflow-hidden p-1 text-foreground", className)}
         {...props}
       >
         {heading === undefined ? null : (
@@ -446,10 +446,23 @@ const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(function 
     [ref],
   );
 
-  // A marked entry must stay on screen as the arrows run down a long list.
+  // A marked entry must stay in view as the arrows run down a long list — but
+  // only inside the list. `scrollIntoView` would scroll every ancestor too,
+  // the page included, so a palette further down a page dragged the window to
+  // it on load, the moment its first entry was marked. The list is moved by
+  // hand instead, and the page is never touched.
   React.useEffect(() => {
     if (!active || node === null) return;
-    node.scrollIntoView({ block: "nearest" });
+    const list = node.closest<HTMLElement>('[data-slot="command-list"]');
+    if (list === null) return;
+
+    const listBox = list.getBoundingClientRect();
+    const itemBox = node.getBoundingClientRect();
+    if (itemBox.top < listBox.top) {
+      list.scrollTop -= listBox.top - itemBox.top;
+    } else if (itemBox.bottom > listBox.bottom) {
+      list.scrollTop += itemBox.bottom - listBox.bottom;
+    }
   }, [active, node]);
 
   return (
