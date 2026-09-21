@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.4.0](https://github.com/PhilibertG/philcn/compare/v0.3.1...v0.4.0) (2026-09-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* animate with tw-animate-css, the way shadcn does
+* stacked dialogs no longer step back. A dialog opened over another used to fade and recede, and return when the one above closed; they now stack the way shadcn's do. The surface underneath is still made inert and still hidden from screen readers while covered — that is accessibility, not decoration, and it stays.
+
+### Features
+
+* animate with tw-animate-css, the way shadcn does ([157829f](https://github.com/PhilibertG/philcn/commit/157829f4a98081df8d8878648f1dbcf9be472f20))
+* animate with tw-animate-css, the way shadcn does ([1326d60](https://github.com/PhilibertG/philcn/commit/1326d601d27dead95633376585a9ceff555574e7))
+
+
+### Bug fixes
+
+* **command:** keep the page still and let long lists scroll ([cea1596](https://github.com/PhilibertG/philcn/commit/cea1596ea4cc8afb1ec8fb8e151f0fc8e020b03e))
+* **command:** keep the page still and let long lists scroll ([119248e](https://github.com/PhilibertG/philcn/commit/119248e2e239236d9efb3009aa0fad804d5b4f66))
+* hold the last frame of every closing animation ([789fce1](https://github.com/PhilibertG/philcn/commit/789fce1e157fbc88fba1f0827231eac8621cdc8a))
+
+
+### Documentation
+
+* **site:** add the showcase site ([677b0b7](https://github.com/PhilibertG/philcn/commit/677b0b76629e5d0e657110e051f0a2f634df4a84))
+* **site:** add the showcase site ([2034fd4](https://github.com/PhilibertG/philcn/commit/2034fd40c69fc96fc114a204800befa366d98f6c))
+* **site:** give the hero to the beams and the components their own card ([508ce9d](https://github.com/PhilibertG/philcn/commit/508ce9d468af6411b8d0bb01a6b14fe777e964a9))
+* **site:** lay the page out as rounded cards, and offer five backdrops ([ccb2450](https://github.com/PhilibertG/philcn/commit/ccb2450775dab2ba7041818f8a7a4c693e2af163))
+* **site:** pin the header, widen the margins, shorten the hero ([8e8ab0d](https://github.com/PhilibertG/philcn/commit/8e8ab0df73422bc66d6137c3c7d0d51e22d81640))
+* **site:** turn the navigation into a capsule that draws in on scroll ([9a5e727](https://github.com/PhilibertG/philcn/commit/9a5e727f50e89e151bf23e90cedc9e71d5a3cf56))
+* **site:** turn the navigation into a capsule that draws in on scroll ([e8bd41d](https://github.com/PhilibertG/philcn/commit/e8bd41ddb5bc883e67b929f40d5bade2b50ac450))
+
 ## [0.3.1](https://github.com/PhilibertG/philcn/compare/v0.3.0...v0.3.1) (2026-09-20)
 
 
