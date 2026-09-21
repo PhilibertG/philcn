@@ -31,6 +31,9 @@
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
   --color-brand-line: var(--brand-line);
+  /* The measure every section's content keeps, and the width the navigation
+     draws in to once the page scrolls. One value, so the two stay aligned. */
+  --container-content: 1120px;
   --font-sans: "General Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
 }
