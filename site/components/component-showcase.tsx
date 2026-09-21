@@ -30,7 +30,7 @@ export function ComponentShowcase() {
   const [notify, setNotify] = React.useState(false);
 
   return (
-    <div className="rounded-2xl border border-brand-line bg-background p-5 text-foreground sm:p-8">
+    <div className="squircle rounded-2xl border border-brand-line bg-background p-5 text-foreground sm:p-8">
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div className="grid gap-5">
           <div className="overflow-hidden rounded-xl border">

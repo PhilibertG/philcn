@@ -17,7 +17,12 @@ export function Wordmark({ className }: { className?: string }) {
   );
 }
 
-/** A black pill with the arrow in its own circle, the way the references do it. */
+/**
+ * A black pill with the arrow in its own circle, the way the references do it.
+ * Inside the navigation it takes the bar's shape instead (see .nav-bar .pill
+ * in globals.css). Only the arrow turns on hover, so a squared mark does not
+ * spin into a diamond.
+ */
 export function PillLink({
   href,
   children,
@@ -31,7 +36,7 @@ export function PillLink({
   return (
     <a
       href={href}
-      className={`group inline-flex items-center gap-2 rounded-full py-1.5 pr-1.5 pl-6 text-[15px] font-medium transition-transform duration-200 hover:-translate-y-px active:translate-y-0 ${
+      className={`pill group inline-flex items-center gap-2 rounded-full py-1.5 pr-1.5 pl-6 text-[15px] font-medium transition-transform duration-200 hover:-translate-y-px active:translate-y-0 ${
         dark
           ? "bg-white text-brand-ink shadow-[0_2px_14px_-4px_rgba(0,0,0,.6)]"
           : "border border-white/20 bg-white/8 text-white backdrop-blur-sm"
@@ -39,12 +44,12 @@ export function PillLink({
     >
       {children}
       <span
-        className={`grid size-9 place-items-center rounded-full transition-transform duration-300 group-hover:rotate-45 ${
+        className={`pill-mark grid size-9 place-items-center rounded-full ${
           dark ? "bg-brand-primary text-white" : "bg-white text-brand-ink"
         }`}
         aria-hidden
       >
-        →
+        <span className="inline-block transition-transform duration-300 group-hover:rotate-45">→</span>
       </span>
     </a>
   );

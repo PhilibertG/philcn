@@ -38,6 +38,17 @@
   --font-mono: ui-monospace, "SF Mono", monospace;
 }
 
+/* Apple's continuous corners. A plain border-radius is a quarter circle
+   glued to a straight edge, and the join shows as a small kink; a squircle
+   bends gradually from the edge into the corner, the way iOS and macOS draw
+   their panels. It dresses the site's own cards only: the components shown
+   inside keep shadcn's round corners, since that is what a project gets.
+   Capsules and circles stay round, as they do at Apple. Browsers without
+   corner-shape ignore it and draw the usual round corner. */
+@utility squircle {
+  corner-shape: squircle;
+}
+
 /* The page itself is ink. Everything readable sits in a rounded card on top
    of it, with a margin all round — that gap is the whole look. */
 body {
@@ -144,33 +155,81 @@ body {
   transition: top 900ms var(--ease-spring);
 }
 
+/* Three shapes nest here: the bar, the "Get started" button inside it, and
+   the arrow's mark inside that. Each radius is the one around it minus the gap
+   between their edges (6px of padding, plus the bar's 1px border), so the
+   curves stay parallel in both states:
+     resting   bar 16 → button  9 → mark  3   squircle corners
+     capsule   bar 31 → button 24 → mark 18   true round ends
+   The three change on the same curves, so they stay concentric in between. */
 .nav-bar {
+  corner-shape: squircle;
   transition:
     max-width 460ms var(--ease-settle),
     border-radius 460ms var(--ease-settle),
-    padding 460ms var(--ease-settle),
+    corner-shape 460ms var(--ease-settle),
     background-color 280ms ease-out,
     border-color 280ms ease-out,
     box-shadow 280ms ease-out,
     backdrop-filter 280ms ease-out;
 }
 
+.nav-bar .pill {
+  border-radius: 9px;
+  corner-shape: squircle;
+}
+
+.nav-bar .pill-mark {
+  border-radius: 3px;
+  corner-shape: squircle;
+}
+
+.nav-bar .pill,
+.nav-bar .pill-mark {
+  transition:
+    transform 200ms ease-out,
+    border-radius 460ms var(--ease-settle),
+    corner-shape 460ms var(--ease-settle);
+}
+
 .nav-shell[data-scrolled="true"] .nav-bar {
+  corner-shape: round;
   transition:
     max-width 980ms var(--ease-spring),
     border-radius 760ms var(--ease-spring),
-    padding 620ms var(--ease-settle),
+    corner-shape 760ms var(--ease-spring),
     background-color 380ms 80ms ease-out,
     border-color 380ms 80ms ease-out,
     box-shadow 560ms 140ms ease-out,
     backdrop-filter 380ms 40ms ease-out;
 }
 
+.nav-shell[data-scrolled="true"] .nav-bar .pill {
+  border-radius: 24px;
+}
+
+.nav-shell[data-scrolled="true"] .nav-bar .pill-mark {
+  border-radius: 18px;
+}
+
+.nav-shell[data-scrolled="true"] .nav-bar .pill,
+.nav-shell[data-scrolled="true"] .nav-bar .pill-mark {
+  corner-shape: round;
+  transition:
+    transform 200ms ease-out,
+    border-radius 760ms var(--ease-spring),
+    corner-shape 760ms var(--ease-spring);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nav-shell,
   .nav-shell[data-scrolled="true"],
   .nav-bar,
-  .nav-shell[data-scrolled="true"] .nav-bar {
+  .nav-shell[data-scrolled="true"] .nav-bar,
+  .nav-bar .pill,
+  .nav-bar .pill-mark,
+  .nav-shell[data-scrolled="true"] .nav-bar .pill,
+  .nav-shell[data-scrolled="true"] .nav-bar .pill-mark {
     transition: none;
   }
 }
