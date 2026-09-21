@@ -31,6 +31,9 @@
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
   --color-brand-line: var(--brand-line);
+  /* The measure every section's content keeps, and the width the navigation
+     draws in to once the page scrolls. One value, so the two stay aligned. */
+  --container-content: 1120px;
   --font-sans: "General Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
 }
@@ -105,4 +108,69 @@ body {
   font-weight: 600;
   color: color-mix(in srgb, var(--brand-surface) 7%, transparent);
   user-select: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * The navigation's motion
+ *
+ * Going into the capsule and coming back out are not the same gesture, so
+ * they do not share a curve. The transition that runs is the one written on
+ * the state being entered:
+ *
+ * - Into the capsule, the shape moves on a spring. It narrows, overshoots the
+ *   content width, swings back once and settles: a real bounce, the way
+ *   something with some weight lands. The fill, border and shadow follow a
+ *   beat later, so the bar changes shape first and material second.
+ * - Back out, everything eases open at once and faster, with no overshoot:
+ *   returning to the top should feel like letting go, not like an event.
+ * ------------------------------------------------------------------------ */
+:root {
+  /* A damped spring sampled into linear(): goes about 12% past its target,
+     swings back 1.6% under it, then settles. */
+  --ease-spring: linear(
+    0, 0.028, 0.103, 0.208, 0.331, 0.461, 0.589, 0.708, 0.815, 0.906, 0.98,
+    1.038, 1.079, 1.107, 1.122, 1.126, 1.123, 1.114, 1.101, 1.085, 1.069,
+    1.053, 1.038, 1.024, 1.012, 1.003, 0.996, 0.99, 0.987, 0.985, 0.984, 0.984,
+    0.986, 0.987, 0.989, 0.991, 0.993, 0.995, 0.997, 0.998, 1
+  );
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-shell {
+  transition: top 460ms var(--ease-settle);
+}
+
+.nav-shell[data-scrolled="true"] {
+  transition: top 900ms var(--ease-spring);
+}
+
+.nav-bar {
+  transition:
+    max-width 460ms var(--ease-settle),
+    border-radius 460ms var(--ease-settle),
+    padding 460ms var(--ease-settle),
+    background-color 280ms ease-out,
+    border-color 280ms ease-out,
+    box-shadow 280ms ease-out,
+    backdrop-filter 280ms ease-out;
+}
+
+.nav-shell[data-scrolled="true"] .nav-bar {
+  transition:
+    max-width 980ms var(--ease-spring),
+    border-radius 760ms var(--ease-spring),
+    padding 620ms var(--ease-settle),
+    background-color 380ms 80ms ease-out,
+    border-color 380ms 80ms ease-out,
+    box-shadow 560ms 140ms ease-out,
+    backdrop-filter 380ms 40ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-shell,
+  .nav-shell[data-scrolled="true"],
+  .nav-bar,
+  .nav-shell[data-scrolled="true"] .nav-bar {
+    transition: none;
+  }
 }
