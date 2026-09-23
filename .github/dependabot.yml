@@ -11,6 +11,10 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # A brand new release is where a stolen publishing account shows up first.
+    # Waiting a week lets the rest of the world find that out instead of us.
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 3
     commit-message:
       prefix: fix(deps)
@@ -24,6 +28,10 @@ updates:
     directory: /site
     schedule:
       interval: monthly
+    # A brand new release is where a stolen publishing account shows up first.
+    # Waiting a week lets the rest of the world find that out instead of us.
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 2
     commit-message:
       prefix: chore(deps-site)
@@ -37,6 +45,10 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # A brand new release is where a stolen publishing account shows up first.
+    # Waiting a week lets the rest of the world find that out instead of us.
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 2
     commit-message:
       prefix: ci(deps)

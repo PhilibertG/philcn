@@ -6,6 +6,10 @@ name: Security scanning
 # one of them publishes to npm, so a workflow that can be steered is a way
 # into a release.
 #
+# Every action below is pinned to the commit it was read at, not to a moving
+# tag like v4: a tag can be moved to different code later, a commit cannot.
+# Dependabot raises those pins when a new version comes out.
+#
 # They run on every pull request, once a month, and whenever you press
 # "Run workflow" on this workflow in the Actions tab. Nothing is ever opened
 # as an issue or a pull request: findings land in the repository's Security
@@ -36,14 +40,18 @@ jobs:
       matrix:
         language: [javascript-typescript, actions]
     steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # The checkout step leaves its token in .git/config by default, where
+          # anything later in the job could read it. Nothing here needs it.
+          persist-credentials: false
+      - uses: github/codeql-action/init@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
         with:
           languages: ${{ matrix.language }}
           # The wider rule set: the default one stays silent on findings it
           # cannot prove, and a library this small can afford to read more.
           queries: security-and-quality
-      - uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
         with:
           category: /language:${{ matrix.language }}
 
@@ -54,10 +62,14 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Read the workflows with zizmor
-        run: pipx run zizmor --format sarif . > zizmor.sarif
-      - uses: github/codeql-action/upload-sarif@v3
+        # Pinned: an audit tool that updates itself is an audit tool that can
+        # change under you between two runs.
+        run: pipx run zizmor==1.30.1 --format sarif . > zizmor.sarif
+      - uses: github/codeql-action/upload-sarif@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
         with:
           sarif_file: zizmor.sarif
           category: zizmor
