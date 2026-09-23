@@ -1,0 +1,45 @@
+version: 2
+
+# Dependabot watches what this repository depends on and opens a pull request
+# when something it uses has a known flaw or falls behind. Updates are grouped
+# so a quiet month arrives as one pull request instead of ten, and the commit
+# messages are shaped the way the release robot expects — its own default
+# ("Bump x from 1.0 to 1.1") would be turned away by the commit check.
+updates:
+  # The library itself. Its dependencies end up in what people install.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: fix(deps)
+      prefix-development: chore(deps-dev)
+    groups:
+      library:
+        patterns: ["*"]
+
+  # The showcase site. Nothing here is published, so it can move in one block.
+  - package-ecosystem: npm
+    directory: /site
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: chore(deps-site)
+    groups:
+      site:
+        patterns: ["*"]
+
+  # The actions the workflows call. One of them publishes to npm, so an action
+  # left behind is a way into the release.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: ci(deps)
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,0 +1,63 @@
+name: Security scanning
+
+# Two machine readers go over this repository: CodeQL reads the code the way
+# an attacker would (text that reaches the page unescaped, a path built from
+# something a caller controls), and zizmor reads the workflows themselves —
+# one of them publishes to npm, so a workflow that can be steered is a way
+# into a release.
+#
+# They run on every pull request, once a month, and whenever you press
+# "Run workflow" on this workflow in the Actions tab. Nothing is ever opened
+# as an issue or a pull request: findings land in the repository's Security
+# tab, which only maintainers can read.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # 06:00 UTC on the first of the month.
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      # The one permission that lets a job file a finding in the Security tab.
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, actions]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # The wider rule set: the default one stays silent on findings it
+          # cannot prove, and a library this small can afford to read more.
+          queries: security-and-quality
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{ matrix.language }}
+
+  workflows:
+    name: Workflow audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the workflows with zizmor
+        run: pipx run zizmor --format sarif . > zizmor.sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: zizmor.sarif
+          category: zizmor
