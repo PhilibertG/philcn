@@ -1,8 +1,9 @@
 name: CI
 
-# Every pull request is checked twice: the code has to build and pass its
-# tests, and the commits themselves have to be shaped the way the release
-# robot expects. A badly shaped commit costs a line in the changelog.
+# Every pull request is checked three ways: the library has to build and pass
+# its tests, the showcase site has to type-check, and the commits themselves
+# have to be shaped the way the release robot expects. A badly shaped commit
+# costs a line in the changelog.
 #
 # Actions are pinned to a commit rather than a tag: a tag can be moved to
 # different code later, a commit cannot. Dependabot raises these pins.
@@ -31,6 +32,25 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+
+  site:
+    name: Site types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      # The site reads the components straight from ../src, so this also says
+      # whether a change to the library still fits the way the site uses it.
+      - run: npm ci
+        working-directory: site
+      - run: npm run typecheck
+        working-directory: site
 
   commits:
     name: Commit format
