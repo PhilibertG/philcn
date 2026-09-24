@@ -5,16 +5,17 @@ name: Release
 # the changelog it would publish. Nothing else happens until that pull
 # request is merged — merging it is what tags the version, writes the
 # release notes, and starts the deployment below.
+#
+# The action is pinned to a commit rather than a tag: a tag can be moved to
+# different code later, a commit cannot. Dependabot raises that pin.
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-  # Passed down to the deployment: it is what lets npm publish without a token.
-  id-token: write
+# Nothing is granted to the workflow as a whole; each job asks for what it
+# needs and no more.
+permissions: {}
 
 # One release at a time. Two runs writing the same pull request would fight.
 concurrency:
@@ -25,12 +26,17 @@ jobs:
   release-please:
     name: Keep the release pull request up to date
     runs-on: ubuntu-latest
+    permissions:
+      # Writes the tag and the release notes, and keeps the release pull
+      # request up to date. It needs nothing else.
+      contents: write
+      pull-requests: write
     outputs:
       released: ${{ steps.release.outputs.release_created }}
       tag: ${{ steps.release.outputs.tag_name }}
       version: ${{ steps.release.outputs.version }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -44,7 +50,14 @@ jobs:
     # workflows on its own, so the deployment is called from here rather than
     # left to listen for a published release that would never reach it.
     if: needs.release-please.outputs.released == 'true'
+    permissions:
+      contents: read
+      # What lets npm publish without a token.
+      id-token: write
     uses: ./.github/workflows/deploy.yml
     with:
       tag: ${{ needs.release-please.outputs.tag }}
-    secrets: inherit
+    secrets:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
