@@ -20,7 +20,12 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
 
-    "baseUrl": ".",
+    // TypeScript 7 no longer pulls in every @types package it finds, so the
+    // one the tests need is named here. Nothing else is global.
+    "types": ["node"],
+
+    // No baseUrl: TypeScript 7 removed it, and these paths are read relative
+    // to this file anyway.
     "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src"],
