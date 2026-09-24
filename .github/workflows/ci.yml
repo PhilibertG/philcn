@@ -44,9 +44,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: site/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            site/package-lock.json
       # The site reads the components straight from ../src, so this also says
       # whether a change to the library still fits the way the site uses it.
+      # That is also why the library's own packages are installed here: those
+      # files import react from the root folder, not from site/.
+      - run: npm ci
       - run: npm ci
         working-directory: site
       - run: npm run typecheck
