@@ -22,6 +22,10 @@ updates:
     groups:
       library:
         patterns: ["*"]
+        # Only the updates that keep the same promise. A major version is a
+        # rewrite of that promise, so it arrives on its own, named, and gets
+        # read before anything else happens.
+        update-types: [minor, patch]
 
   # The showcase site. Nothing here is published, so it can move in one block.
   - package-ecosystem: npm
@@ -38,6 +42,7 @@ updates:
     groups:
       site:
         patterns: ["*"]
+        update-types: [minor, patch]
 
   # The actions the workflows call. One of them publishes to npm, so an action
   # left behind is a way into the release.
@@ -55,3 +60,4 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+        update-types: [minor, patch]
