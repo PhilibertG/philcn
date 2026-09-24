@@ -7,10 +7,13 @@ name: CI
 #
 # Actions are pinned to a commit rather than a tag: a tag can be moved to
 # different code later, a commit cannot. Dependabot raises these pins.
+#
+# Only pull requests: main is protected, so nothing reaches it that has not
+# been through here, and the delivery re-runs the same checks on the tag
+# before anything is published. Running again on every push to main only
+# repeated work already done.
 on:
   pull_request:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -59,7 +62,6 @@ jobs:
 
   commits:
     name: Commit format
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
