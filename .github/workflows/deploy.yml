@@ -10,6 +10,15 @@ on:
         description: The tag that was just released, for example v0.1.0.
         required: true
         type: string
+    # Named one by one rather than inherited: the caller hands over these
+    # three and nothing else, so nothing else can leak this way.
+    secrets:
+      DEPLOY_HOST:
+        required: false
+      DEPLOY_USER:
+        required: false
+      DEPLOY_SSH_KEY:
+        required: false
   workflow_dispatch:
     inputs:
       tag:
@@ -17,22 +26,24 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-  # Lets the runner prove to npm that this publish really comes from this
-  # repository and this workflow. That proof replaces a token entirely.
-  id-token: write
+permissions: {}
 
 jobs:
   deploy:
     name: Deliver ${{ inputs.tag }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Lets the runner prove to npm that this publish really comes from this
+      # repository and this workflow. That proof replaces a token entirely.
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ inputs.tag }}
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           # Publishing without a token needs npm 11.5.1 or later, which is
           # what Node 24 ships with.
@@ -53,10 +64,15 @@ jobs:
         env:
           DEPLOY_TARGET: ${{ vars.DEPLOY_TARGET }}
 
+      # The tag reaches the shell through the environment, never pasted into
+      # the script: a value spliced into a command line is read as part of
+      # the command, and a crafted one would run.
       - name: No target set, nothing delivered
         if: steps.target.outputs.name == 'none'
+        env:
+          TAG: ${{ inputs.tag }}
         run: |
-          echo "::notice title=Nothing to deploy::Version ${{ inputs.tag }} is tagged and its release notes are published, but no delivery target is configured. Set the repository variable DEPLOY_TARGET to 'npm' or 'ssh' to turn this on."
+          echo "::notice title=Nothing to deploy::Version $TAG is tagged and its release notes are published, but no delivery target is configured. Set the repository variable DEPLOY_TARGET to 'npm' or 'ssh' to turn this on."
 
       # No token anywhere: npm checks the runner's own identity against the
       # trusted publisher configured on the package, and records where the
@@ -93,9 +109,12 @@ jobs:
             "$DEPLOY_USER@$DEPLOY_HOST" "TAG=$TAG $DEPLOY_COMMAND"
 
       - name: Say what happened
+        env:
+          TAG: ${{ inputs.tag }}
+          TARGET: ${{ steps.target.outputs.name }}
         run: |
           {
-            echo "### ${{ inputs.tag }}"
+            echo "### $TAG"
             echo
-            echo "Target: \`${{ steps.target.outputs.name }}\`"
+            echo "Target: \`$TARGET\`"
           } >> "$GITHUB_STEP_SUMMARY"
