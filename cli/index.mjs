@@ -177,13 +177,17 @@ function commandAdd(registry, names, flags) {
     const source = readFileSync(join(SOURCE_ROOT, file), "utf8");
     const target = join(flags.cwd, targetFor(file, aliases, resolveAlias));
 
-    if (existsSync(target) && !flags.overwrite) {
-      skipped.push(target);
+    if (flags.dryRun) {
+      if (existsSync(target) && !flags.overwrite) skipped.push(target);
+      else written.push(target);
       continue;
     }
-    if (!flags.dryRun) {
-      mkdirSync(dirname(target), { recursive: true });
-      writeFileSync(target, rewriteFile(file, source, aliases, { standalone: flags.standalone }));
+    mkdirSync(dirname(target), { recursive: true });
+    // "wx" fails instead of overwriting, so the file is never read for its
+    // existence and then written a moment later: one call decides.
+    if (!write(target, rewriteFile(file, source, aliases, { standalone: flags.standalone }), flags.overwrite)) {
+      skipped.push(target);
+      continue;
     }
     written.push(target);
   }
@@ -200,6 +204,20 @@ function commandAdd(registry, names, flags) {
   if (packages.length > 0) {
     say();
     say(`These components need: ${addCommand(managerIn(flags.cwd), packages)}`);
+  }
+}
+
+/**
+ * Writes a file, and says whether it did. Without `replace` an existing file
+ * is left where it is — decided by the write itself, not by a look before it.
+ */
+function write(target, contents, replace = false) {
+  try {
+    writeFileSync(target, contents, replace ? {} : { flag: "wx" });
+    return true;
+  } catch (error) {
+    if (error.code === "EEXIST") return false;
+    throw error;
   }
 }
 
@@ -226,31 +244,33 @@ function commandInit(flags) {
     aliases: { components: "@/components", ui: "@/components/ui", lib: "@/lib", philcn: DEFAULT_ALIASES.lib },
   };
 
-  if (!flags.dryRun) writeFileSync(target, `${JSON.stringify(config, null, 2)}\n`);
+  if (!flags.dryRun && !write(target, `${JSON.stringify(config, null, 2)}\n`, flags.overwrite)) {
+    fail("components.json is already there. Use --overwrite to replace it.");
+  }
   say(`${flags.dryRun ? "Would write" : "Written"}: components.json`);
 
   const css = join(flags.cwd, stylesheet);
-  if (!existsSync(css)) {
-    if (!flags.dryRun) {
-      mkdirSync(dirname(css), { recursive: true });
-      const theme = readFileSync(join(SOURCE_ROOT, "src/styles/philcn.css"), "utf8");
-      writeFileSync(css, withPackageSource(theme, { standalone: flags.standalone }));
+  if (flags.dryRun) {
+    if (!existsSync(css)) say(`Would write: ${css.replace(`${flags.cwd}/`, "")}`);
+  } else {
+    mkdirSync(dirname(css), { recursive: true });
+    const theme = readFileSync(join(SOURCE_ROOT, "src/styles/philcn.css"), "utf8");
+    if (write(css, withPackageSource(theme, { standalone: flags.standalone }))) {
+      say(`Written: ${css.replace(`${flags.cwd}/`, "")}`);
     }
-    say(`${flags.dryRun ? "Would write" : "Written"}: ${css.replace(`${flags.cwd}/`, "")}`);
   }
 
   // Every component reads `cn` from here, and so does every block pasted from
   // shadcn. A project that already has the file keeps its own.
   const resolveAlias = aliasResolver(flags.cwd);
   const utils = join(flags.cwd, `${resolveAlias(aliasesFrom(config).utils)}.ts`);
-  if (existsSync(utils)) {
-    say(`Left alone, already there: ${utils.replace(`${flags.cwd}/`, "")}`);
+  const shortUtils = utils.replace(`${flags.cwd}/`, "");
+  if (flags.dryRun) {
+    say(existsSync(utils) ? `Left alone, already there: ${shortUtils}` : `Would write: ${shortUtils}`);
   } else {
-    if (!flags.dryRun) {
-      mkdirSync(dirname(utils), { recursive: true });
-      writeFileSync(utils, readFileSync(join(SOURCE_ROOT, "src/lib/cn.ts"), "utf8"));
-    }
-    say(`${flags.dryRun ? "Would write" : "Written"}: ${utils.replace(`${flags.cwd}/`, "")}`);
+    mkdirSync(dirname(utils), { recursive: true });
+    const written = write(utils, readFileSync(join(SOURCE_ROOT, "src/lib/cn.ts"), "utf8"));
+    say(written ? `Written: ${shortUtils}` : `Left alone, already there: ${shortUtils}`);
   }
 
   say();
