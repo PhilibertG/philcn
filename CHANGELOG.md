@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/PhilibertG/philcn/compare/v0.4.1...v0.4.2) (2026-09-24)
+
+
+### Bug fixes
+
+* **ci:** install the library's packages before type-checking the site ([3753ec7](https://github.com/PhilibertG/philcn/commit/3753ec7f72425eb56858f7445c72e7880b6e86c5))
+
 ## [0.4.1](https://github.com/PhilibertG/philcn/compare/v0.4.0...v0.4.1) (2026-09-21)
 
 
