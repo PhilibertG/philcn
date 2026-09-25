@@ -26,6 +26,9 @@ import {
 import { ShaderCanvas } from "@/components/shader-canvas";
 import { beams } from "@/components/shaders";
 import { PillLink, SiteHeader, Wordmark } from "@/components/site-header";
+// The published version, read from the library itself: a number written here
+// by hand is a number that goes stale the next time anything ships.
+import { version } from "../../package.json";
 
 const stack = [
   { icon: ReactIcon, label: "React" },
@@ -256,7 +259,7 @@ export default function Home() {
           <Wordmark className="text-lg text-white" />
           <span>A modern component library for React</span>
           <span className="sm:ml-auto">MIT — Philibert Gentien</span>
-          <span className="font-mono text-xs">v0.3.1 · 2026</span>
+          <span className="font-mono text-xs">v{version} · 2026</span>
         </div>
 
         {/* The name, once, large enough to be felt rather than read, and

@@ -16,11 +16,15 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       {/* A page that is read, not looked at: thin gutters, the list of
           components against the left edge, and the text taking the room it
           needs rather than sitting in the middle of a wide empty page. */}
-      <div className="flex gap-10 px-6 pt-24 pb-24 lg:gap-14 lg:px-10 xl:px-14">
-        <aside className="sticky top-24 hidden h-[calc(100dvh-7rem)] w-56 shrink-0 overflow-y-auto pb-8 lg:block">
+      <div className="flex gap-10 px-6 lg:gap-14 lg:px-10 xl:px-14">
+        {/* The list is held against the top of the window for the whole page.
+            Its own bottom padding, rather than the page's, keeps the last
+            entry off the edge — page padding would push the whole list up
+            once the end of the page came into view. */}
+        <aside className="quiet-scroll sticky top-16 hidden h-[calc(100dvh-4rem)] w-56 shrink-0 overflow-y-auto py-8 lg:block">
           <SidebarNav written={slugs} />
         </aside>
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1 pt-24 pb-24">{children}</main>
       </div>
     </div>
   );
