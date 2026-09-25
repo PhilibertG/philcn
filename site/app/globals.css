@@ -22,6 +22,18 @@
   --brand-line: #e3e8f5;
 }
 
+/* The same palette after dark. philcn's own components switch on the `.dark`
+   class, so the site switches on the same one: one click changes both, and
+   the components on the page are the real thing in their dark clothes. */
+.dark {
+  --brand-canvas: #16171d;
+  --brand-surface: #0f1014;
+  --brand-soft: #1d2440;
+  --brand-ink: #f1f2f7;
+  --brand-ink-soft: #a2a8bd;
+  --brand-line: #24262f;
+}
+
 @theme inline {
   --color-brand-canvas: var(--brand-canvas);
   --color-brand-surface: var(--brand-surface);

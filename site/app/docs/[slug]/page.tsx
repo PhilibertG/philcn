@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { InstallCommand } from "@/components/docs/code";
 import { ExampleSection } from "@/components/docs/example";
+import { Toc } from "@/components/docs/toc";
 import { docs, slugs } from "@/content/docs";
 import { propRows } from "@/lib/docs";
 
@@ -27,8 +28,16 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   const [first, ...rest] = doc.examples;
   const rows = propRows(doc);
 
+  const toc = [
+    ...doc.examples.map((example) => ({ id: example.id, title: example.title })),
+    { id: "installation", title: "Installation" },
+    { id: "props", title: "Props" },
+    ...(doc.notes && doc.notes.length > 0 ? [{ id: "worth-knowing", title: "Worth knowing" }] : []),
+  ];
+
   return (
-    <article className="grid gap-10">
+    <div className="flex gap-12">
+      <article className="grid min-w-0 flex-1 gap-10 xl:max-w-[840px]">
       <header>
         <h1 className="text-4xl font-semibold tracking-tight">{doc.title}</h1>
         <p className="mt-2 text-lg text-brand-ink-soft">{doc.summary}</p>
@@ -38,7 +47,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
 
       <p className="max-w-[70ch] text-brand-ink-soft">{doc.description}</p>
 
-      <section>
+      <section id="installation" className="scroll-mt-28">
         <h2 className="mb-3 text-xl font-semibold tracking-tight">Installation</h2>
         <InstallCommand slug={doc.slug} />
         <p className="mt-2 text-sm text-brand-ink-soft">
@@ -55,7 +64,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
         </section>
       ) : null}
 
-      <section>
+      <section id="props" className="scroll-mt-28">
         <h2 className="mb-3 text-xl font-semibold tracking-tight">Props</h2>
         <div className="overflow-x-auto rounded-xl border border-brand-line">
           <table className="w-full border-collapse text-left text-sm">
@@ -91,7 +100,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
       </section>
 
       {doc.notes && doc.notes.length > 0 ? (
-        <section>
+        <section id="worth-knowing" className="scroll-mt-28">
           <h2 className="mb-3 text-xl font-semibold tracking-tight">Worth knowing</h2>
           <ul className="grid gap-2 text-brand-ink-soft">
             {doc.notes.map((note) => (
@@ -103,6 +112,11 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
           </ul>
         </section>
       ) : null}
-    </article>
+      </article>
+
+      <aside className="sticky top-24 hidden h-fit w-52 shrink-0 xl:block">
+        <Toc items={toc} />
+      </aside>
+    </div>
   );
 }

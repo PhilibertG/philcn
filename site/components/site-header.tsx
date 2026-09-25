@@ -1,5 +1,6 @@
 import { HeaderShell } from "./header-shell";
 import { GitHubIcon } from "./icons";
+import { ThemeToggle } from "./theme-toggle";
 
 const links = [
   { href: "/docs/button", label: "Components" },
@@ -62,10 +63,12 @@ export function PillLink({
  * so it carries its own dark, blurred bar rather than borrowing a background
  * from the section behind it. That way it stays readable the whole way down.
  */
-export function SiteHeader() {
+export function SiteHeader({ shrinkOnScroll = true }: { shrinkOnScroll?: boolean }) {
   return (
-    <HeaderShell>
-      <a href="#top" className="shrink-0">
+    <HeaderShell shrinkOnScroll={shrinkOnScroll}>
+      {/* On the home page the wordmark rides back to the top; anywhere else
+          it is the way home. */}
+      <a href={shrinkOnScroll ? "#top" : "/"} className="shrink-0">
         <Wordmark className="text-[22px] text-white" />
       </a>
 
@@ -88,7 +91,8 @@ export function SiteHeader() {
         </a>
       </nav>
 
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center gap-2">
+        <ThemeToggle />
         <PillLink href="#library">Get started</PillLink>
       </div>
     </HeaderShell>
