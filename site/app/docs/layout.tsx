@@ -21,7 +21,13 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             Its own bottom padding, rather than the page's, keeps the last
             entry off the edge — page padding would push the whole list up
             once the end of the page came into view. */}
-        <aside className="quiet-scroll sticky top-16 hidden h-[calc(100dvh-4rem)] w-56 shrink-0 overflow-y-auto py-8 lg:block">
+        {/* data-lenis-prevent: the smooth scrolling of the page never takes
+            this list's wheel, and reaching either end of the list stops
+            there instead of carrying on down the page. */}
+        <aside
+          data-lenis-prevent
+          className="quiet-scroll sticky top-16 hidden h-[calc(100dvh-4rem)] w-56 shrink-0 overflow-y-auto py-8 lg:block"
+        >
           <SidebarNav written={slugs} />
         </aside>
         <main className="min-w-0 flex-1 pt-24 pb-24">{children}</main>

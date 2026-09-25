@@ -282,8 +282,12 @@ body {
  * A pane that scrolls on its own gets a thin bar in the page's own colours,
  * shown only while the pointer is over it. The browser's default bar is wide,
  * light, and lands in the middle of the reading.
+ *
+ * It also keeps its scrolling to itself: reaching the end of the list should
+ * stop, not hand the rest of the gesture to the page behind it.
  * ------------------------------------------------------------------------ */
 .quiet-scroll {
+  overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
   transition: scrollbar-color 200ms ease-out;
