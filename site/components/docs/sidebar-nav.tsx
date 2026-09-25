@@ -23,7 +23,10 @@ export function SidebarNav({ written }: { written: string[] }) {
           <p className="mb-2 text-[11px] font-semibold tracking-[0.08em] text-brand-ink-soft uppercase">
             {group.title}
           </p>
-          <ul className="grid gap-px">
+          {/* The links carry their own padding so the hover shape has room; the
+              list is pulled back by exactly that much, which puts the text on
+              the same line as the heading above it. */}
+          <ul className="-ml-2 grid gap-px">
             {group.items.map((item) => {
               const href = `/docs/${item.slug}`;
               const current = path === href;
