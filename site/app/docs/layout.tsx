@@ -30,7 +30,8 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
           data-lenis-prevent
           className="quiet-scroll sticky top-16 -ml-2 hidden h-[calc(100dvh-4rem)] w-[248px] shrink-0 overflow-y-auto py-8 pl-2 lg:block"
         >
-          <SidebarNav written={slugs} />
+          {/* Installation has a page of its own, outside the component pages. */}
+          <SidebarNav written={[...slugs, "installation"]} />
         </aside>
         <main className="min-w-0 flex-1 pt-24 pb-24">{children}</main>
       </div>
