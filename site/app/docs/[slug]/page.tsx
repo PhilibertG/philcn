@@ -35,9 +35,12 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
     ...(doc.notes && doc.notes.length > 0 ? [{ id: "worth-knowing", title: "Worth knowing" }] : []),
   ];
 
+  // The sections of the page are held against the right edge, and the reading
+  // column takes the middle of what is left: the article's auto margins
+  // absorb the space on either side of it.
   return (
-    <div className="flex justify-center gap-12">
-      <article className="grid min-w-0 flex-1 gap-10 text-[15px] xl:max-w-[760px]">
+    <div className="flex gap-12">
+      <article className="mx-auto grid w-full min-w-0 gap-10 text-[15px] xl:max-w-[760px]">
       <header>
         <h1 className="text-4xl font-semibold tracking-tight">{doc.title}</h1>
         <p className="mt-2 text-lg text-brand-ink-soft">{doc.summary}</p>
