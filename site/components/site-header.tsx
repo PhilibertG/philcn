@@ -2,8 +2,8 @@ import { HeaderShell } from "./header-shell";
 import { GitHubIcon } from "./icons";
 
 const links = [
-  { href: "#library", label: "Components" },
-  { href: "#library", label: "Docs" },
+  { href: "/docs/button", label: "Components" },
+  { href: "/docs/button", label: "Docs" },
   { href: "#why", label: "Themes" },
   { href: "#why", label: "Showcase" },
 ];

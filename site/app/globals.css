@@ -233,3 +233,26 @@ body {
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Code blocks.
+ *
+ * Shiki writes two colours on every token — one for each theme — and leaves
+ * the choosing to CSS. That way one build serves both themes and the reader
+ * downloads no highlighter at all.
+ * ------------------------------------------------------------------------ */
+.shiki,
+.shiki span {
+  color: var(--code-light);
+  background-color: transparent;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--code-dark);
+}
+
+.shiki code {
+  display: grid;
+  font-family: var(--font-mono);
+}
