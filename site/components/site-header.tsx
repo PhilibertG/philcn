@@ -1,9 +1,10 @@
 import { HeaderShell } from "./header-shell";
 import { GitHubIcon } from "./icons";
+import { ThemeToggle } from "./theme-toggle";
 
 const links = [
-  { href: "#library", label: "Components" },
-  { href: "#library", label: "Docs" },
+  { href: "/docs/button", label: "Components" },
+  { href: "/docs/button", label: "Docs" },
   { href: "#why", label: "Themes" },
   { href: "#why", label: "Showcase" },
 ];
@@ -38,14 +39,14 @@ export function PillLink({
       href={href}
       className={`pill group inline-flex items-center gap-2 rounded-full py-1.5 pr-1.5 pl-6 text-[15px] font-medium transition-transform duration-200 hover:-translate-y-px active:translate-y-0 ${
         dark
-          ? "bg-white text-brand-ink shadow-[0_2px_14px_-4px_rgba(0,0,0,.6)]"
+          ? "bg-white text-[#111216] shadow-[0_2px_14px_-4px_rgba(0,0,0,.6)]"
           : "border border-white/20 bg-white/8 text-white backdrop-blur-sm"
       }`}
     >
       {children}
       <span
         className={`pill-mark grid size-9 place-items-center rounded-full ${
-          dark ? "bg-brand-primary text-white" : "bg-white text-brand-ink"
+          dark ? "bg-brand-primary text-white" : "bg-white text-[#111216]"
         }`}
         aria-hidden
       >
@@ -62,10 +63,12 @@ export function PillLink({
  * so it carries its own dark, blurred bar rather than borrowing a background
  * from the section behind it. That way it stays readable the whole way down.
  */
-export function SiteHeader() {
+export function SiteHeader({ shrinkOnScroll = true }: { shrinkOnScroll?: boolean }) {
   return (
-    <HeaderShell>
-      <a href="#top" className="shrink-0">
+    <HeaderShell shrinkOnScroll={shrinkOnScroll}>
+      {/* On the home page the wordmark rides back to the top; anywhere else
+          it is the way home. */}
+      <a href={shrinkOnScroll ? "#top" : "/"} className="shrink-0">
         <Wordmark className="text-[22px] text-white" />
       </a>
 
@@ -88,7 +91,8 @@ export function SiteHeader() {
         </a>
       </nav>
 
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center gap-2">
+        <ThemeToggle />
         <PillLink href="#library">Get started</PillLink>
       </div>
     </HeaderShell>

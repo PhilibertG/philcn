@@ -23,15 +23,36 @@ import * as React from "react";
  * its first frame instead of forming. The rest of the header stays a server component;
  * only this wrapper listens to the scroll.
  */
-export function HeaderShell({ children }: { children: React.ReactNode }) {
+export function HeaderShell({
+  children,
+  /**
+   * Whether the bar draws in to a capsule once the page scrolls. True on the
+   * home page, where the shape marks that the hero is behind you. False on a
+   * page that is read rather than looked at: there the bar stays a plain
+   * strip across the top, out of the way.
+   */
+  shrinkOnScroll = true,
+}: {
+  children: React.ReactNode;
+  shrinkOnScroll?: boolean;
+}) {
   const [scrolled, setScrolled] = React.useState(false);
 
   React.useEffect(() => {
+    if (!shrinkOnScroll) return;
     const update = () => setScrolled(window.scrollY > 24);
     update();
     window.addEventListener("scroll", update, { passive: true });
     return () => window.removeEventListener("scroll", update);
-  }, []);
+  }, [shrinkOnScroll]);
+
+  if (!shrinkOnScroll) {
+    return (
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#0A0B0F]/85 backdrop-blur-xl">
+        <div className="flex h-16 items-center gap-10 py-1.5 pr-3 pl-6 lg:pl-8">{children}</div>
+      </header>
+    );
+  }
 
   return (
     <header

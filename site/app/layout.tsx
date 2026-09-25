@@ -4,6 +4,7 @@ import "lenis/dist/lenis.css";
 import "./globals.css";
 
 import { SmoothScroll } from "@/components/smooth-scroll";
+import { themeScript } from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
   title: "philcn — beautiful components for React",
@@ -13,8 +14,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/* General Sans, the brand book's typeface. */}
         <link
           rel="stylesheet"

@@ -12,6 +12,7 @@
  * project.
  */
 :root {
+  color-scheme: light;
   --brand-canvas: #f7f8fc;
   --brand-surface: #ffffff;
   --brand-primary: #5271ff;
@@ -19,7 +20,24 @@
   --brand-accent: #b7a7ff;
   --brand-ink: #111216;
   --brand-ink-soft: #5a6076;
+  /* The ink the page itself is printed on. Separate from --brand-ink, which
+     is text: after dark the text turns pale and the page must not. */
+  --brand-page: #111216;
   --brand-line: #e3e8f5;
+}
+
+/* The same palette after dark. philcn's own components switch on the `.dark`
+   class, so the site switches on the same one: one click changes both, and
+   the components on the page are the real thing in their dark clothes. */
+.dark {
+  color-scheme: dark;
+  --brand-page: #0b0c10;
+  --brand-canvas: #16171d;
+  --brand-surface: #0f1014;
+  --brand-soft: #1d2440;
+  --brand-ink: #f1f2f7;
+  --brand-ink-soft: #a2a8bd;
+  --brand-line: #24262f;
 }
 
 @theme inline {
@@ -29,6 +47,7 @@
   --color-brand-soft: var(--brand-soft);
   --color-brand-accent: var(--brand-accent);
   --color-brand-ink: var(--brand-ink);
+  --color-brand-page: var(--brand-page);
   --color-brand-ink-soft: var(--brand-ink-soft);
   --color-brand-line: var(--brand-line);
   /* The measure every section's content keeps, and the width the navigation
@@ -52,7 +71,7 @@
 /* The page itself is ink. Everything readable sits in a rounded card on top
    of it, with a margin all round — that gap is the whole look. */
 body {
-  background-color: var(--brand-ink);
+  background-color: var(--brand-page);
   color: var(--brand-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -117,7 +136,7 @@ body {
   line-height: 0.76;
   letter-spacing: -0.06em;
   font-weight: 600;
-  color: color-mix(in srgb, var(--brand-surface) 7%, transparent);
+  color: color-mix(in srgb, #ffffff 7%, transparent);
   user-select: none;
 }
 
@@ -232,4 +251,62 @@ body {
   .nav-shell[data-scrolled="true"] .nav-bar .pill-mark {
     transition: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+ * Code blocks.
+ *
+ * Shiki writes two colours on every token — one for each theme — and leaves
+ * the choosing to CSS. That way one build serves both themes and the reader
+ * downloads no highlighter at all.
+ * ------------------------------------------------------------------------ */
+.shiki,
+.shiki span {
+  color: var(--code-light);
+  background-color: transparent;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--code-dark);
+}
+
+.shiki code {
+  display: grid;
+  font-family: var(--font-mono);
+}
+
+/* ---------------------------------------------------------------------------
+ * Scrollbars inside the documentation.
+ *
+ * A pane that scrolls on its own gets a thin bar in the page's own colours,
+ * shown only while the pointer is over it. The browser's default bar is wide,
+ * light, and lands in the middle of the reading.
+ *
+ * It also keeps its scrolling to itself: reaching the end of the list should
+ * stop, not hand the rest of the gesture to the page behind it.
+ * ------------------------------------------------------------------------ */
+.quiet-scroll {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 200ms ease-out;
+}
+
+.quiet-scroll:hover,
+.quiet-scroll:focus-within {
+  scrollbar-color: color-mix(in srgb, var(--brand-ink) 20%, transparent) transparent;
+}
+
+.quiet-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quiet-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+
+.quiet-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--brand-ink) 20%, transparent);
 }
