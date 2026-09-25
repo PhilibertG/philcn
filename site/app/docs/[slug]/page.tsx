@@ -36,8 +36,8 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   ];
 
   return (
-    <div className="flex gap-12">
-      <article className="grid min-w-0 flex-1 gap-10 xl:max-w-[840px]">
+    <div className="flex justify-center gap-12">
+      <article className="grid min-w-0 flex-1 gap-10 text-[15px] xl:max-w-[760px]">
       <header>
         <h1 className="text-4xl font-semibold tracking-tight">{doc.title}</h1>
         <p className="mt-2 text-lg text-brand-ink-soft">{doc.summary}</p>
@@ -114,7 +114,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
       ) : null}
       </article>
 
-      <aside className="sticky top-24 hidden h-fit w-52 shrink-0 xl:block">
+      <aside className="sticky top-24 hidden h-fit w-56 shrink-0 xl:block">
         <Toc items={toc} />
       </aside>
     </div>

@@ -28,7 +28,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             there instead of carrying on down the page. */}
         <aside
           data-lenis-prevent
-          className="quiet-scroll sticky top-16 hidden h-[calc(100dvh-4rem)] w-56 shrink-0 overflow-y-auto py-8 lg:block"
+          className="quiet-scroll sticky top-16 -ml-2 hidden h-[calc(100dvh-4rem)] w-[248px] shrink-0 overflow-y-auto py-8 pl-2 lg:block"
         >
           <SidebarNav written={slugs} />
         </aside>
