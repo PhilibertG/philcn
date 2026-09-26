@@ -31,7 +31,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   const toc = [
     ...doc.examples.map((example) => ({ id: example.id, title: example.title })),
     { id: "installation", title: "Installation" },
-    { id: "props", title: "Props" },
+    ...(rows.length > 0 ? [{ id: "props", title: "Props" }] : []),
     ...(doc.notes && doc.notes.length > 0 ? [{ id: "worth-knowing", title: "Worth knowing" }] : []),
   ];
 
@@ -69,6 +69,14 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
 
       <section id="props" className="scroll-mt-28">
         <h2 className="mb-3 text-xl font-semibold tracking-tight">Props</h2>
+        {rows.length === 0 ? (
+          <p className="text-brand-ink-soft">
+            None of its own.
+            {doc.element ? (
+              <> Everything you pass goes straight to the underlying <code>&lt;{doc.element}&gt;</code>, <code>className</code> included.</>
+            ) : null}
+          </p>
+        ) : (
         <div className="overflow-x-auto rounded-xl border border-brand-line">
           <table className="w-full border-collapse text-left text-sm">
             <thead className="bg-brand-canvas text-brand-ink-soft">
@@ -93,13 +101,16 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-sm text-brand-ink-soft">
-          Types are read from the library itself, so this table cannot describe an option the code no
-          longer has.
-          {doc.element ? (
-            <> Everything else you pass goes straight to the underlying <code>&lt;{doc.element}&gt;</code>.</>
-          ) : null}
-        </p>
+        )}
+        {rows.length > 0 ? (
+          <p className="mt-2 text-sm text-brand-ink-soft">
+            Types are read from the library itself, so this table cannot describe an option the code
+            no longer has.
+            {doc.element ? (
+              <> Everything else you pass goes straight to the underlying <code>&lt;{doc.element}&gt;</code>.</>
+            ) : null}
+          </p>
+        ) : null}
       </section>
 
       {doc.notes && doc.notes.length > 0 ? (
