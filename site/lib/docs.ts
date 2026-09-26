@@ -84,7 +84,18 @@ export function propRows(doc: Doc): PropRow[] {
   });
 }
 
-/** The source of an example, exactly the file the page just rendered. */
+/**
+ * The source of an example, exactly the file the page just rendered — with
+ * one substitution.
+ *
+ * The site imports the components from the library's own folder, through an
+ * alias of its own. A reader's project has them under `@/components/ui`,
+ * which is where `philcn add` writes them, so that is what the code shows.
+ * Anything else would be an import that does not exist in their project.
+ */
 export function exampleSource(slug: string, id: string): string {
-  return readFileSync(join(process.cwd(), "examples", slug, `${id}.tsx`), "utf8").trimEnd();
+  const source = readFileSync(join(process.cwd(), "examples", slug, `${id}.tsx`), "utf8");
+  return source
+    .replace(/@philcn\/components\/ui\/([\w-]+)\.tsx/g, "@/components/ui/$1")
+    .trimEnd();
 }

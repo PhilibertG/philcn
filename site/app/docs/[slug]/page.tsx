@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { InstallCommand } from "@/components/docs/code";
 import { ExampleSection } from "@/components/docs/example";
+import { PageActions } from "@/components/docs/page-actions";
+import { Pager } from "@/components/docs/pager";
 import { Toc } from "@/components/docs/toc";
 import { docs, slugs } from "@/content/docs";
 import { propRows } from "@/lib/docs";
@@ -41,9 +43,14 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   return (
     <div className="flex gap-12">
       <article className="mx-auto grid w-full min-w-0 gap-10 text-[15px] xl:max-w-[760px]">
-      <header>
-        <h1 className="text-4xl font-semibold tracking-tight">{doc.title}</h1>
-        <p className="mt-2 text-lg text-brand-ink-soft">{doc.summary}</p>
+      <header className="flex items-start gap-6">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-4xl font-semibold tracking-tight">{doc.title}</h1>
+          <p className="mt-2 text-lg text-brand-ink-soft">{doc.summary}</p>
+        </div>
+        <div className="mt-1 shrink-0">
+          <PageActions slug={doc.slug} title={doc.title} />
+        </div>
       </header>
 
       {first ? <ExampleSection slug={doc.slug} example={first} /> : null}
@@ -126,6 +133,8 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
           </ul>
         </section>
       ) : null}
+
+      <Pager slug={doc.slug} />
       </article>
 
       <aside className="sticky top-24 hidden h-fit w-56 shrink-0 xl:block">
