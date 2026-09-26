@@ -1,6 +1,7 @@
 import { basics } from "@/content/docs/basics";
 import { forms } from "@/content/docs/forms";
 import { layout } from "@/content/docs/layout";
+import { menus } from "@/content/docs/menus";
 import { overlays } from "@/content/docs/overlays";
 import type { Doc } from "@/lib/docs";
 
@@ -17,6 +18,7 @@ export const docs: Record<string, Doc> = {
   ...basics,
   ...forms,
   ...layout,
+  ...menus,
   ...overlays,
 };
 
