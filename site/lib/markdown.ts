@@ -33,7 +33,13 @@ export function docToMarkdown(doc: Doc): string {
   } else {
     lines.push("| Prop | Type | Required | What it does |", "| --- | --- | --- | --- |");
     for (const row of rows) {
-      const type = row.type.replace(/\|/g, "\\|");
+      // A table row is one line, and a pipe inside it would start a new cell.
+      // Backslashes are escaped first, or escaping the pipes would produce
+      // pairs that cancel each other out.
+      const type = row.type
+        .replace(/\s+/g, " ")
+        .replace(/\\/g, "\\\\")
+        .replace(/\|/g, "\\|");
       lines.push(
         `| \`${row.component}.${row.name}\` | \`${type}\` | ${row.required ? "yes" : "no"} | ${row.description} |`,
       );
