@@ -4,6 +4,10 @@ import AvatarStack from "@/examples/avatar/stack";
 import BadgeAsLink from "@/examples/badge/as-link";
 import BadgeVariants from "@/examples/badge/variants";
 import ButtonAsLink from "@/examples/button/as-link";
+import ButtonGroupDefault from "@/examples/button-group/default";
+import ButtonGroupOrientation from "@/examples/button-group/orientation";
+import ButtonGroupWithSeparator from "@/examples/button-group/separator";
+import ButtonGroupSplit from "@/examples/button-group/split";
 import ButtonSizes from "@/examples/button/sizes";
 import ButtonVariants from "@/examples/button/variants";
 import EmptyDefault from "@/examples/empty/default";
@@ -71,6 +75,53 @@ export const basics: Record<string, Doc> = {
     notes: [
       "A disabled button stops receiving mouse events, so it shows no pointer cursor — that is the browser, not a bug.",
       "The `link` variant does not shrink when pressed: text should not move under the reader's finger.",
+    ],
+  },
+
+  "button-group": {
+    slug: "button-group",
+    title: "Button Group",
+    summary: "Buttons that belong together, drawn as one control.",
+    description:
+      "Actions that sit side by side and share a job: archive, report, snooze. The group drops the roundness on the edges where two children meet and pulls them together by a pixel, so their borders read as one line. It takes whatever you put in it — buttons, an input, a select's trigger, another group.",
+    element: "div",
+    examples: [
+      {
+        id: "default",
+        title: "Default",
+        description: "Outlined buttons already carry a border, so joining them is enough.",
+        Component: ButtonGroupDefault,
+      },
+      {
+        id: "separator",
+        title: "With a separator",
+        description: "Filled buttons have no border, so the divider has to be drawn.",
+        Component: ButtonGroupWithSeparator,
+      },
+      {
+        id: "split",
+        title: "Split button",
+        description: "The common action, and a menu holding the rest. This page uses it at the top.",
+        Component: ButtonGroupSplit,
+      },
+      {
+        id: "orientation",
+        title: "Vertical, and with text",
+        description: "A column of buttons, and a row holding something read rather than pressed.",
+        Component: ButtonGroupOrientation,
+      },
+    ],
+    props: [
+      {
+        component: "ButtonGroup",
+        name: "orientation",
+        description: "A row or a column. It decides which edges are joined, and which way the separator runs.",
+      },
+    ],
+    notes: [
+      "Give the group a name with `aria-label`: a screen reader announces it as a group, and a group without a name is one more thing to work out.",
+      "This is for actions. For buttons that hold a state — bold, italic — use Toggle Group instead.",
+      "A group inside a group is spaced rather than joined, which is how clusters are made.",
     ],
   },
 

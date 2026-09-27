@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { Button } from "@philcn/components/ui/button.tsx";
+import { ButtonGroup } from "@philcn/components/ui/button-group.tsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,7 +46,7 @@ export function PageActions({ slug, title }: { slug: string; title: string }) {
   }
 
   return (
-    <div className="flex items-center gap-1.5">
+    <ButtonGroup aria-label="This page">
       <Button variant="outline" size="sm" onClick={copy} className="gap-2">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
           {copied ? (
@@ -62,7 +63,7 @@ export function PageActions({ slug, title }: { slug: string; title: string }) {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" aria-label="Other ways to open this page">
+          <Button variant="outline" size="sm" aria-label="Other ways to open this page" className="px-2">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
               <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -80,6 +81,6 @@ export function PageActions({ slug, title }: { slug: string; title: string }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </ButtonGroup>
   );
 }
