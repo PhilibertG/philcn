@@ -19,6 +19,7 @@ export const groups: Group[] = [
     title: "Basics",
     items: [
       { slug: "button", title: "Button" },
+      { slug: "button-group", title: "Button Group" },
       { slug: "badge", title: "Badge" },
       { slug: "avatar", title: "Avatar" },
       { slug: "kbd", title: "Kbd" },

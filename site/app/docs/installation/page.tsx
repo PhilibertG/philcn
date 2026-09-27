@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Code } from "@/components/docs/code";
 import { CommandTabs } from "@/components/docs/command-tabs";
+import { Pager } from "@/components/docs/pager";
 import { Toc } from "@/components/docs/toc";
 
 export const metadata: Metadata = {
@@ -201,6 +202,7 @@ import { Button } from "@/components/ui/button"`}
             Nothing is then imported from <code>philcn</code> at runtime.
           </p>
         </section>
+        <Pager slug="installation" />
       </article>
 
       <aside className="sticky top-24 hidden h-fit w-56 shrink-0 xl:block">
