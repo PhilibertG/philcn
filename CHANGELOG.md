@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/PhilibertG/philcn/compare/v0.4.3...v0.4.4) (2026-09-27)
+
+
+### Documentation
+
+* **site:** a page for every component, plus Button Group ([810524f](https://github.com/PhilibertG/philcn/commit/810524f684451d88dcaa7a6b9c686aefafd40623))
+
 ## [0.4.3](https://github.com/PhilibertG/philcn/compare/v0.4.2...v0.4.3) (2026-09-25)
 
 
