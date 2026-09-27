@@ -71,7 +71,7 @@ npx philcn add dialog --standalone
 
 ## Status
 
-40 components: the simple ones, the overlays, the floating panels, the
+41 components: the simple ones, the overlays, the floating panels, the
 keyboard-driven groups, the form controls and a form wrapper — plus design
 tokens for light and dark themes.
 
