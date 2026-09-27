@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.4.3](https://github.com/PhilibertG/philcn/compare/v0.4.2...v0.4.3) (2026-09-25)
+
+
+### Bug fixes
+
+* **cli:** let the write decide whether a file is already there ([758cb67](https://github.com/PhilibertG/philcn/commit/758cb67db9fa65ef48d92e4208fa6806b0050448))
+* **cli:** let the write decide whether a file is already there ([d6e157f](https://github.com/PhilibertG/philcn/commit/d6e157f2a6d7bc5eaba863f959b3ddae6a16166d))
+* **site:** keep the sidebar's scrolling to itself ([3146674](https://github.com/PhilibertG/philcn/commit/3146674180a48d7da5ae2bed01bb0a237b41a9c3))
+* **site:** readable in the dark, and a list that stays put ([d7a6255](https://github.com/PhilibertG/philcn/commit/d7a6255ebd03ff1c754d2e46647b2b28d873e0be))
+
+
+### Documentation
+
+* **site:** a plain bar and a wider page for reading, and a theme switch ([26f0c0a](https://github.com/PhilibertG/philcn/commit/26f0c0a490753c0f695ccf718d82e688796a70f8))
+* **site:** build the component documentation, with Button, Dialog and Select ([3e86c19](https://github.com/PhilibertG/philcn/commit/3e86c198a824a165452e9602fb4dcecc80d1345c))
+* **site:** component documentation, with Button, Dialog and Select ([3daf46f](https://github.com/PhilibertG/philcn/commit/3daf46f6036c2e7651df09b4c4d93e8320c03ac9))
+* **site:** write the installation page ([a534bed](https://github.com/PhilibertG/philcn/commit/a534bedeadb74b8ebe70cad4578abeeef1106c39))
+* write the release guide ([ebdefd7](https://github.com/PhilibertG/philcn/commit/ebdefd757edacfa49ca3086ac3519ba1a91d1a66))
+* write the release guide ([1654618](https://github.com/PhilibertG/philcn/commit/16546182da2a1873dcaeddebfdb451405dfd440c))
+
 ## [0.4.2](https://github.com/PhilibertG/philcn/compare/v0.4.1...v0.4.2) (2026-09-24)
 
 
