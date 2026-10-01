@@ -45,13 +45,13 @@ jobs:
           # The checkout step leaves its token in .git/config by default, where
           # anything later in the job could read it. Nothing here needs it.
           persist-credentials: false
-      - uses: github/codeql-action/init@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
+      - uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           languages: ${{ matrix.language }}
           # The wider rule set: the default one stays silent on findings it
           # cannot prove, and a library this small can afford to read more.
           queries: security-and-quality
-      - uses: github/codeql-action/analyze@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
+      - uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           category: /language:${{ matrix.language }}
 
@@ -69,7 +69,7 @@ jobs:
         # Pinned: an audit tool that updates itself is an audit tool that can
         # change under you between two runs.
         run: pipx run zizmor==1.30.1 --format sarif . > zizmor.sarif
-      - uses: github/codeql-action/upload-sarif@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
+      - uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           sarif_file: zizmor.sarif
           category: zizmor
